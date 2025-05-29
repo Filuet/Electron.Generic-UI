@@ -15,9 +15,16 @@ import PaymentProcessing from './pages/PaymentPage/PaymentProcessing';
 import ProductCollection from './pages/Product_Collection/ProductCollection';
 import ThankyouPage from './pages/ThankYouPage/ThankyouPage';
 import ValidateOtp from './pages/Login/ValidateOTP/ValidateOtp';
-import { getDispenseStatus, resetStatus } from './utils/expoApiUtils';
-import { setExpoStatus, setInoperableMachines } from './redux/features/expoSettings/expoSlice';
-import { checkMachinesStatus, delay, getActiveMachines } from './utils/dispenserUtils';
+import { resetStatus } from './utils/expoApiUtils';
+import {
+  setExpoStatus,
+  setInoperableMachines,
+} from './redux/features/expoSettings/expoSlice';
+import {
+  checkDispenserStatus,
+  checkMachinesStatus,
+  getActiveMachines,
+} from './utils/dispenserUtils';
 import { getData } from './services/axiosWrapper/apiService';
 import { expoFailEndpoint } from './utils/endpoints';
 import SupportContact from './pages/UnderMaintenance/SupportContact';
@@ -35,31 +42,6 @@ function KioskPortal(): JSX.Element {
     (state) => state.kioskSettings.kioskSettings.machines
   );
 
-  const checkDispenserStatus = async (attempts: number = 3): Promise<boolean> => {
-    if (attempts === 0) {
-      dispatch(setExpoStatus(false));
-      loggingService.log({
-        level: 'info',
-        component: 'KioskPortal.tsx',
-        message: 'Dispenser is not reachable after multiple attempts',
-        data: { attempts: attempts }
-      });
-      return false;
-    }
-
-    const apiResponse = await getDispenseStatus();
-    const statusResult = apiResponse.data;
-    if (
-      statusResult.status === 'success' &&
-      statusResult.action === 'pending' &&
-      statusResult.message === 'Waiting for command'
-    ) {
-      return true;
-    }
-
-    await delay(2000);
-    return checkDispenserStatus(attempts - 1);
-  };
   const checkWorkingHours = useCallback(() => {
     const now = dayjs();
     const currentDay = now.format('dddd').toLowerCase();
@@ -92,12 +74,19 @@ function KioskPortal(): JSX.Element {
             )
           );
         }
-
         const dispenserStatus = await checkDispenserStatus();
         if (!dispenserStatus) {
+          dispatch(setExpoStatus(false));
+          LoggingService.log({
+            level: LogLevel.ERROR,
+            component: 'KioskPortal',
+            message: `Dispenser Status is not as expected after 3 attempts.`,
+            data: {},
+          });
+          console.log('Dispenser Status is not as expected after 3 attempts.');
           await resetStatus();
           loggingService.log({
-            level: 'info',
+            level: LogLevel.ERROR,
             component: 'KioskPortal.tsx',
             message: 'Dispenser is not reachable',
             data: { dispenserStatus: dispenserStatus }
