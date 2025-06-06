@@ -1,6 +1,7 @@
 import { app, shell, BrowserWindow } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
+app.commandLine.appendSwitch('ignore-certificate-errors');
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -12,7 +13,6 @@ function createWindow(): void {
       sandbox: false
     }
   });
-
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
   });
