@@ -1,6 +1,6 @@
 // Node.js path utility to resolve absolute paths
 import { resolve } from 'path';
-
+import eslint from 'vite-plugin-eslint';
 // Importing config and plugin helpers from electron-vite
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 
@@ -30,7 +30,7 @@ export default defineConfig({
       }
     },
     // Use the React plugin to handle .jsx/.tsx files, Fast Refresh, etc.
-    plugins: [react()],
+    plugins: [react(), eslint()],
     server: {
       // Port to serve the development server (used in dev mode only)
       port: 5174,
@@ -45,4 +45,3 @@ export default defineConfig({
     }
   }
 });
-
