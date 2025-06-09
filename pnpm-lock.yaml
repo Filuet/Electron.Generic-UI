@@ -17,6 +17,9 @@ importers:
       '@swc/core':
         specifier: ^1.11.31
         version: 1.11.31
+      axios:
+        specifier: ^1.9.0
+        version: 1.9.0
       electron-updater:
         specifier: ^6.3.9
         version: 6.6.2
@@ -979,6 +982,9 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
+  axios@1.9.0:
+    resolution: {integrity: sha512-re4CqKTJaURpzbLHtIi6XpDv20/CnpXOtjRY5/CU32L8gU8ek9UIivcfvSWvmKEngmVbrUtPpdDwWDWL7DNHvg==}
+
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
@@ -1512,6 +1518,15 @@ packages:
 
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
+
+  follow-redirects@1.15.9:
+    resolution: {integrity: sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
 
   for-each@0.3.5:
     resolution: {integrity: sha512-dKx12eRCVIzqCxFGplyFKJMPvLEWgmNtUrpTiJIR5u97zEhRG8ySrtboPHZXx7daLxQVrl643cTzbab2tkQjxg==}
@@ -2333,6 +2348,9 @@ packages:
 
   prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
+
+  proxy-from-env@1.1.0:
+    resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
 
   pump@3.0.2:
     resolution: {integrity: sha512-tUPXtzlGM8FE3P0ZL6DVs/3P58k9nk8/jZeQCurTJylQA8qFYzHFfhBJkuqyE0FifOsQ0uKWekiZ5g8wtr28cw==}
@@ -3838,6 +3856,14 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
+  axios@1.9.0:
+    dependencies:
+      follow-redirects: 1.15.9
+      form-data: 4.0.3
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
   balanced-match@1.0.2: {}
 
   base64-js@1.5.1: {}
@@ -4593,6 +4619,8 @@ snapshots:
       keyv: 4.5.4
 
   flatted@3.3.3: {}
+
+  follow-redirects@1.15.9: {}
 
   for-each@0.3.5:
     dependencies:
@@ -5456,6 +5484,8 @@ snapshots:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
+
+  proxy-from-env@1.1.0: {}
 
   pump@3.0.2:
     dependencies:
