@@ -149,7 +149,6 @@ This document explains the ESLint configuration used in your Electron + React + 
 
 ---
 
-
 ---
 
 ## 📁 Directory Ignore
@@ -162,8 +161,6 @@ This document explains the ESLint configuration used in your Electron + React + 
 
 ---
 
-
-
 ## ✍ Additional ESLint Rules — Explanation & Benefits
 
 Below is a detailed explanation of additional useful rules you can add to your ESLint configuration.
@@ -172,41 +169,40 @@ Below is a detailed explanation of additional useful rules you can add to your E
 
 ### ✅ Code Style & Safety
 
-| Rule | Description | Why It’s Helpful |
-|------|-------------|------------------|
-| `eqeqeq: ["error", "always"]` | Enforces the use of `===` and `!==` instead of `==` and `!=`. | Prevents unintended type coercion, making code more predictable and bug-free. |
-| `curly: ["error", "all"]` | Requires braces `{}` for all control statements (if, else, etc.). | Improves readability and avoids bugs due to ambiguous control structures. |
-| `no-console: ["warn"]` | Warns when `console.log` or similar is used. | Helps keep debug logs out of production code. |
-| `no-debugger: "error"` | Disallows `debugger` statements. | Prevents accidental debugger breakpoints in deployed code. |
-| `prefer-const: "error"` | Suggests using `const` instead of `let` if variables are never reassigned. | Encourages immutability and reduces potential side-effects. |
-| `no-var: "error"` | Disallows `var`, encouraging `let` and `const`. | Promotes block scoping and safer variable handling. |
+| Rule                          | Description                                                                | Why It’s Helpful                                                              |
+| ----------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `eqeqeq: ["error", "always"]` | Enforces the use of `===` and `!==` instead of `==` and `!=`.              | Prevents unintended type coercion, making code more predictable and bug-free. |
+| `curly: ["error", "all"]`     | Requires braces `{}` for all control statements (if, else, etc.).          | Improves readability and avoids bugs due to ambiguous control structures.     |
+| `no-console: ["warn"]`        | Warns when `console.log` or similar is used.                               | Helps keep debug logs out of production code.                                 |
+| `no-debugger: "error"`        | Disallows `debugger` statements.                                           | Prevents accidental debugger breakpoints in deployed code.                    |
+| `prefer-const: "error"`       | Suggests using `const` instead of `let` if variables are never reassigned. | Encourages immutability and reduces potential side-effects.                   |
+| `no-var: "error"`             | Disallows `var`, encouraging `let` and `const`.                            | Promotes block scoping and safer variable handling.                           |
 
 ---
 
 ### 🧠 TypeScript Rules
 
-| Rule | Description | Why It’s Helpful |
-|------|-------------|------------------|
-| `@typescript-eslint/explicit-function-return-type: "warn"` | Requires functions to define return types explicitly. | Enhances type safety, especially in public APIs. |
-| `@typescript-eslint/no-misused-promises: "error"` | Prevents incorrect usage of promises (e.g., in `if`, `forEach`). | Avoids bugs related to asynchronous logic. |
+| Rule                                                       | Description                                                      | Why It’s Helpful                                 |
+| ---------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------ |
+| `@typescript-eslint/explicit-function-return-type: "warn"` | Requires functions to define return types explicitly.            | Enhances type safety, especially in public APIs. |
+| `@typescript-eslint/no-misused-promises: "error"`          | Prevents incorrect usage of promises (e.g., in `if`, `forEach`). | Avoids bugs related to asynchronous logic.       |
 
 ---
 
 ### ⚛️ React-Specific Rules
 
-| Rule | Description | Why It’s Helpful |
-|------|-------------|------------------|
+| Rule                                           | Description                                                                             | Why It’s Helpful                                   |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------- |
 | `react/jsx-boolean-value: ["error", "always"]` | Requires explicitly passing boolean values as props (e.g., `<Comp disabled={true} />`). | Improves clarity, especially for newer developers. |
-| `react/self-closing-comp: "error"` | Enforces self-closing tags for components without children. | Keeps JSX clean and concise. |
-| `react/no-unescaped-entities: "warn"` | Warns when raw characters like `'`, `<`, `>` are used directly in JSX. | Prevents invalid HTML or rendering issues. |
-| `react/no-unknown-property: "error"` | Ensures you’re using valid DOM props (e.g., `className` not `class`). | Prevents runtime errors and bugs from typos. |
+| `react/self-closing-comp: "error"`             | Enforces self-closing tags for components without children.                             | Keeps JSX clean and concise.                       |
+| `react/no-unescaped-entities: "warn"`          | Warns when raw characters like `'`, `<`, `>` are used directly in JSX.                  | Prevents invalid HTML or rendering issues.         |
+| `react/no-unknown-property: "error"`           | Ensures you’re using valid DOM props (e.g., `className` not `class`).                   | Prevents runtime errors and bugs from typos.       |
 
 ---
 
 These rules complement the base configuration and help maintain high code quality, safety, and readability.
 
-
------
+---
 
 ## 🛠 Best Practices
 
