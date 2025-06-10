@@ -26,7 +26,7 @@ export default defineConfig({
     resolve: {
       alias: {
         // Create an alias so you can import like: import X from '@renderer/...'
-        '@renderer': resolve('src/renderer/src')
+        '@': resolve('src/renderer/src')
       }
     },
     // Use the React plugin to handle .jsx/.tsx files, Fast Refresh, etc.
