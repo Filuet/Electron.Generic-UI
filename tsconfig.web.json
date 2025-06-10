@@ -28,7 +28,7 @@
     // Sets up path aliases for easier imports
     "paths": {
       // Allows importing from '@renderer/*' instead of relative paths like '../../../'
-      "@renderer/*": [
+      "@/*": [
         "src/renderer/src/*"
       ]
     }
