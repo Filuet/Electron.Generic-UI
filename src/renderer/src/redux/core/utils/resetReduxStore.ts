@@ -9,6 +9,6 @@ export const resetReduxStore = (): void => {
   store.dispatch(resetCart());
   store.dispatch(resetPaymentStatus());
   store.dispatch(resetNavigationStore());
-  store.dispatch(resetCustomerDetails({}));
+  store.dispatch(resetCustomerDetails());
   store.dispatch(resetCustomerOrderDetails());
 };
