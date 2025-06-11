@@ -17,10 +17,7 @@ const paymentSlice = createSlice({
       const myState = state;
       myState.status = action.payload;
     },
-    resetPaymentStatus(state) {
-      const myState = state;
-      myState.status = PaymentStatus.Pending;
-    }
+    resetPaymentStatus: () => initialState
   }
 });
 

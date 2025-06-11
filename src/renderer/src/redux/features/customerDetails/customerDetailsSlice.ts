@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CustomerDetails } from './types';
 
 const initialState: CustomerDetails = {
@@ -7,7 +7,7 @@ const initialState: CustomerDetails = {
   isVIP: true
 };
 
-const customerDetailsSlice: Slice<CustomerDetails> = createSlice({
+const customerDetailsSlice = createSlice({
   name: 'customerDetails',
   initialState,
   reducers: {

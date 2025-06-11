@@ -61,14 +61,7 @@ const cartSlice = createSlice({
         myState.totalPrice = Number(myState.totalPrice.toFixed(2));
       }
     },
-    resetCart: (state) => {
-      const myState = state;
-      myState.products = [];
-      myState.totalCount = 0;
-      myState.totalPrice = 0;
-      myState.orderNumber = '';
-      myState.orderCode = '';
-    },
+    resetCart: () => initialState,
     updateOrderNumber: (state, action: PayloadAction<string>) => {
       const myState = state;
       myState.orderNumber = action.payload;

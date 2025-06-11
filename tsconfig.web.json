@@ -1,6 +1,6 @@
 {
   // Extends a base TypeScript configuration tailored for Electron + web (renderer) projects
-  "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
+  "extends": "@electron-toolkit/tsconfig/tsconfig.web.json", //If we want to override any of these settings, we can do so here
 
   // Files and folders to include in the compilation
   "include": [
