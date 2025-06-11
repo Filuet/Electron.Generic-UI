@@ -39,7 +39,6 @@
     "electron-updater": "^6.3.9",
     "formik": "^2.4.6",
     "i18next": "^25.2.1",
-    "immer": "^10.1.1",
     "react-i18next": "^15.5.2",
     "react-redux": "^9.2.0",
     "yup": "^1.6.1"
