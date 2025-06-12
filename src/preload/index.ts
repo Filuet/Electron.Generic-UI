@@ -1,18 +1,22 @@
-import { contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
-
-const api = {};
 
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI);
-    contextBridge.exposeInMainWorld('api', api);
+    contextBridge.exposeInMainWorld('electronAPI', {
+      getVideoFiles: () => ipcRenderer.invoke('get-video-files'),
+      onVideoFolderChange: (callback: () => void) => {
+        ipcRenderer.on('video-folder-updated', callback);
+      },
+      removeVideoChangeListener: (callback: () => void) => {
+        ipcRenderer.removeListener('video-folder-updated', callback);
+      }
+    });
   } catch (error) {
     console.error(error);
   }
 } else {
   // @ts-ignore (define in dts)
   window.electron = electronAPI;
-  // @ts-ignore (define in dts)
-  window.api = api;
 }

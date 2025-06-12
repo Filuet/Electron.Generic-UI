@@ -18,21 +18,18 @@ import { AUTH_TOKEN_KEY } from './utils/constants';
 import { kioskLoginEndpoint } from './utils/endpoints';
 import OriflameLogo from './assets/images/Logo/oriflameLogo.svg';
 import StartScreenBanner from './assets/images/Defaults/DefaultBackgroundImage.png';
-import { getVideoFileNames } from './utils/expoApiUtils';
 import { setVideoFileNames } from './redux/features/welcomeScreen/welcomeScreenSlice';
 import OriflameLoader from './components/oriflameLoader/OriflameLoader';
 import { resetReduxStore } from './redux/core/utils/resetReduxStore';
 import { setActivePage } from './redux/features/pageNavigation/navigationSlice';
 import LoggingService from './utils/loggingService';
+import config from '../../../config.json';
 
 function App(): JSX.Element {
   const theme = useTheme();
   const PERFORMANCE_LOGGING_INTERVAL = 30 * 60 * 1000; // 30 minutes
-  const VIDEO_BASE_PATH = `${import.meta.env.VITE_NODE_SERVER_URL}/video`;
+  const VIDEO_BASE_PATH = config.videoFilePath;
   const dispatch = useAppDispatch();
-  const resetOnIdleTimerMs =
-    useAppSelector((state) => state.kioskSettings.kioskSettings.resetOnIdleTimerMs) ?? 3000;
-  // const [isLoadingVideos, setIsLoadingVideos] = useState(true);
 
   const videoFilenames = useAppSelector((state) => state.welcomeScreen);
   const currentPage = useAppSelector((state) => state.navigation.currentPage);
@@ -45,6 +42,9 @@ function App(): JSX.Element {
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const customerName = useAppSelector((state) => state.customerDetails.customerName);
   const customerId = useAppSelector((state) => state.customerDetails.customerId);
+  const resetOnIdleTimerMs =
+    useAppSelector((state) => state.kioskSettings.kioskSettings.resetOnIdleTimerMs) ?? 3000;
+
   useEffect(() => {
     const initializeKiosk = async (): Promise<void> => {
       try {
@@ -80,8 +80,8 @@ function App(): JSX.Element {
   }, [currentPage, dispatch]);
   useEffect(() => {
     async function getVideoFilenames(): Promise<void> {
-      // setIsLoadingVideos(true);
-      getVideoFileNames()
+      window.electronAPI
+        .getVideoFiles()
         .then((response) => {
           if (response.length !== 0) {
             dispatch(setVideoFileNames(response));
@@ -89,13 +89,32 @@ function App(): JSX.Element {
         })
         .catch((err) => {
           console.error('Error fetching video filenames:', err);
-        })
-        .finally(() => {
-          // setIsLoadingVideos(false);
         });
     }
+
     getVideoFilenames();
-  }, []);
+  }, [dispatch]);
+
+  // Refetch when file change detected
+  useEffect(() => {
+    const refresh = () => {
+      console.log('[Renderer] Detected video folder update');
+      window.electronAPI
+        .getVideoFiles()
+        .then((response) => {
+          dispatch(setVideoFileNames(response));
+        })
+        .catch((err) => {
+          console.error('Error re-fetching video filenames:', err);
+        });
+    };
+
+    window.electronAPI.onVideoFolderChange(refresh);
+
+    return () => {
+      window.electronAPI.removeVideoChangeListener(refresh);
+    };
+  }, [dispatch]);
 
   // Simplified auth error handler
   useEffect(() => {
