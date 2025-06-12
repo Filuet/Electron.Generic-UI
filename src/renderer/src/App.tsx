@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback, JSX } from 'react';
 import { AxiosError } from 'axios';
+import { debounce } from 'lodash';
 import { Modal, Box, Button, Typography, useTheme } from '@mui/material';
 import KioskPortal from './KioskPortal';
 import { LocalStorageWrapper } from './utils/localStorageWrapper';
@@ -97,7 +98,7 @@ function App(): JSX.Element {
 
   // Refetch when file change detected
   useEffect(() => {
-    const refresh = () => {
+    const refresh = debounce(() => {
       console.log('[Renderer] Detected video folder update');
       window.electronAPI
         .getVideoFiles()
@@ -107,7 +108,7 @@ function App(): JSX.Element {
         .catch((err) => {
           console.error('Error re-fetching video filenames:', err);
         });
-    };
+    }, 500);
 
     window.electronAPI.onVideoFolderChange(refresh);
 
