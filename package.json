@@ -40,8 +40,11 @@
     "formik": "^2.4.6",
     "i18next": "^25.2.1",
     "lodash": "^4.17.21",
+    "moment-timezone": "^0.6.0",
     "react-i18next": "^15.5.2",
     "react-redux": "^9.2.0",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
     "yup": "^1.6.1"
   },
   "build": {

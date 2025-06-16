@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { getVideoFileNames } from './videosUtils';
 import config from '../../config.json';
 import fs from 'fs';
+import { dailyLogger, performanceLogger } from './loggerUtils/logger';
 
 // Handle certificate issues if needed
 app.commandLine.appendSwitch('ignore-certificate-errors');
@@ -44,6 +45,14 @@ function createWindow(): void {
 function setupIPCHandlers() {
   ipcMain.handle('get-video-files', async (): Promise<string[]> => {
     return getVideoFileNames();
+  });
+
+  ipcMain.handle('log:generic', (_e, { level, message, component, data, timestamp }) => {
+    dailyLogger.log(level, message, { component, data, timestamp });
+  });
+
+  ipcMain.handle('log:performance', (_e, { level, message, component, data, timestamp }) => {
+    performanceLogger.log(level, message, { component, data, timestamp });
   });
 }
 
