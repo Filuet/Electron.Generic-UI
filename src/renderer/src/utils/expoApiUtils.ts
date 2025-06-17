@@ -9,8 +9,9 @@ import {
 } from '@/interfaces/modal';
 import { CartProduct } from '@/redux/features/cart/cartTypes';
 import axios from 'axios';
+import loggingService from './loggingService';
 
-const apiUrl = import.meta.env.VITE_NODE_SERVER_URL;
+const apiUrl = 'https:localhost:5001';
 // this utils is created only to interact with the expo api
 
 const axiosInstance = axios.create({
@@ -45,6 +46,13 @@ export const dispenseProduct = async (cartProducts: CartProduct[]): Promise<Disp
     );
     return response.data;
   } catch (error) {
+    loggingService.log({
+      level: 'error',
+      message: 'Error while dispensing',
+      component: 'ExpoApiUtils',
+      data: error
+    });
+
     return handleError(error, 'Dispense Product');
   }
 };
@@ -54,22 +62,27 @@ export const getDispenseStatus = async (): Promise<MachineStatus> => {
     const response = await axiosInstance.get<MachineStatus>('/dispense/status');
     return response.data;
   } catch (error) {
+    loggingService.log({
+      level: 'error',
+      message: 'Error while getting dispensing status',
+      component: 'ExpoApiUtils',
+      data: error
+    });
     return handleError(error, 'Get Dispense Status');
   }
 };
-export const getVideoFileNames = async (): Promise<string[]> => {
-  try {
-    const response = await axiosInstance.get<string[]>('video/filenames');
-    return response.data;
-  } catch (error) {
-    return handleError(error, 'Get Video File Names');
-  }
-};
+
 export const updatePlanogramJson = async (pogRoutesRequest: PogRoute[]): Promise<boolean> => {
   try {
     const response = await axiosInstance.post('/dispense/update-planogram', pogRoutesRequest);
     return response.status === 200;
   } catch (error) {
+    loggingService.log({
+      level: 'error',
+      message: 'Error while updating planogram json',
+      component: 'ExpoApiUtils',
+      data: error
+    });
     return handleError(error, 'Update Planogram Json');
   }
 };
@@ -78,6 +91,12 @@ export const getStockStatus = async (): Promise<ProductStock[]> => {
     const response = await axiosInstance.get<ProductStock[]>('/dispense/stock');
     return response.data;
   } catch (error) {
+    loggingService.log({
+      level: 'error',
+      message: 'Error while getting stock status',
+      component: 'ExpoApiUtils',
+      data: error
+    });
     return handleError(error, 'Get Stock Status');
   }
 };
@@ -87,6 +106,12 @@ export const testMachine = async (): Promise<MachineTestResult[]> => {
     const response = await axiosInstance.get<MachineTestResult[]>('/dispense/test');
     return response.data;
   } catch (error) {
+    loggingService.log({
+      level: 'error',
+      message: 'Error while testing machine',
+      component: 'ExpoApiUtils',
+      data: error
+    });
     return handleError(error, 'Test Machine');
   }
 };
@@ -96,6 +121,12 @@ export const unlockMachine = async (machineId: number): Promise<{ success: boole
     const response = await axiosInstance.get<{ success: boolean }>(`/dispense/unlock/${machineId}`);
     return response.data;
   } catch (error) {
+    loggingService.log({
+      level: 'error',
+      message: 'Error while unlocking machine',
+      component: 'ExpoApiUtils',
+      data: error
+    });
     return handleError(error, 'Unlock Machine');
   }
 };
@@ -105,6 +136,12 @@ export const updatePlanogram = async (routeUpdateRequest: RouteUpdateRequest): P
     const response = await axiosInstance.post('/dispense/planogram', routeUpdateRequest);
     return response.status === 200;
   } catch (error) {
+    loggingService.log({
+      level: 'error',
+      message: 'Error while updating planogram',
+      component: 'ExpoApiUtils',
+      data: error
+    });
     return handleError(error, 'Update Planogram');
   }
 };
@@ -113,6 +150,12 @@ export const resetStatus = async (): Promise<boolean> => {
     const response = await axiosInstance.post('/dispense/reset-status');
     return response.status === 200;
   } catch (error) {
+    loggingService.log({
+      level: 'error',
+      message: 'Error while resetting status',
+      component: 'ExpoApiUtils',
+      data: error
+    });
     return handleError(error, 'Reset Status');
   }
 };
@@ -121,6 +164,12 @@ export const getAllStatuses = async (): Promise<MachineStatus[]> => {
     const response = await axiosInstance.get('/dispense/all-statuses');
     return response.data;
   } catch (error) {
+    loggingService.log({
+      level: 'error',
+      message: 'Error while getting all statuses',
+      component: 'ExpoApiUtils',
+      data: error
+    });
     return handleError(error, 'Reset Status');
   }
 };
