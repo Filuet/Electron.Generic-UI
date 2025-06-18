@@ -81,8 +81,8 @@ function App(): JSX.Element {
   }, [currentPage, dispatch]);
   useEffect(() => {
     async function getVideoFilenames(): Promise<void> {
-      window.electronAPI
-        .getVideoFiles()
+      window.electron.videoFilesUtil
+        .getFiles()
         .then((response) => {
           if (response.length !== 0) {
             dispatch(setVideoFileNames(response));
@@ -100,8 +100,8 @@ function App(): JSX.Element {
   useEffect(() => {
     const refresh = debounce(() => {
       console.log('[Renderer] Detected video folder update');
-      window.electronAPI
-        .getVideoFiles()
+      window.electron.videoFilesUtil
+        .getFiles()
         .then((response) => {
           dispatch(setVideoFileNames(response));
         })
@@ -110,10 +110,10 @@ function App(): JSX.Element {
         });
     }, 500);
 
-    window.electronAPI.onVideoFolderChange(refresh);
+    window.electron.videoFilesUtil.onFolderChange(refresh);
 
     return () => {
-      window.electronAPI.removeVideoChangeListener(refresh);
+      window.electron.videoFilesUtil.removeFolderListener(refresh);
     };
   }, [dispatch]);
 

@@ -4,7 +4,7 @@ import moment from 'moment-timezone';
 import path from 'path';
 import fs from 'fs';
 
-const logDir = 'c:/Filuet/Logs';
+const logDir = 'c:/Filuet/Dispensing/logs';
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir, { recursive: true });
 }

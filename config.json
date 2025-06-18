@@ -1,4 +1,5 @@
 {
   "videoFilePath": "C:/Ogmento/videos",
-  "supportedVideoFormats": [".mp4"]
+  "supportedVideoFormats": [".mp4"],
+  "expoBaseUrl": "'https://localhost:5001'"
 }

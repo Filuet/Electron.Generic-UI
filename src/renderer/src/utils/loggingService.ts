@@ -9,14 +9,14 @@ interface LogPayload {
 }
 
 const logGeneric = (log: LogPayload) => {
-  window.electronAPI.logGeneric({
+  window.electron.logs.generic({
     ...log,
     timestamp: log.timestamp ?? new Date().toISOString()
   });
 };
 
 const logPerformance = (log: LogPayload) => {
-  window.electronAPI.logPerformance({
+  window.electron.logs.performance({
     ...log,
     timestamp: log.timestamp ?? new Date().toISOString()
   });
