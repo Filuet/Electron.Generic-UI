@@ -3,10 +3,11 @@ import DailyRotateFile from 'winston-daily-rotate-file';
 import moment from 'moment-timezone';
 import path from 'path';
 import fs from 'fs';
+import config from '../../../../config.json';
 
-const logDir = 'c:/Filuet/Dispensing/logs';
-if (!fs.existsSync(logDir)) {
-  fs.mkdirSync(logDir, { recursive: true });
+const LOG_FILE_DIR = config.logFilesPath;
+if (!fs.existsSync(LOG_FILE_DIR)) {
+  fs.mkdirSync(LOG_FILE_DIR, { recursive: true });
 }
 
 const logFormat = winston.format.printf(({ timestamp, level, message, component, data }) => {
@@ -27,7 +28,7 @@ export const createLogger = (filename: string) =>
     ),
     transports: [
       new DailyRotateFile({
-        filename: path.join(logDir, filename),
+        filename: path.join(LOG_FILE_DIR, filename),
         datePattern: 'YYYY-MM-DD'
       }),
       new winston.transports.Console({

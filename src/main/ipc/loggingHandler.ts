@@ -12,6 +12,7 @@ import {
   updatePlanogramJson
 } from '../electronUtils/loggerUtils/expoLogUtils/expoApis';
 import { IPC_CHANNELS } from '../../shared/ipcChannels';
+import { ExpoDispenseModal, PogRoute, RouteUpdateRequest } from '../../shared/sharedTypes';
 
 const loggingIpcHandler = () => {
   ipcMain.handle(IPC_CHANNELS.LOG.GENERIC, (_e, { level, message, component, data, timestamp }) => {
@@ -34,16 +35,19 @@ const loggingIpcHandler = () => {
     }
   });
 
-  ipcMain.handle(IPC_CHANNELS.EXPO.DISPENSE_PRODUCT, async (_e, dispenseProducts) => {
-    try {
-      const result = await dispenseProduct(dispenseProducts);
-      return result;
-    } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  ipcMain.handle(
+    IPC_CHANNELS.EXPO.DISPENSE_PRODUCT,
+    async (_e, dispenseProducts: ExpoDispenseModal[]) => {
+      try {
+        const result = await dispenseProduct(dispenseProducts);
+        return result;
+      } catch (error) {
+        return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      }
     }
-  });
+  );
 
-  ipcMain.handle(IPC_CHANNELS.EXPO.PLANOGRAM_JSON, async (_e, routes) => {
+  ipcMain.handle(IPC_CHANNELS.EXPO.PLANOGRAM_JSON, async (_e, routes: PogRoute[]) => {
     try {
       const result = await updatePlanogramJson(routes);
       return { success: result };
@@ -79,14 +83,17 @@ const loggingIpcHandler = () => {
     }
   });
 
-  ipcMain.handle(IPC_CHANNELS.EXPO.PLANOGRAM_UPDATE, async (_e, updateRequest) => {
-    try {
-      const result = await updatePlanogram(updateRequest);
-      return { success: result };
-    } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  ipcMain.handle(
+    IPC_CHANNELS.EXPO.PLANOGRAM_UPDATE,
+    async (_e, updateRequest: RouteUpdateRequest) => {
+      try {
+        const result = await updatePlanogram(updateRequest);
+        return { success: result };
+      } catch (error) {
+        return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      }
     }
-  });
+  );
 
   ipcMain.handle(IPC_CHANNELS.EXPO.RESET_STATUS, async () => {
     try {
