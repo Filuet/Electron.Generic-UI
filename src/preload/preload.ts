@@ -3,8 +3,9 @@ import { electronAPI as toolkitAPI } from '@electron-toolkit/preload';
 import { createVideoApi } from './modules/videoApi';
 import { createLogApi } from './modules/logApi';
 import { createExpoApi } from './modules/expoApi';
+import { ElectronBridgeAPI } from '../shared/sharedTypes';
 
-const electronAPI = {
+const electronAPI: ElectronBridgeAPI = {
   ...toolkitAPI,
   videoFilesUtil: createVideoApi(ipcRenderer),
   logs: createLogApi(ipcRenderer),

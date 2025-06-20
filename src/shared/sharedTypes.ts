@@ -1,3 +1,28 @@
+import type { ElectronAPI } from '@electron-toolkit/preload';
+
+export interface ElectronBridgeAPI extends ElectronAPI {
+  videoFilesUtil: {
+    getFiles: () => Promise<string[]>;
+    onFolderChange: (callback: () => void) => void;
+    removeFolderListener: (callback: () => void) => void;
+  };
+  logs: {
+    generic: (entry: LogEntry) => Promise<void>;
+    performance: (entry: LogEntry) => Promise<void>;
+  };
+  expo: {
+    getDispenseStatus: () => Promise<MachineStatus>;
+    updatePlanogramJson: (routes: PogRoute[]) => Promise<boolean>;
+    getStockStatus: () => Promise<ProductStock[]>;
+    testMachine: () => Promise<MachineTestResult[]>;
+    unlockMachine: (machineId: number) => Promise<{ success: boolean }>;
+    updatePlanogram: (req: RouteUpdateRequest) => Promise<number>;
+    resetDispenseStatus: () => Promise<number>;
+    getAllStatuses: () => Promise<MachineStatus[]>;
+    dispenseProduct: (products: ExpoDispenseModal[]) => Promise<DispenseResponse>;
+  };
+}
+
 export type LogLevel = 'info' | 'error' | 'warn' | 'debug';
 
 export interface LogEntry {
