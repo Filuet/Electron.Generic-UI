@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { getVideoFileNames } from '../electronUtils/videoUtils/videosUtils';
+import { getVideoFileNames } from '../services/videoFilesService/videosFiles';
 import { IPC_CHANNELS } from '../../shared/ipcChannels';
 
 const videoFilesHandler = () => {
@@ -8,4 +8,4 @@ const videoFilesHandler = () => {
   });
 };
 
-export { videoFilesHandler };
+export default videoFilesHandler;

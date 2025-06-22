@@ -1,31 +1,19 @@
 import { ipcMain } from 'electron';
-import { dailyLogger, performanceLogger } from '../electronUtils/loggerUtils/logger';
+import { IPC_CHANNELS } from '../../shared/ipcChannels';
+import { ExpoDispenseModal, PogRoute, RouteUpdateRequest } from '../../shared/sharedTypes';
 import {
-  dispenseProduct,
-  getAllStatuses,
   getDispenseStatus,
+  dispenseProduct,
+  updatePlanogramJson,
   getStockStatus,
-  resetStatus,
   testMachine,
   unlockMachine,
   updatePlanogram,
-  updatePlanogramJson
-} from '../electronUtils/loggerUtils/expoLogUtils/expoApis';
-import { IPC_CHANNELS } from '../../shared/ipcChannels';
-import { ExpoDispenseModal, PogRoute, RouteUpdateRequest } from '../../shared/sharedTypes';
+  resetStatus,
+  getAllStatuses
+} from '../services/expoService/expoApis';
 
-const loggingIpcHandler = () => {
-  ipcMain.handle(IPC_CHANNELS.LOG.GENERIC, (_e, { level, message, component, data, timestamp }) => {
-    dailyLogger.log(level, message, { component, data, timestamp });
-  });
-
-  ipcMain.handle(
-    IPC_CHANNELS.LOG.PERFORMANCE,
-    (_e, { level, message, component, data, timestamp }) => {
-      performanceLogger.log(level, message, { component, data, timestamp });
-    }
-  );
-
+const expoHandler = () => {
   ipcMain.handle(IPC_CHANNELS.EXPO.DISPENSE_STATUS, async () => {
     try {
       const result = await getDispenseStatus();
@@ -114,4 +102,4 @@ const loggingIpcHandler = () => {
   });
 };
 
-export { loggingIpcHandler };
+export default expoHandler;

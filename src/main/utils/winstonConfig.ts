@@ -3,7 +3,7 @@ import DailyRotateFile from 'winston-daily-rotate-file';
 import moment from 'moment-timezone';
 import path from 'path';
 import fs from 'fs';
-import config from '../../../../config.json';
+import config from '../../../config.json';
 
 const LOG_FILE_DIR = config.logFilesPath;
 if (!fs.existsSync(LOG_FILE_DIR)) {

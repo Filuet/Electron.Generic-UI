@@ -1,4 +1,4 @@
-import { createLogger } from './winstonConfig';
+import { createLogger } from '../../utils/winstonConfig';
 
 const dailyLogger = createLogger('generic-%DATE%.log');
 

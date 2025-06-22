@@ -1,6 +1,6 @@
 import axios from 'axios';
-import config from '../../../../../config.json';
-import { dailyLogger } from '../logger';
+import config from '../../../../config.json';
+import { dailyLogger } from '../loggingService/loggingService';
 import {
   DISPENSE_PRODUCT,
   DISPENSE_STATUS,
@@ -20,7 +20,7 @@ import {
   PogRoute,
   ProductStock,
   RouteUpdateRequest
-} from '../../../../shared/sharedTypes';
+} from '../../../shared/sharedTypes';
 
 const EXPO_BASE_URL = config.expoBaseUrl;
 
