@@ -1,15 +1,15 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { electronAPI as toolkitAPI } from '@electron-toolkit/preload';
-import { createVideoApi } from './modules/videoApi';
-import { createLogApi } from './modules/logApi';
-import { createExpoApi } from './modules/expoApi';
+import { createVideoFilesBridge } from './bridge/videoFilesBridge';
+import { createLoggerBridge } from './bridge/loggerBridge';
+import { createExpoBridge } from './bridge/expoBridge';
 import { ElectronBridgeAPI } from '../shared/sharedTypes';
 
 const electronAPI: ElectronBridgeAPI = {
   ...toolkitAPI,
-  videoFilesUtil: createVideoApi(ipcRenderer),
-  logs: createLogApi(ipcRenderer),
-  expo: createExpoApi(ipcRenderer)
+  videoFilesUtil: createVideoFilesBridge(ipcRenderer),
+  logs: createLoggerBridge(ipcRenderer),
+  expo: createExpoBridge(ipcRenderer)
 };
 
 if (process.contextIsolated) {
@@ -21,5 +21,5 @@ if (process.contextIsolated) {
 } else {
   // Fallback for non-isolated context
   // @ts-ignore (define in dts)
-  window.electron = electronAPI;
+  window.electron = toolkitAPI;
 }
