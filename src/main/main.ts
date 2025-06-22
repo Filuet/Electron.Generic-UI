@@ -8,11 +8,13 @@ let mainWindow: BrowserWindow | null = null;
 
 app.commandLine.appendSwitch('ignore-certificate-errors');
 
-// Single instance lock
+// Single instance lock true/false , true - this instance owns the lock , false --> another instance already has the lock
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
+  // when gotTheLock is false then quit this app instance
   app.quit();
 } else {
+  // if this window has that lock means true , then focus this window
   app.on('second-instance', () => {
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
