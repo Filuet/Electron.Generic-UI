@@ -1,4 +1,5 @@
 import { BrowserWindowConstructorOptions } from 'electron';
+import { resolve } from 'path';
 
 export const windowDevSettings: BrowserWindowConstructorOptions = {
   // === General Window Behavior ===
@@ -49,7 +50,7 @@ export const windowDevSettings: BrowserWindowConstructorOptions = {
   visualEffectState: 'followWindow', // macOS: visual effect mode for vibrancy
 
   // === Advanced Features ===
-  paintWhenInitiallyHidden: false, // Windows: render before window is shown
+  paintWhenInitiallyHidden: true, // Windows: render before window is shown
 
   roundedCorners: true, // macOS: round corners of the window
   vibrancy: undefined, // macOS: vibrancy effect
@@ -58,7 +59,7 @@ export const windowDevSettings: BrowserWindowConstructorOptions = {
   // === Web Preferences ===
   webPreferences: {
     // Preload and Execution
-    preload: undefined, // Path to preload script
+    preload: resolve(__dirname, '../../out/preload/preload.js'), // Path to preload script
     sandbox: false, // Enable sandbox mode
     contextIsolation: true, // Isolate context of renderer
     nodeIntegration: false, // Enable Node.js in renderer
@@ -66,7 +67,7 @@ export const windowDevSettings: BrowserWindowConstructorOptions = {
     nodeIntegrationInSubFrames: false, // Node.js in subframes (discouraged)
 
     // Security and Access
-    webSecurity: true, // Enforce same-origin policy
+    webSecurity: false, // Enforce same-origin policy
     allowRunningInsecureContent: false, // Allow insecure (http) resources
     disableBlinkFeatures: undefined, // Comma-separated Blink features to disable
     enableBlinkFeatures: undefined, // Comma-separated Blink features to enable

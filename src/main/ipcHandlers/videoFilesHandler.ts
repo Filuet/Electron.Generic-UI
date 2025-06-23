@@ -3,7 +3,7 @@ import { getVideoFileNames } from '../services/videoFilesService/videosFiles';
 import { IPC_CHANNELS } from '../../shared/ipcChannels';
 
 const videoFilesHandler = () => {
-  ipcMain.handle(IPC_CHANNELS.VIDEO.GET_FILES, async (): Promise<string[]> => {
+  ipcMain.handle(IPC_CHANNELS.VIDEO_GET_FILES, async (): Promise<string[]> => {
     return getVideoFileNames();
   });
 };

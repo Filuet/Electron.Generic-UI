@@ -18,6 +18,9 @@ export const mainWindowObject = (): BrowserWindow => {
     return { action: 'deny' };
   });
 
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
   } else {
