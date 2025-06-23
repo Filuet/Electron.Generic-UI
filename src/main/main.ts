@@ -6,7 +6,7 @@ import { mainWindowObject } from './windows/mainWindow/mainWindowObject';
 
 let mainWindow: BrowserWindow | null = null;
 
-app.commandLine.appendSwitch('ignore-certificate-errors');
+// app.commandLine.appendSwitch('ignore-certificate-errors');
 
 // Single instance lock true/false , true - this instance owns the lock , false --> another instance already has the lock
 const gotTheLock = app.requestSingleInstanceLock();
