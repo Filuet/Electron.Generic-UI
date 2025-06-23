@@ -55,10 +55,15 @@ app.on('before-quit', () => {
 });
 
 // Error handling
+// both event will occur when main process may have some unexpected errors and stop working then it the renderer should be able to accessible so for quiting the whole window below will work
 process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception:', err);
+  console.error('uncaughtException', err);
+  if (err) {
+    app.quit();
+  }
 });
 
 process.on('unhandledRejection', (reason) => {
   console.error('Unhandled Rejection:', reason);
+  app.quit();
 });
