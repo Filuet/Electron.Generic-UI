@@ -4,12 +4,14 @@ import { createVideoFilesBridge } from './bridge/videoFilesBridge';
 import { createLoggerBridge } from './bridge/loggerBridge';
 import { createExpoBridge } from './bridge/expoBridge';
 import { ElectronBridgeAPI } from '../shared/sharedTypes';
+import createPaymentWindowBridge from './bridge/paymentWindowBridge';
 
 const electronAPI: ElectronBridgeAPI = {
   ...toolkitAPI,
   videoFilesUtil: createVideoFilesBridge(ipcRenderer),
   logs: createLoggerBridge(ipcRenderer),
-  expo: createExpoBridge(ipcRenderer)
+  expo: createExpoBridge(ipcRenderer),
+  payment: createPaymentWindowBridge(ipcRenderer)
 };
 
 if (process.contextIsolated) {

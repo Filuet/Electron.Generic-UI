@@ -149,7 +149,7 @@ function PaymentProcessing() {
     console.log('Attempting to open payment window with link:', link);
 
     try {
-      window.open(link, '_blank', 'noreferrer');
+      window.electron.payment.open(link);
       console.log('Payment window opening attempted');
     } catch (error) {
       const paymentError = error as PaymentProcessingError;

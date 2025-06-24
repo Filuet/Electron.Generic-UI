@@ -21,6 +21,12 @@ export interface ElectronBridgeAPI extends ElectronAPI {
     getAllStatuses: () => Promise<MachineStatus[]>;
     dispenseProduct: (products: ExpoDispenseModal[]) => Promise<DispenseResponse>;
   };
+  payment: {
+    open: (link: string) => Promise<unknown>;
+    close: () => Promise<boolean>;
+    getHTML: () => Promise<string | null>;
+    isOpen: () => Promise<boolean>;
+  };
 }
 
 export type LogLevel = 'info' | 'error' | 'warn' | 'debug';

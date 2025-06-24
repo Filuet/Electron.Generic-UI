@@ -13,5 +13,10 @@ export const enum IPC_CHANNELS {
   EXPO_UNLOCK_MACHINE = 'expo:unlock-machine',
   EXPO_PLANOGRAM_UPDATE = 'expo:update-planogram',
   EXPO_RESET_STATUS = 'expo:reset-status',
-  EXPO_ALL_STATUSES = 'expo:get-all-statuses'
+  EXPO_ALL_STATUSES = 'expo:get-all-statuses',
+
+  PAYMENT_OPEN = 'payment:open',
+  PAYMENT_CLOSE = 'payment:close',
+  PAYMENT_IS_OPEN = 'payment:is-open',
+  PAYMENT_WINDOW_HTML_CONTENT = 'payment:window-html-content'
 }

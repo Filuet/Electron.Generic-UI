@@ -55,7 +55,8 @@ app.on('before-quit', () => {
 });
 
 // Error handling
-// both event will occur when main process may have some unexpected errors and stop working then it the renderer should be able to accessible so for quiting the whole window below will work
+// both event will occur when main process may have some unexpected errors and stop working,
+// but the renderer will not exit means the renderer may be accessible, for closing the window and whole app execution these event will be used
 process.on('uncaughtException', (err) => {
   console.error('uncaughtException', err);
   if (err) {
