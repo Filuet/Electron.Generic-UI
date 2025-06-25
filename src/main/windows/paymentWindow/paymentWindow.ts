@@ -23,6 +23,9 @@ export const createPaymentWindow = (link: string): BrowserWindow | null => {
   paymentWindowObject.on('closed', () => {
     paymentWindowObject = null;
   });
+  paymentWindowObject.once('ready-to-show', () => {
+    paymentWindowObject?.show();
+  });
   return paymentWindowObject;
 };
 

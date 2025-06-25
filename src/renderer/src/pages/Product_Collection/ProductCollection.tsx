@@ -72,19 +72,19 @@ function ProductCollection() {
     {} as Record<string, number>
   );
   const inOperableMachines = useAppSelector((state) => state.expoExtractor.inoperableMachines);
-  const getRemainingQuantities = (): SKUInventory[] => {
-    return Object.entries(expectedQuantities).map(([sku, expected]) => {
-      const finished = Object.values(dispenseFinishedKeys).reduce(
-        (sum, item) => (item.sku === sku ? sum + item.count : sum),
-        0
-      );
+  // const getRemainingQuantities = (): SKUInventory[] => {
+  //   return Object.entries(expectedQuantities).map(([sku, expected]) => {
+  //     const finished = Object.values(dispenseFinishedKeys).reduce(
+  //       (sum, item) => (item.sku === sku ? sum + item.count : sum),
+  //       0
+  //     );
 
-      return {
-        sku,
-        count: expected - finished
-      };
-    });
-  };
+  //     return {
+  //       sku,
+  //       count: expected - finished
+  //     };
+  //   });
+  // };
   const [unTrackedDispenseErrors, setUnTrackedDispenseErrors] = useState<DispenserError[]>([]);
   const [isPending, setIsPending] = useState(false);
 
