@@ -11,15 +11,15 @@ export interface ElectronBridgeAPI extends ElectronAPI {
     performance: (entry: LogEntry) => Promise<void>;
   };
   expo: {
-    getDispenseStatus: () => Promise<MachineStatus>;
-    updatePlanogramJson: (routes: PogRoute[]) => Promise<boolean>;
-    getStockStatus: () => Promise<ProductStock[]>;
-    testMachine: () => Promise<MachineTestResult[]>;
-    unlockMachine: (machineId: number) => Promise<{ success: boolean }>;
-    updatePlanogram: (req: RouteUpdateRequest) => Promise<number>;
-    resetDispenseStatus: () => Promise<number>;
-    getAllStatuses: () => Promise<MachineStatus[]>;
-    dispenseProduct: (products: ExpoDispenseModal[]) => Promise<DispenseResponse>;
+    getDispenseStatus: () => Promise<ApiResponse<MachineStatus>>;
+    updatePlanogramJson: (routes: PogRoute[]) => Promise<ApiResponse<boolean>>;
+    getStockStatus: () => Promise<ApiResponse<ProductStock[]>>;
+    testMachine: () => Promise<ApiResponse<MachineTestResult[]>>;
+    unlockMachine: (machineId: number) => Promise<ApiResponse<{ success: boolean }>>;
+    updatePlanogram: (req: RouteUpdateRequest) => Promise<ApiResponse<number>>;
+    resetDispenseStatus: () => Promise<ApiResponse<number>>;
+    getAllStatuses: () => Promise<ApiResponse<MachineStatus[]>>;
+    dispenseProduct: (products: ExpoDispenseModal[]) => Promise<ApiResponse<DispenseResponse>>;
   };
   payment: {
     open: (link: string) => Promise<unknown>;
@@ -92,4 +92,10 @@ export interface DispenseResponse {
   status: DispenserStatus;
   message: string;
   error?: DispenserError;
+}
+
+export interface ApiResponse<T> {
+  status: boolean;
+  data: T;
+  error: unknown;
 }

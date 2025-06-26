@@ -1,6 +1,6 @@
-import axios from 'axios';
+// expoApi.ts
+import axios, { AxiosError } from 'axios';
 import config from '../../../../config.json';
-import { dailyLogger } from '../loggingService/loggingService';
 import {
   DISPENSE_PRODUCT,
   DISPENSE_STATUS,
@@ -13,170 +13,159 @@ import {
   UPDATE_PLANOGRAM_JSON
 } from './expoEndpoints';
 import {
+  ApiResponse,
   DispenseResponse,
   ExpoDispenseModal,
+  LogLevel,
   MachineStatus,
   MachineTestResult,
   PogRoute,
   ProductStock,
   RouteUpdateRequest
 } from '../../../shared/sharedTypes';
+import { dailyLogger } from '../loggingService/loggingService';
 
 const EXPO_BASE_URL = config.expoBaseUrl;
 
-const handleError = (error: unknown, operation: string): never => {
-  if (axios.isAxiosError(error)) {
-    if (error.response?.data.error === 'ECONNREFUSED') {
-      throw new Error(error.response?.data.error);
-    }
-    console.error(`${operation} API Error:`, error.response?.data);
-  } else {
-    console.error(`${operation} error:`, error);
-  }
-  throw new Error(`Failed to ${operation.toLowerCase()}`);
-};
-
 const axiosInstance = axios.create({
   baseURL: EXPO_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json'
-  }
+  headers: { 'Content-Type': 'application/json' }
 });
+
+const handleError = (error: unknown, customMessage = 'API error'): string => {
+  let message = 'Internal Server Error';
+  if (error instanceof AxiosError) {
+    message =
+      error.response?.data?.message || error.response?.statusText || error.message || message;
+
+    dailyLogger.log({
+      level: 'error' as LogLevel,
+      message: customMessage,
+      data: {
+        url: error.config?.url,
+        method: error.config?.method,
+        status: error.response?.status,
+        code: error.code,
+        message
+      }
+    });
+
+    if (error.code === 'ECONNREFUSED') {
+      return 'Connection refused by server';
+    }
+  } else if (error instanceof Error) {
+    message = error.message;
+    dailyLogger.log({ level: 'error', message: customMessage, data: { message } });
+  } else {
+    dailyLogger.error('Unknown error occurred', {
+      level: 'error',
+      message: customMessage,
+      data: { error }
+    });
+  }
+
+  return message;
+};
+
+// 🧪 Each method below follows the same return pattern
 
 export const dispenseProduct = async (
   dispenseSkuAndQuantity: ExpoDispenseModal[]
-): Promise<DispenseResponse> => {
+): Promise<ApiResponse<DispenseResponse>> => {
   try {
     const response = await axiosInstance.post(DISPENSE_PRODUCT, dispenseSkuAndQuantity);
-    return response.data;
+    return { status: true, data: response.data, error: '' };
   } catch (error) {
-    dailyLogger.log({
-      level: 'error',
-      component: 'expoApiUtils',
-      message: `${EXPO_BASE_URL}${DISPENSE_PRODUCT} API failed`,
-      data: error
-    });
-    return handleError(error, 'Dispense Product');
+    return {
+      status: false,
+      data: {} as DispenseResponse,
+      error: handleError(error, 'Dispense Product')
+    };
   }
 };
 
-export const getDispenseStatus = async (): Promise<MachineStatus> => {
+export const getDispenseStatus = async (): Promise<ApiResponse<MachineStatus>> => {
   try {
-    const response = await axiosInstance.get<MachineStatus>(DISPENSE_STATUS);
-    return response.data;
+    const response = await axiosInstance.get(DISPENSE_STATUS);
+    return { status: true, data: response.data, error: '' };
   } catch (error) {
-    dailyLogger.log({
-      level: 'error',
-      message: `${EXPO_BASE_URL}${DISPENSE_STATUS} API failed`,
-      component: 'ExpoApiUtils',
-      data: error
-    });
-    return handleError(error, 'Get Dispense Status');
+    return {
+      status: false,
+      data: {} as MachineStatus,
+      error: handleError(error, 'Get Dispense Status')
+    };
   }
 };
 
-export const updatePlanogramJson = async (pogRoutesRequest: PogRoute[]): Promise<boolean> => {
+export const updatePlanogramJson = async (
+  pogRoutesRequest: PogRoute[]
+): Promise<ApiResponse<boolean>> => {
   try {
     const response = await axiosInstance.post(UPDATE_PLANOGRAM_JSON, pogRoutesRequest);
-    return response.status === 200;
+    return { status: true, data: response.status === 200, error: '' };
   } catch (error) {
-    dailyLogger.log({
-      level: 'error',
-      message: `${EXPO_BASE_URL}${UPDATE_PLANOGRAM_JSON} API failed`,
-      component: 'ExpoApiUtils',
-      data: error
-    });
-    return handleError(error, 'Update Planogram Json');
+    return { status: false, data: false, error: handleError(error, 'Update Planogram JSON') };
   }
 };
 
-export const getStockStatus = async (): Promise<ProductStock[]> => {
+export const getStockStatus = async (): Promise<ApiResponse<ProductStock[]>> => {
   try {
-    const response = await axiosInstance.get<ProductStock[]>(GET_STOCK_STATUS);
-    return response.data;
+    const response = await axiosInstance.get(GET_STOCK_STATUS);
+    return { status: true, data: response.data, error: '' };
   } catch (error) {
-    dailyLogger.log({
-      level: 'error',
-      message: `${EXPO_BASE_URL}${GET_STOCK_STATUS} API failed`,
-      component: 'ExpoApiUtils',
-      data: error
-    });
-    return handleError(error, 'Get Stock Status');
+    return { status: false, data: [], error: handleError(error, 'Get Stock Status') };
   }
 };
 
-export const testMachine = async (): Promise<MachineTestResult[]> => {
+export const testMachine = async (): Promise<ApiResponse<MachineTestResult[]>> => {
   try {
-    const response = await axiosInstance.get<MachineTestResult[]>(TEST_MACHINE);
-    return response.data;
+    const response = await axiosInstance.get(TEST_MACHINE);
+    return { status: true, data: response.data, error: '' };
   } catch (error) {
-    dailyLogger.log({
-      level: 'error',
-      message: `${EXPO_BASE_URL}${TEST_MACHINE} API failed`,
-      component: 'ExpoApiUtils',
-      data: error
-    });
-    return [];
+    return { status: false, data: [], error: handleError(error, 'Test Machine') };
   }
 };
 
-export const unlockMachine = async (machineId: number): Promise<{ success: boolean }> => {
+export const unlockMachine = async (
+  machineId: number
+): Promise<ApiResponse<{ success: boolean }>> => {
   try {
-    const url = `${UNLOCK_MACHINE_STATUS}/${machineId}`;
-    const response = await axiosInstance.get<{ success: boolean }>(url);
-    return response.data;
+    const response = await axiosInstance.get(`${UNLOCK_MACHINE_STATUS}/${machineId}`);
+    return { status: true, data: response.data, error: '' };
   } catch (error) {
-    dailyLogger.log({
-      level: 'error',
-      message: `${EXPO_BASE_URL}${UNLOCK_MACHINE_STATUS}/${machineId} API failed`,
-      component: 'ExpoApiUtils',
-      data: error
-    });
-    return handleError(error, 'Unlock Machine');
+    return {
+      status: false,
+      data: { success: false },
+      error: handleError(error, 'Unlock Machine')
+    };
   }
 };
 
-export const updatePlanogram = async (routeUpdateRequest: RouteUpdateRequest): Promise<number> => {
+export const updatePlanogram = async (
+  routeUpdateRequest: RouteUpdateRequest
+): Promise<ApiResponse<number>> => {
   try {
     const response = await axiosInstance.post(UPDATE_PLANOGRAM, routeUpdateRequest);
-    return response.status;
+    return { status: true, data: response.status, error: '' };
   } catch (error) {
-    dailyLogger.log({
-      level: 'error',
-      message: `${EXPO_BASE_URL}${UPDATE_PLANOGRAM} API failed`,
-      component: 'ExpoApiUtils',
-      data: error
-    });
-    return handleError(error, 'Update Planogram');
+    return { status: false, data: 500, error: handleError(error, 'Update Planogram') };
   }
 };
 
-export const resetStatus = async (): Promise<number> => {
+export const resetStatus = async (): Promise<ApiResponse<number>> => {
   try {
     const response = await axiosInstance.post(RESET_STATUS);
-    return response.status;
+    return { status: true, data: response.status, error: '' };
   } catch (error) {
-    dailyLogger.log({
-      level: 'error',
-      message: `${EXPO_BASE_URL}${RESET_STATUS} API failed`,
-      component: 'ExpoApiUtils',
-      data: error
-    });
-    return handleError(error, 'Reset Status');
+    return { status: false, data: 500, error: handleError(error, 'Reset Status') };
   }
 };
 
-export const getAllStatuses = async (): Promise<MachineStatus[]> => {
+export const getAllStatuses = async (): Promise<ApiResponse<MachineStatus[]>> => {
   try {
     const response = await axiosInstance.get(GET_ALL_STATUS);
-    return response.data;
+    return { status: true, data: response.data, error: '' };
   } catch (error) {
-    dailyLogger.log({
-      level: 'error',
-      message: `${EXPO_BASE_URL}${GET_ALL_STATUS} API failed`,
-      component: 'ExpoApiUtils',
-      data: error
-    });
-    return handleError(error, 'Get All Statuses');
+    return { status: false, data: [], error: handleError(error, 'Get All Statuses') };
   }
 };

@@ -433,9 +433,21 @@ function ProductCollection() {
     if (!isDispensedProcessFinished) {
       statusCheckIntervalRef.current = setInterval(async () => {
         try {
-          const status: MachineStatus = await getDispenseStatus();
+          const apiResponse = await getDispenseStatus();
+          const status: MachineStatus = apiResponse.data;
           console.log('Dispense status:', status);
-
+          if (apiResponse.error && !apiResponse.status) {
+            setUnTrackedDispenseErrors((prev) => [
+              ...prev,
+              { code: 'API_ERROR', message: 'Failed to fetch dispenser status' }
+            ]);
+            LoggingService.log({
+              level: LogLevel.ERROR,
+              component: 'ProductCollection',
+              message: 'Failed to fetch dispense status',
+              data: apiResponse.error
+            });
+          }
           // Check for dispensing failure
           const dispensingFailure = checkDispenseErrors(status);
           if (dispensingFailure.isError) {
@@ -539,16 +551,6 @@ function ProductCollection() {
           }
         } catch (error) {
           console.error('Error fetching dispense status:', error);
-          setUnTrackedDispenseErrors((prev) => [
-            ...prev,
-            { code: 'API_ERROR', message: 'Failed to fetch dispenser status' }
-          ]);
-          LoggingService.log({
-            level: LogLevel.ERROR,
-            component: 'ProductCollection',
-            message: 'Failed to fetch dispense status',
-            data: { error }
-          });
         }
       }, 2000);
     }

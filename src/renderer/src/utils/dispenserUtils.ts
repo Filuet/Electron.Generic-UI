@@ -50,7 +50,8 @@ export const checkMachinesStatus = async (
 ): Promise<{ success: boolean; inoperableMachines: number[] }> => {
   try {
     console.group(`Machine Status Check - Attempt ${4 - attempts + 1}/5`);
-    const testResults = await testMachine();
+    const apiResponse = await testMachine();
+    const testResults = apiResponse.data;
     console.log('Test Results:', testResults);
     // Only check machines that are active according to machineStatus
     const inoperableMachines = kioskMachines.filter((machineId) => {

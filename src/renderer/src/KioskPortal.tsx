@@ -42,8 +42,8 @@ function KioskPortal(): JSX.Element {
       return false;
     }
 
-    const statusResult = await getDispenseStatus();
-
+    const apiResponse = await getDispenseStatus();
+    const statusResult = apiResponse.data;
     if (
       statusResult.status === 'success' &&
       statusResult.action === 'pending' &&
