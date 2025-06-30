@@ -3,6 +3,7 @@ import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { setupVideoWatcher } from './services/videoFilesService/videoFilesWatcher';
 import registerAllIpcHandlers from './ipcHandlers/registerAllIpcHandlers';
 import { mainWindowObject } from './windows/mainWindow/mainWindowObject';
+import { dailyLogger } from './services/loggingService/loggingService';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -47,6 +48,21 @@ if (!gotTheLock) {
 // Quit app on Windows/Linux when all windows are closed
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
+});
+
+app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
+  dailyLogger.log({
+    level: 'error',
+    message: `Error in certificates --> ${certificate}`,
+    error: error,
+    data: webContents
+  });
+  if (url.startsWith('https://localhost')) {
+    event.preventDefault();
+    callback(true); // Trust this cert
+  } else {
+    callback(false);
+  }
 });
 
 // Optional cleanup before quitting

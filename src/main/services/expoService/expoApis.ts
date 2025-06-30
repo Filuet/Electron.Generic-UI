@@ -23,7 +23,7 @@ import {
   ProductStock,
   RouteUpdateRequest
 } from '../../../shared/sharedTypes';
-import { dailyLogger } from '../loggingService/loggingService';
+import { expoDailyLogger } from '../loggingService/loggingService';
 
 const EXPO_BASE_URL = config.expoBaseUrl;
 
@@ -38,7 +38,7 @@ const handleError = (error: unknown, customMessage = 'API error'): string => {
     message =
       error.response?.data?.message || error.response?.statusText || error.message || message;
 
-    dailyLogger.log({
+    expoDailyLogger.log({
       level: 'error' as LogLevel,
       message: customMessage,
       data: {
@@ -55,9 +55,9 @@ const handleError = (error: unknown, customMessage = 'API error'): string => {
     }
   } else if (error instanceof Error) {
     message = error.message;
-    dailyLogger.log({ level: 'error', message: customMessage, data: { message } });
+    expoDailyLogger.log({ level: 'error', message: customMessage, data: { message } });
   } else {
-    dailyLogger.error('Unknown error occurred', {
+    expoDailyLogger.error('Unknown error occurred', {
       level: 'error',
       message: customMessage,
       data: { error }

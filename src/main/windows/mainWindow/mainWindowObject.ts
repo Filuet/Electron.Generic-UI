@@ -17,6 +17,9 @@ export const mainWindowObject = (): BrowserWindow => {
     // Below line is preventing the url to be opened in a new BrowserWindow of electron app
     return { action: 'deny' };
   });
+  if (is.dev) {
+    mainWindow.webContents.openDevTools();
+  }
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();

@@ -5,14 +5,39 @@ import {
   ProductStock,
   RouteUpdateRequest,
   MachineStatus,
-  PogRoute
+  PogRoute,
+  MachineInoperableModal
 } from '@/interfaces/modal';
 import { CartProduct } from '@/redux/features/cart/cartTypes';
+import { machineInoperableEndpoint } from './endpoints';
+import { postData } from '@/services/axiosWrapper/apiService';
+import loggingService from './loggingService';
 interface ApiResponse<T> {
   status: boolean;
   data: T;
   error: unknown;
 }
+
+const sendCertificatesErrorNotification = async (inoperableMachines: number[]): Promise<void> => {
+  const inoperableMachineRequest: MachineInoperableModal = {
+    kioskName: import.meta.env.VITE_KIOSK_NAME,
+    machineIds: inoperableMachines
+  };
+
+  await postData<MachineInoperableModal, void>(
+    machineInoperableEndpoint,
+    inoperableMachineRequest
+  ).then(() => {
+    console.log('📧 Notification sent for inoperable machines:', inoperableMachines);
+    loggingService.log({
+      level: 'info',
+      message: 'Certificates error notification mail send successfully ',
+      component: 'expoUtils.ts',
+      data: inoperableMachineRequest
+    });
+  });
+};
+
 export const dispenseProduct = async (
   cartProducts: CartProduct[]
 ): Promise<ApiResponse<DispenseResponse>> => {
@@ -26,6 +51,12 @@ export const dispenseProduct = async (
 
 export const getDispenseStatus = async (): Promise<ApiResponse<MachineStatus>> => {
   const response = await window.electron.expo.getDispenseStatus();
+  if (!response.status && response.error) {
+    if (response.error === 'self signed certificate') {
+      sendCertificatesErrorNotification([121, 121]);
+      console.log(response.error);
+    }
+  }
   return response;
 };
 

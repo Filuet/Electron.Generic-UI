@@ -4,4 +4,6 @@ const dailyLogger = createLogger('generic-%DATE%.log');
 
 const performanceLogger = createLogger('generic-performance-%DATE%.log');
 
-export { performanceLogger, dailyLogger };
+const expoDailyLogger = createLogger('expo-logs-%DATE%.log');
+
+export { performanceLogger, dailyLogger, expoDailyLogger };
