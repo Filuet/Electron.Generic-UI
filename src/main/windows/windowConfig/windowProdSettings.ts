@@ -17,7 +17,7 @@ export const windowProdSettings: BrowserWindowConstructorOptions = {
   webPreferences: {
     preload: resolve(__dirname, '../../out/preload/preload.js'), // Preload script path
     sandbox: false, // Disable sandbox for better compatibility (enable with caution)
-    webSecurity: false, // Disable same-origin policy (needed for local file:// URLs, but insecure)
+    webSecurity: true, // Enable same-origin policy for security (using custom protocol for local files)
     contextIsolation: true, // Isolate preload script from renderer for security
     zoomFactor: 1.0, // Lock zoom level to 100%
     devTools: false,

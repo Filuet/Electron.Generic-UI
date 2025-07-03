@@ -3,6 +3,7 @@ import type { ElectronAPI } from '@electron-toolkit/preload';
 export interface ElectronBridgeAPI extends ElectronAPI {
   videoFilesUtil: {
     getFiles: () => Promise<string[]>;
+    getVideoContent: (filename: string) => Promise<string | null>;
     onFolderChange: (callback: () => void) => void;
     removeFolderListener: (callback: () => void) => void;
   };

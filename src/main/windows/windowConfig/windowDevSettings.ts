@@ -67,7 +67,7 @@ export const windowDevSettings: BrowserWindowConstructorOptions = {
     nodeIntegrationInSubFrames: false, // Node.js in subframes (discouraged)
 
     // Security and Access
-    webSecurity: false, // Enforce same-origin policy
+    webSecurity: true, // Enforce same-origin policy (now safe with file URLs)
     allowRunningInsecureContent: false, // Allow insecure (http) resources
     disableBlinkFeatures: undefined, // Comma-separated Blink features to disable
     enableBlinkFeatures: undefined, // Comma-separated Blink features to enable

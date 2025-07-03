@@ -24,12 +24,10 @@ import OriflameLoader from './components/oriflameLoader/OriflameLoader';
 import { resetReduxStore } from './redux/core/utils/resetReduxStore';
 import { setActivePage } from './redux/features/pageNavigation/navigationSlice';
 import LoggingService from './utils/loggingService';
-import config from '../../../config.json';
 
 function App(): JSX.Element {
   const theme = useTheme();
   const PERFORMANCE_LOGGING_INTERVAL = 30 * 60 * 1000; // 30 minutes
-  const VIDEO_BASE_PATH = config.videoFilePath;
   const dispatch = useAppDispatch();
 
   const videoFilenames = useAppSelector((state) => state.welcomeScreen);
@@ -41,6 +39,7 @@ function App(): JSX.Element {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(30);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState<string>('');
   const customerName = useAppSelector((state) => state.customerDetails.customerName);
   const customerId = useAppSelector((state) => state.customerDetails.customerId);
   const resetOnIdleTimerMs =
@@ -79,6 +78,29 @@ function App(): JSX.Element {
       dispatch(fetchKioskSettings());
     }
   }, [currentPage, dispatch]);
+  useEffect(() => {
+    async function getVideoUrl(): Promise<void> {
+      if (videoFilenames[currentVideoIndex]) {
+        try {
+          console.log('Getting video content for:', videoFilenames[currentVideoIndex]);
+          const dataUrl = await window.electron.videoFilesUtil.getVideoContent(
+            videoFilenames[currentVideoIndex]
+          );
+          if (dataUrl) {
+            setCurrentVideoUrl(dataUrl);
+            console.log('Setting video URL:', dataUrl.substring(0, 50) + '...');
+          } else {
+            console.error('Failed to get video content');
+          }
+        } catch (err) {
+          console.error('Error getting video content:', err);
+        }
+      }
+    }
+
+    getVideoUrl();
+  }, [currentVideoIndex, videoFilenames]);
+
   useEffect(() => {
     async function getVideoFilenames(): Promise<void> {
       window.electron.videoFilesUtil
@@ -148,14 +170,17 @@ function App(): JSX.Element {
         videoElement.removeEventListener('ended', onVideoEnd);
       }
     };
-  }, [videoFilenames.length, currentVideoIndex, isVideoPlaying]);
+  }, [videoFilenames.length, currentVideoIndex, isVideoPlaying, onVideoEnd]);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.src = `${VIDEO_BASE_PATH}/${videoFilenames[currentVideoIndex]}`;
-      videoRef.current.play();
+    if (videoRef.current && currentVideoUrl) {
+      console.log('Setting video source:', currentVideoUrl);
+      videoRef.current.src = currentVideoUrl;
+      videoRef.current.play().catch((err) => {
+        console.error('Video play error:', err);
+      });
     }
-  }, [currentVideoIndex, videoFilenames]);
+  }, [currentVideoUrl]);
 
   const loading = useAppSelector((state) => state.kioskSettings.loading);
 
@@ -273,7 +298,7 @@ function App(): JSX.Element {
         return prev - 1;
       });
     }, 1000);
-  }, [currentPage, dispatch]);
+  }, [currentPage, customerId, customerName]);
 
   const onUserActivity = (): void => {
     // its needed to fetch kiosk settings when the user is on start page only
@@ -351,10 +376,10 @@ function App(): JSX.Element {
   return (
     <>
       <OriflameLoader isLoading={loading} />
-      {isVideoPlaying && videoFilenames.length !== 0 && (
+      {isVideoPlaying && videoFilenames.length !== 0 && currentVideoUrl && (
         <video
           ref={videoRef}
-          src={`${VIDEO_BASE_PATH}/${videoFilenames[currentVideoIndex]}`}
+          src={currentVideoUrl}
           className="video-player"
           autoPlay
           muted

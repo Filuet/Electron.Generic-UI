@@ -1,5 +1,6 @@
 export const enum IPC_CHANNELS {
   VIDEO_GET_FILES = 'video:get-files',
+  VIDEO_GET_CONTENT = 'video:get-content',
   VIDEO_FOLDER_UPDATED = 'video:folder-updated',
 
   LOG_GENERIC = 'log:generic',

@@ -23,7 +23,7 @@ if (!gotTheLock) {
     }
   });
 
-  app.whenReady().then(() => {
+  app.whenReady().then(async () => {
     electronApp.setAppUserModelId('Generic-UI');
 
     app.on('browser-window-created', (_, window) => {
