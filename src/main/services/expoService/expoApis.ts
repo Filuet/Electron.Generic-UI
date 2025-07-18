@@ -1,5 +1,7 @@
 // expoApi.ts
 import axios, { AxiosError } from 'axios';
+import https from 'https';
+import fs from 'fs';
 import config from '../../../../config.json';
 import {
   DISPENSE_PRODUCT,
@@ -24,12 +26,18 @@ import {
   RouteUpdateRequest
 } from '../../../shared/sharedTypes';
 import { expoDailyLogger } from '../loggingService/loggingService';
+import { join } from 'path';
 
 const EXPO_BASE_URL = config.expoBaseUrl;
-
+const CERTIFICATE_PATH = '../../certificates/fullchain.pem';
+const agent = new https.Agent({
+  ca: fs.readFileSync(join(__dirname, CERTIFICATE_PATH)),
+  rejectUnauthorized: true
+});
 const axiosInstance = axios.create({
   baseURL: EXPO_BASE_URL,
-  headers: { 'Content-Type': 'application/json' }
+  headers: { 'Content-Type': 'application/json' },
+  httpsAgent: agent
 });
 
 const handleError = (error: unknown, customMessage = 'API error'): string => {
