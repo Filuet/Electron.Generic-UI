@@ -129,7 +129,7 @@ function KioskPortal(): JSX.Element {
         });
       }
     };
-    if (!underMaintenance && checkWorkingHours()) {
+    if (!underMaintenance) {
       const activeMachines = getActiveMachines(machineStatus);
       dispenserCheck(activeMachines);
     }
