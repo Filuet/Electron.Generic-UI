@@ -86,6 +86,12 @@ function App(): JSX.Element {
         if (response?.exceptionType === 'ValidationException') {
           alert('Invalid credentials');
         }
+        LoggingService.log({
+          level: LogLevel.ERROR,
+          component: 'App',
+          message: `Error occurred while logging kiosk. Navigating to Under Maintenance page.`,
+          data: { error },
+        });
         dispatch(setActivePage(PageRoute.UnderMaintenancePage));
       }
     };
@@ -177,7 +183,14 @@ function App(): JSX.Element {
 
   // Simplified auth error handler
   useEffect(() => {
-    const handleAuthError = (): void => {
+    const handleAuthError = ():void => {
+      console.log('Auth error detected - token refresh failed completely');
+      LoggingService.log({
+        level: LogLevel.ERROR,
+        component: 'App',
+        message: `Auth error detected - token refresh failed completely. Navigating to Under Maintenance page.`,
+      });
+      // Just update UI state since token refresh already failed in the interceptor
       dispatch(setActivePage(PageRoute.UnderMaintenancePage));
       loggingService.log({
         level: 'error',

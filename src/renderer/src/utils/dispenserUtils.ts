@@ -32,7 +32,6 @@ export const sendInoperableMachineNotification = async (
       kioskName: import.meta.env.VITE_KIOSK_NAME,
       machineIds: inoperableMachines
     };
-
     await postData<MachineInoperableModal, void>(
       machineInoperableEndpoint,
       inoperableMachineRequest
@@ -45,8 +44,18 @@ export const sendInoperableMachineNotification = async (
     });
   }
 };
-export const getActiveMachines = (machineStatus: MachineActiveStatus): number[] => {
-  if (machineStatus.isFirstMachineActive && machineStatus.isSecondMachineActive) {
+export const sendMachineStatusCheckFailNotification = async () => {
+  await getData<void>(
+    `${machineStatusFailNotifyEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`
+  );
+};
+export const getActiveMachines = (
+  machineStatus: MachineActiveStatus
+): number[] => {
+  if (
+    machineStatus.isFirstMachineActive &&
+    machineStatus.isSecondMachineActive
+  ) {
     return [1, 2];
   }
   if (machineStatus.isFirstMachineActive) {
@@ -125,6 +134,12 @@ export const checkMachinesStatus = async (
         data: { inoperableMachines, testResults }
       });
 
+      LoggingService.log({
+        level: LogLevel.ERROR,
+        component: 'DispenserUtils',
+        message: `Test Machine Failed: Max attempts reached while checking machines, sending notification.`,
+        data: { inoperableMachines },
+      });
       console.groupEnd();
       await sendInoperableMachineNotification(inoperableMachines);
       return { success: false, inoperableMachines };
@@ -143,12 +158,11 @@ export const checkMachinesStatus = async (
     await getData(`${machineStatusFailNotificationEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`);
     loggingService.log({
       level: LogLevel.ERROR,
-      component: 'KioskPortal',
-      message: `Machine status checks failed, exception thrown by expo-extractor`,
-      data: {
-        error
-      }
+      component: 'DispenserUtils',
+      message: `Test Machine Failed. Sending notification.`,
+      data: { error },
     });
+    await sendMachineStatusCheckFailNotification();
     console.error('Error during machine status check:', error);
     return { success: false, inoperableMachines: [] };
   }

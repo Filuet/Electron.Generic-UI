@@ -39,6 +39,33 @@ function KioskPortal(): JSX.Element {
     (state) => state.kioskSettings.kioskSettings.machines
   );
 
+  const checkDispenserStatus = async (
+    attempts: number = 3
+  ): Promise<boolean> => {
+    if (attempts === 0) {
+      dispatch(setExpoStatus(false));
+      LoggingService.log({
+        level: LogLevel.ERROR,
+        component: 'KioskPortal',
+        message: `Check Dispense Status api response is not as expected after 3 attempts.`,
+      });
+      console.log('Status is not as expected after 3 attempts.');
+      return false;
+    }
+
+    const statusResult = await getDispenseStatus();
+
+    if (
+      statusResult.status === 'success' &&
+      statusResult.action === 'pending' &&
+      statusResult.message === 'Waiting for command'
+    ) {
+      return true;
+    }
+
+    await delay(2000);
+    return checkDispenserStatus(attempts - 1);
+  };
   const checkWorkingHours = useCallback(() => {
     const now = dayjs();
     const currentDay = now.format('dddd').toLowerCase();
@@ -83,7 +110,7 @@ function KioskPortal(): JSX.Element {
           console.log('Dispenser Status is not as expected after 3 attempts.');
           await resetStatus();
           loggingService.log({
-            level: LogLevel.ERROR,
+            level: LogLevel.INFO,
             component: 'KioskPortal.tsx',
             message: 'Dispenser is not reachable',
             data: { dispenserStatus: dispenserStatus }
