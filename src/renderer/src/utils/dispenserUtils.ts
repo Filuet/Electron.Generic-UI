@@ -5,7 +5,7 @@ import {
   MachineInoperableModal
 } from '@/interfaces/modal';
 import { getData, postData } from '@/services/axiosWrapper/apiService';
-import { getDispenseStatus, testMachine } from './expoApiUtils';
+import { getDispenseStatus, resetStatus, testMachine } from './expoApiUtils';
 import {
   machineInoperableEndpoint,
   machineStatusFailNotificationEndpoint,
@@ -62,9 +62,32 @@ export const getActiveMachines = (machineStatus: MachineActiveStatus): number[] 
 };
 export const checkDispenserStatus = async (attempts: number = 3): Promise<boolean> => {
   if (attempts === 0) {
+    LoggingService.log({
+      level: LogLevel.ERROR,
+      component: 'DispenserUtils',
+      message: `Dispenser Status is not as expected after 3 attempts.`,
+      data: {},
+    });
+    console.log('Dispenser Status is not as expected after 3 attempts.');
+    try {
+      await resetStatus();
+      LoggingService.log({
+        level: LogLevel.INFO,
+        component: 'DispenserUtils',
+        message: `Reset Status Api called. Expo Status has been reset.`,
+      });
+      console.log('Expo Status has been reset');
+    } catch (error) {
+      LoggingService.log({
+        level: LogLevel.INFO,
+        component: 'DispenserUtils',
+        message: `Error while calling Reset Status Api.`,
+        data: { error },
+      });
+    }
     return false;
   }
-
+  try {
   const statusResult = await getDispenseStatus();
 
   if (
@@ -74,14 +97,24 @@ export const checkDispenserStatus = async (attempts: number = 3): Promise<boolea
   ) {
     return true;
   }
+  } catch (error) {
+    console.error('Error fetching dispenser status:', error);
+    LoggingService.log({
+      level: LogLevel.ERROR,
+      component: 'DispenserUtils',
+      message: `Error fetching dispenser status.`,
+      data: { error },
+    });
+    return false;
+  }
 
   await delay(2000);
   return checkDispenserStatus(attempts - 1);
 };
 export const checkMachinesStatus = async (
   kioskMachines: number[],
-  // If we want this to run 'n' times then attempts default value should be 'n-1'
-  attempts: number = 4
+  // If we want this to run 'n' times then attempts default value should be 'n'
+  attempts: number = 5
 ): Promise<{ success: boolean; inoperableMachines: number[] }> => {
   try {
     console.group(`Machine Status Check - Attempt ${4 - attempts + 1}/5`);
@@ -122,8 +155,8 @@ export const checkMachinesStatus = async (
       }
     }
 
-    // If we have inoperable machines and no more attempts
-    if (attempts === 0) {
+    // If we have inoperable machines and last attempts
+    if (attempts === 1) {
       loggingService.log({
         level: 'error',
         message: 'Inoperable machines detected after maximum attempts',
@@ -134,10 +167,9 @@ export const checkMachinesStatus = async (
       loggingService.log({
         level: LogLevel.ERROR,
         component: 'DispenserUtils',
-        message: `Test Machine Failed: Max attempts reached while checking machines, sending notification.`,
+        message: `Test Machine Failed: Max attempts reached while checking machines.`,
         data: { inoperableMachines }
       });
-      console.groupEnd();
       await sendInoperableMachineNotification(inoperableMachines);
       return { success: false, inoperableMachines };
     }
@@ -156,7 +188,7 @@ export const checkMachinesStatus = async (
     loggingService.log({
       level: LogLevel.ERROR,
       component: 'DispenserUtils',
-      message: `Test Machine Failed. Sending notification.`,
+      message: `Test Machine api Failed. Exception thrown by expo-extractor.`,
       data: { error }
     });
     await sendMachineStatusCheckFailNotification();
