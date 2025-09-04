@@ -64,7 +64,7 @@ export const initiatePayment = async (
     loggingService.log({
       level: LogLevel.ERROR,
       component: 'PaymentUtils',
-      message: `Request body for TransactionModel`,
+      message: `Error fetching payment link: Request body for TransactionModel`,
       data: { transactionModal, error: JSON.stringify(error) }
     });
     console.error('Error fetching payment link:', error);
@@ -107,7 +107,7 @@ export const createOrder = async (
     loggingService.log({
       level: LogLevel.ERROR,
       component: 'PaymentUtils',
-      message: `Request body for OrderModal`,
+      message: `Error creating order: Request body for OrderModal`,
       data: { orderModal, error: JSON.stringify(error) }
     });
     console.error('Error creating order:', error);
@@ -147,6 +147,12 @@ export const cleanupSignalRConnection = async (
         level: LogLevel.ERROR,
         component: 'paymentUtils.ts',
         message: `Error cleaning up SignalR connection: ${error}`
+      });
+      LoggingService.log({
+        level: LogLevel.ERROR,
+        component: 'PaymentUtils',
+        message: `Error cleaning up SignalR connection`,
+        data: { error },
       });
     }
   }
