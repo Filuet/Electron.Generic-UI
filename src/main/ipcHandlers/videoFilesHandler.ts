@@ -5,7 +5,7 @@ import { getVideoFileNames } from '../services/videoFilesService/videosFiles';
 import { IPC_CHANNELS } from '../../shared/ipcChannels';
 import config from '../../../config.json';
 
-const videoFilesHandler = () => {
+const videoFilesIpcHandler = () => {
   ipcMain.handle(IPC_CHANNELS.VIDEO_GET_FILES, async (): Promise<string[]> => {
     return getVideoFileNames();
   });
@@ -32,4 +32,4 @@ const videoFilesHandler = () => {
   );
 };
 
-export default videoFilesHandler;
+export default videoFilesIpcHandler;

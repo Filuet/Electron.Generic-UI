@@ -1,12 +1,12 @@
-import expoHandler from './expoHandler';
-import loggingHandler from './loggingHandler';
+import expoIpcHandler from './expoHandler';
+import loggingIpcHandler from './loggingHandler';
 import paymentWindowIpc from './paymentWindowHandler';
-import videoFilesHandler from './videoFilesHandler';
+import videoFilesIpcHandler from './videoFilesHandler';
 
 const registerAllIpcHandlers = () => {
-  expoHandler();
-  loggingHandler();
-  videoFilesHandler();
+  expoIpcHandler();
+  loggingIpcHandler();
+  videoFilesIpcHandler();
   paymentWindowIpc();
 };
 export default registerAllIpcHandlers;

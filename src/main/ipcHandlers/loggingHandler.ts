@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import { dailyLogger, performanceLogger } from '../services/loggingService/loggingService';
 import { IPC_CHANNELS } from '../../shared/ipcChannels';
 
-const loggingHandler = () => {
+const loggingIpcHandler = () => {
   ipcMain.handle(IPC_CHANNELS.LOG_GENERIC, (_e, { level, message, component, data, timestamp }) => {
     dailyLogger.log(level, message, { component, data, timestamp });
   });
@@ -15,4 +15,4 @@ const loggingHandler = () => {
   );
 };
 
-export default loggingHandler;
+export default loggingIpcHandler;
