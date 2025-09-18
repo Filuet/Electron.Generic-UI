@@ -23,7 +23,7 @@ export interface ElectronBridgeAPI extends ElectronAPI {
     dispenseProduct: (products: ExpoDispenseModal[]) => Promise<ApiResponse<DispenseResponse>>;
   };
   payment: {
-    open: (link: string) => Promise<unknown>;
+    open: (link: string) => Promise<boolean>;
     close: () => Promise<boolean>;
     getHTML: () => Promise<string | null>;
     isOpen: () => Promise<boolean>;

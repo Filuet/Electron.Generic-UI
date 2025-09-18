@@ -19,8 +19,8 @@ const paymentWindowIpc = () => {
   ipcMain.handle(IPC_CHANNELS.PAYMENT_IS_OPEN, async (): Promise<boolean> => {
     return isPaymentWindowOpen();
   });
-  ipcMain.handle(IPC_CHANNELS.PAYMENT_WINDOW_HTML_CONTENT, async (): Promise<string | null> => {
-    return await getHtmlContent();
+  ipcMain.handle(IPC_CHANNELS.PAYMENT_WINDOW_HTML_CONTENT, (): Promise<string | null> => {
+    return getHtmlContent();
   });
 };
 export default paymentWindowIpc;

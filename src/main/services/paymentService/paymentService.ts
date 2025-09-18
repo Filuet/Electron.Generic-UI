@@ -6,13 +6,13 @@ import {
 } from '../../windows/paymentWindow/paymentWindow';
 
 export const openPayment = (url: string): boolean => {
-  if (!url) return false;
+  if (!url.trim()) return false;
 
   if (isPaymentWindowOpen()) return false;
 
-  createPaymentWindow(url);
+  if (createPaymentWindow(url)) return true;
 
-  return true;
+  return false;
 };
 
 export const closePaymentWindow = (): void => {
@@ -23,6 +23,6 @@ export const paymentWindowOpen = (): boolean => {
   return isPaymentWindowOpen();
 };
 
-export const getHtmlContent = async (): Promise<string | null> => {
-  return await getPaymentWindowHtml();
+export const getHtmlContent = (): Promise<string | null> => {
+  return getPaymentWindowHtml();
 };
