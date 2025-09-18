@@ -160,7 +160,7 @@ function PaymentProcessing() {
     };
   }, []);
 
-  const openPaymentWindowInNewTab = (link: string) => {
+  const openPaymentWindowInNewTab = async (link: string) => {
     loggingService.log({
       level: 'info',
       component: 'PaymentProcessing',
@@ -168,18 +168,30 @@ function PaymentProcessing() {
     });
 
     try {
-      window.electron.payment.open(link);
-      loggingService.log({
-        level: 'info',
-        component: 'PaymentProcessing',
-        message: 'Payment window opened successfully'
-      });
+      const success = await window.electron.payment.open(link);
+
+      if (success) {
+        loggingService.log({
+          level: 'info',
+          component: 'PaymentProcessing',
+          message: 'Payment window opened successfully'
+        });
+      } else {
+        loggingService.log({
+          level: 'warn',
+          component: 'PaymentProcessing',
+          message: 'Failed to open payment window (possibly already open or invalid link)',
+          data: { link }
+        });
+        dispatch(setPaymentStatus(PaymentStatus.NotFound));
+        setIsPaymentProcessing(false);
+      }
     } catch (error) {
       const paymentError = error as PaymentProcessingError;
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.ERROR,
         component: 'PaymentProcessing',
-        message: `Failed to open payment window: ${paymentError.message}`,
+        message: `Exception occurred while opening payment window: ${paymentError.message}`,
         data: { error: paymentError, link }
       });
       dispatch(setPaymentStatus(PaymentStatus.NotFound));
