@@ -2,6 +2,7 @@ import { DispenserAddress, MachineActiveStatus, MachineInoperableModal } from '@
 import { postData } from '@/services/axiosWrapper/apiService';
 import { testMachine } from './expoApiUtils';
 import { machineInoperableEndpoint } from './endpoints';
+import loggingService from './loggingService';
 
 export const parseDispenserAddress = (message: string): DispenserAddress | null => {
   const addressMatch = message.match(/(\d+)\/(\d+)\/(\d+)/);
@@ -31,7 +32,12 @@ export const sendInoperableMachineNotification = async (
       machineInoperableEndpoint,
       inoperableMachineRequest
     );
-    console.log('📧 Notification sent for inoperable machines:', inoperableMachines);
+    loggingService.log({
+      level: 'info',
+      message: 'Inoperable machine notification sent',
+      component: 'dispenserUtils.ts',
+      data: { inoperableMachines }
+    });
   }
 };
 export const getActiveMachines = (machineStatus: MachineActiveStatus): number[] => {
@@ -52,14 +58,23 @@ export const checkMachinesStatus = async (
     console.group(`Machine Status Check - Attempt ${4 - attempts + 1}/5`);
     const apiResponse = await testMachine();
     const testResults = apiResponse.data;
-    console.log('Test Results:', testResults);
+    loggingService.log({
+      level: 'info',
+      message: 'Machine status test results',
+      component: 'dispenserUtils.ts',
+      data: { testResults }
+    });
     // Only check machines that are active according to machineStatus
     const inoperableMachines = kioskMachines.filter((machineId) => {
       const machineTest = testResults.find((result) => result.machine === machineId);
       return !machineTest || machineTest.status !== 'connected';
     });
-    console.log(inoperableMachines);
-
+    loggingService.log({
+      level: 'info',
+      message: 'Inoperable machines identified',
+      component: 'dispenserUtils.ts',
+      data: { inoperableMachines }
+    });
     // If no inoperable machines, check if all are connected
     if (inoperableMachines.length === 0) {
       const allConnected = kioskMachines.every((machineId) =>
@@ -67,7 +82,12 @@ export const checkMachinesStatus = async (
       );
 
       if (allConnected) {
-        console.log('✅ All machines connected');
+        loggingService.log({
+          level: 'info',
+          message: 'All machines are operational',
+          component: 'dispenserUtils.ts',
+          data: { testResults }
+        });
         console.groupEnd();
         return { success: true, inoperableMachines: [] };
       }
@@ -75,14 +95,24 @@ export const checkMachinesStatus = async (
 
     // If we have inoperable machines and no more attempts
     if (attempts === 0) {
-      console.log('❌ Max attempts reached with inoperable machines:', inoperableMachines);
+      loggingService.log({
+        level: 'error',
+        message: 'Inoperable machines detected after maximum attempts',
+        component: 'dispenserUtils.ts',
+        data: { inoperableMachines, testResults }
+      });
+
       console.groupEnd();
       await sendInoperableMachineNotification(inoperableMachines);
       return { success: false, inoperableMachines };
     }
 
-    // Still have attempts left, retry after delay
-    console.log(`⏳ Retrying... ${attempts} attempts remaining`);
+    loggingService.log({
+      level: 'warn',
+      message: 'Inoperable machines detected, retrying...',
+      component: 'dispenserUtils.ts',
+      data: { inoperableMachines, attemptsLeft: attempts, testResults }
+    });
     console.groupEnd();
     await delay(2000);
     return await checkMachinesStatus(kioskMachines, attempts - 1);

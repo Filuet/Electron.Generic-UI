@@ -37,6 +37,7 @@ import { HomePageStyles } from './homePageStyle';
 import CategoryBanner from '../../assets/images/Banners/CategoryBanner.png';
 import { ProductPageStyles } from './productPageStyles';
 import HomePageBanner from '../../assets/images/Banners/TopHomePageBanner.png';
+import loggingService from '@/utils/loggingService';
 
 function HomePage(): JSX.Element {
   const theme = useTheme();
@@ -81,10 +82,14 @@ function HomePage(): JSX.Element {
               dispatch(setPlanogramJson(response));
             })
             .catch((err) => {
-              console.error('Error updating planogram json in expoextractor', err);
+              console.error('Error updating planogram json in expo extractor', err);
             });
         } else {
-          console.log('The Planogram json from ExpoExtractor and the API are identical.');
+          loggingService.log({
+            level: 'error',
+            message: 'The Planogram json from ExpoExtractor and the API are identical.',
+            component: 'HomePage.tsx'
+          });
         }
         // }
       })
@@ -99,7 +104,12 @@ function HomePage(): JSX.Element {
         setProductData(response);
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        loggingService.log({
+          level: 'error',
+          message: 'Error fetching product data from API',
+          component: 'HomePage.tsx',
+          data: { error }
+        });
       }
     };
 

@@ -19,6 +19,7 @@ import LoggingService from '@/utils/loggingService';
 import UserWelcomeBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';
 import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png';
 import { UserWelcomeStyles } from './UserWelcomeStyles';
+import loggingService from '@/utils/loggingService';
 
 function UserWelcomePage() {
   const theme = useTheme();
@@ -68,9 +69,12 @@ function UserWelcomePage() {
       })
       .catch((error: AxiosError) => {
         const res: ApiError = error.response?.data as ApiError;
-        console.log(`res:${res}`);
-        //   console.log(`desc${error.response?.description}`);
-        console.log(`data${error.response?.data}`);
+        loggingService.log({
+          level: 'error',
+          component: 'UserWelcome',
+          message: `Error in fetching customer details`,
+          data: { error, phoneNumber }
+        });
 
         if (res?.description && res.description.includes('Customer for telephone')) {
           setIsCustomerNotFound(true);

@@ -40,6 +40,7 @@ import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png
 import ActivatedMachineImage from '../../assets/images/machines/ActivatedCurrentMachineImage.png';
 import DeactiveMachineImage from '../../assets/images/machines/DeactivateMachineImage.png';
 import { ProductCollectionStyles } from './productCollectionStyles';
+import loggingService from '@/utils/loggingService';
 
 function ProductCollection() {
   const dispatch = useAppDispatch();
@@ -161,7 +162,12 @@ function ProductCollection() {
         updateDispensedProductQuantityEndpoint,
         planogramUpdateRequest
       );
-      console.log(`API call to update planogram for SKU: ${product.sku} was successful`, response);
+      loggingService.log({
+        level: 'info',
+        component: 'ProductCollection',
+        message: `API call to update planogram for SKU: ${product.sku} was successful`,
+        data: response
+      });
     } catch (error) {
       LoggingService.log({
         level: LogLevel.ERROR,
@@ -171,7 +177,6 @@ function ProductCollection() {
           planogramUpdateRequest
         }
       });
-      console.error(`API call to update planogram for SKU: ${product.sku} failed`, error);
     }
   };
 
@@ -345,11 +350,12 @@ function ProductCollection() {
             unTrackedDispenseErrors
           }
         });
-        console.log('Dispenser errors:', unTrackedDispenseErrors);
-        // log(`Dispenser errors: ${JSON.stringify(dispenserErrors)}`);
       } else {
-        console.log('No dispenser errors occurred.');
-        //  log('No dispenser errors occurred.');
+        loggingService.log({
+          level: 'info',
+          component: 'ProductCollection',
+          message: 'No untracked dispense errors'
+        });
       }
     }
   }, [isDispensedProcessFinished]);
@@ -414,14 +420,17 @@ function ProductCollection() {
           component: 'ProductCollection',
           message: 'Dispensing process completed'
         });
-        console.log('Dispensing Process completed');
+
         // Add setTimeout here
         setTimeout(() => {
           dispatch(setActivePage(PageRoute.ThankYouPage));
         }, 5000); // 5 seconds delay
-
-        console.log('Dispenser errors:', unTrackedDispenseErrors);
-        console.log('---------------------------');
+        loggingService.log({
+          level: 'info',
+          component: 'ProductCollection',
+          message: 'Dispensing process completed, Navigated to thank you page after 5 seconds',
+          data: { unTrackedDispenseErrors }
+        });
       }
     };
 
@@ -435,7 +444,12 @@ function ProductCollection() {
         try {
           const apiResponse = await getDispenseStatus();
           const status: MachineStatus = apiResponse.data;
-          console.log('Dispense status:', status);
+          loggingService.log({
+            level: 'info',
+            component: 'ProductCollection',
+            message: 'API call to fetch dispenser status was successful',
+            data: status
+          });
           if (apiResponse.error && !apiResponse.status) {
             setUnTrackedDispenseErrors((prev) => [
               ...prev,
@@ -459,7 +473,12 @@ function ProductCollection() {
               {
                 const startMatch = status.message.match(/(\d+)\/(\d+)\/(\d+).*sku:(\d+)/);
                 if (startMatch) {
-                  console.log(`Dispensing started at ${startMatch[0]}`);
+                  loggingService.log({
+                    level: 'info',
+                    component: 'ProductCollection',
+                    message: `Dispensing in process ${startMatch[0]}`
+                  });
+
                   const dispenserKey = `${startMatch[1]}/${startMatch[2]}/${startMatch[3]}`;
                   const sku = startMatch[4];
 
@@ -527,7 +546,6 @@ function ProductCollection() {
                 const pendingMatch = status.message.match(/unit #(\d+)/);
                 if (pendingMatch) {
                   const machineId = pendingMatch[1];
-                  console.log(`Dispensing finished for Machine ID: ${machineId}`);
                   // as we want to start the animation again
                   setIsReadyToPick(false);
                   setIsPending(true);
@@ -541,7 +559,6 @@ function ProductCollection() {
               }
               break;
             default:
-              console.log('Default Status:', status.action, status.message);
               LoggingService.log({
                 level: LogLevel.DEBUG,
                 component: 'ProductCollection',
@@ -606,9 +623,8 @@ function ProductCollection() {
         level: LogLevel.ERROR,
         component: 'ProductCollection',
         message: 'Request body for failed dispense status update',
-        data: { updateDispenseStatusRequest }
+        data: { updateDispenseStatusRequest, error: err }
       });
-      console.log('error while updating dispense status in ogmentoAPI', err);
     });
   };
 

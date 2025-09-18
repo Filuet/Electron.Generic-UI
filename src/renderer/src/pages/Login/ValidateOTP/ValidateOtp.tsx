@@ -17,6 +17,7 @@ import OTPValidationBanner from '../../../assets/images/Banners/LoginPage_Banner
 import { ValidateOtpStyles } from './validateOtpStyles';
 import { supportStyles } from './supportStyles';
 import OriflameLogo from '../../../assets/images/Logo/oriflameLogo.svg';
+import loggingService from '@/utils/loggingService';
 
 function ValidateOtp(): JSX.Element {
   const theme = useTheme();
@@ -164,7 +165,12 @@ function ValidateOtp(): JSX.Element {
             message: `Machine ${machineId} unlocked successfully.`,
             data: { machineId, response }
           });
-          console.log(`Machine ${machineId} unlocked successfully`);
+          loggingService.log({
+            level: 'info',
+            message: `Machine ${machineId} unlocked successfully`,
+            component: 'ValidateOtp.tsx',
+            data: { machineId, response }
+          });
         } else {
           LoggingService.log({
             level: LogLevel.ERROR,
@@ -173,14 +179,24 @@ function ValidateOtp(): JSX.Element {
             data: { machineId, response }
           });
           setUnlockMachineMessage(`Failed to unlock the Machine ${machineId}.`);
-          console.log(`Error in unlocking Machine ${machineId} `);
+          loggingService.log({
+            level: 'error',
+            message: `Failed to unlock the Machine ${machineId}`,
+            component: 'ValidateOtp.tsx',
+            data: { machineId, response }
+          });
         }
         if (apiResponse.error && !apiResponse.status) {
           setUnlockMachineMessage(`Failed to unlock the Machine ${machineId}.`);
         }
       })
       .catch((err) => {
-        console.log(`Error in unlocking Machine ${machineId} `, err);
+        loggingService.log({
+          level: 'error',
+          message: `Error in unlocking Machine ${machineId} `,
+          component: 'ValidateOtp.tsx',
+          data: { err }
+        });
       })
       .finally(() => {
         setLoading(false);

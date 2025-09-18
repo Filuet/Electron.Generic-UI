@@ -28,6 +28,7 @@ import {
 } from './paymentUtils';
 import PaymentPageBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';
 import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png';
+import loggingService from '@/utils/loggingService';
 
 interface PaymentProcessingError {
   message: string;
@@ -75,10 +76,20 @@ function PaymentProcessing() {
       updateDispenseRequest
     )
       .then(() => {
-        console.log('dispense status: started, updated successfully');
+        loggingService.log({
+          level: 'info',
+          message: `Dispense status updated to Started for order code: ${orderCodeToUse}`,
+          component: 'PaymentProcessing',
+          data: { orderCode: orderCodeToUse }
+        });
       })
       .catch(() => {
-        console.log('dispense status: started, update failed');
+        loggingService.log({
+          level: 'error',
+          message: `Failed to update dispense status for order code: ${orderCodeToUse}`,
+          component: 'PaymentProcessing',
+          data: { orderCode: orderCodeToUse }
+        });
       });
     dispatch(setActivePage(PageRoute.ProductCollectionPage));
   };
@@ -129,7 +140,11 @@ function PaymentProcessing() {
       connectionObject
         .start()
         .then(() => {
-          console.log('Connected to SignalR hub');
+          loggingService.log({
+            level: 'info',
+            message: 'SignalR connection started successfully',
+            component: 'PaymentProcessing'
+          });
         })
         .catch((err) => {
           console.error('Connection failed: ', err);
@@ -146,14 +161,21 @@ function PaymentProcessing() {
   }, []);
 
   const openPaymentWindowInNewTab = (link: string) => {
-    console.log('Attempting to open payment window with link:', link);
+    loggingService.log({
+      level: 'info',
+      component: 'PaymentProcessing',
+      message: `Attempting to open payment window with link: ${link}`
+    });
 
     try {
       window.electron.payment.open(link);
-      console.log('Payment window opening attempted');
+      loggingService.log({
+        level: 'info',
+        component: 'PaymentProcessing',
+        message: 'Payment window opened successfully'
+      });
     } catch (error) {
       const paymentError = error as PaymentProcessingError;
-      console.error('Error opening payment window:', paymentError);
       LoggingService.log({
         level: LogLevel.ERROR,
         component: 'PaymentProcessing',

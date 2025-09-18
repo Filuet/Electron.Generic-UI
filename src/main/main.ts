@@ -67,20 +67,33 @@ app.on('certificate-error', (event, webContents, url, error, certificate, callba
 
 // Optional cleanup before quitting
 app.on('before-quit', () => {
-  console.log('App is quitting...');
+  dailyLogger.log({
+    level: 'info',
+    message: 'App is quitting'
+  });
 });
 
 // Error handling
 // both event will occur when main process may have some unexpected errors and stop working,
 // but the renderer will not exit means the renderer may be accessible, for closing the window and whole app execution these event will be used
 process.on('uncaughtException', (err) => {
-  console.error('uncaughtException', err);
+  dailyLogger.log({
+    level: 'error',
+    message: 'uncaughtException in main process',
+    component: 'Main.ts',
+    error: err
+  });
   if (err) {
     app.quit();
   }
 });
 
 process.on('unhandledRejection', (reason) => {
-  console.error('Unhandled Rejection:', reason);
+  dailyLogger.log({
+    level: 'error',
+    message: 'Unhandled Promise Rejection',
+    component: 'Main.ts',
+    error: reason
+  });
   app.quit();
 });

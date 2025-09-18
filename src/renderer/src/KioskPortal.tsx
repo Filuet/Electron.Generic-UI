@@ -22,6 +22,7 @@ import { getData } from './services/axiosWrapper/apiService';
 import { expoFailEndpoint } from './utils/endpoints';
 import LoggingService from './utils/loggingService';
 import SupportContact from './pages/UnderMaintenance/SupportContact';
+import loggingService from './utils/loggingService';
 
 function KioskPortal(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -38,7 +39,12 @@ function KioskPortal(): JSX.Element {
   const checkDispenserStatus = async (attempts: number = 3): Promise<boolean> => {
     if (attempts === 0) {
       dispatch(setExpoStatus(false));
-      console.log('Status is not as expected after 3 attempts.');
+      loggingService.log({
+        level: 'info',
+        component: 'KioskPortal.tsx',
+        message: 'Dispenser is not reachable after multiple attempts',
+        data: { attempts: attempts }
+      });
       return false;
     }
 
@@ -91,7 +97,12 @@ function KioskPortal(): JSX.Element {
         const dispenserStatus = await checkDispenserStatus();
         if (!dispenserStatus) {
           await resetStatus();
-          console.log('Expo Status has been reset');
+          loggingService.log({
+            level: 'info',
+            component: 'KioskPortal.tsx',
+            message: 'Dispenser is not reachable',
+            data: { dispenserStatus: dispenserStatus }
+          });
         }
       } catch (error) {
         if (

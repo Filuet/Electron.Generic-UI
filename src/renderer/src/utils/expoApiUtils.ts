@@ -28,7 +28,6 @@ const sendCertificatesErrorNotification = async (inoperableMachines: number[]): 
     machineInoperableEndpoint,
     inoperableMachineRequest
   ).then(() => {
-    console.log('📧 Notification sent for inoperable machines:', inoperableMachines);
     loggingService.log({
       level: 'info',
       message: 'Certificates error notification mail send successfully ',
@@ -54,7 +53,6 @@ export const getDispenseStatus = async (): Promise<ApiResponse<MachineStatus>> =
   if (!response.status && response.error) {
     if (response.error === 'self signed certificate') {
       sendCertificatesErrorNotification([121, 121]);
-      console.log(response.error);
     }
   }
   return response;

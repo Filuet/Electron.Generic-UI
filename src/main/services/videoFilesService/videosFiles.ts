@@ -1,6 +1,7 @@
 import fs from 'fs';
 import config from '../../../../config.json';
 import path from 'path';
+import { dailyLogger } from '../loggingService/loggingService';
 
 const SUPPORTED_FILE_EXTENSIONS = config.supportedVideoFormats || ['.mp4'];
 const VIDEO_FILE_PATH = config.videoFilePath || './videos';
@@ -12,7 +13,13 @@ export const getVideoFileNames = (): string[] => {
       SUPPORTED_FILE_EXTENSIONS.includes(path.extname(file).toLowerCase())
     );
   } catch (error) {
-    console.error('Error reading video files:', error);
+    dailyLogger.log({
+      level: 'error',
+      message: 'Error reading video files',
+      component: 'videoFiles',
+      data: { error }
+    });
+
     return [];
   }
 };

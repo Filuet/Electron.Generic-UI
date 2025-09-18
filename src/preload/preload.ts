@@ -5,6 +5,7 @@ import { createLoggerBridge } from './bridge/loggerBridge';
 import { createExpoBridge } from './bridge/expoBridge';
 import { ElectronBridgeAPI } from '../shared/sharedTypes';
 import createPaymentWindowBridge from './bridge/paymentWindowBridge';
+import { dailyLogger } from '../main/services/loggingService/loggingService';
 
 const electronAPI: ElectronBridgeAPI = {
   ...toolkitAPI,
@@ -18,7 +19,12 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI);
   } catch (error) {
-    console.error('Preload contextBridge error:', error);
+    dailyLogger.log({
+      level: 'error',
+      message: 'Preload contextBridge error',
+      component: 'preload',
+      error: error
+    });
   }
 } else {
   // Fallback for non-isolated context

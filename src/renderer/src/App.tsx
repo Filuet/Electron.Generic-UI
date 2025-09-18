@@ -24,6 +24,7 @@ import OriflameLoader from './components/oriflameLoader/OriflameLoader';
 import { resetReduxStore } from './redux/core/utils/resetReduxStore';
 import { setActivePage } from './redux/features/pageNavigation/navigationSlice';
 import LoggingService from './utils/loggingService';
+import loggingService from './utils/loggingService';
 
 function App(): JSX.Element {
   const theme = useTheme();
@@ -82,15 +83,18 @@ function App(): JSX.Element {
     async function getVideoUrl(): Promise<void> {
       if (videoFilenames[currentVideoIndex]) {
         try {
-          console.log('Getting video content for:', videoFilenames[currentVideoIndex]);
           const dataUrl = await window.electron.videoFilesUtil.getVideoContent(
             videoFilenames[currentVideoIndex]
           );
           if (dataUrl) {
             setCurrentVideoUrl(dataUrl);
-            console.log('Setting video URL:', dataUrl.substring(0, 50) + '...');
           } else {
-            console.error('Failed to get video content');
+            loggingService.log({
+              level: LogLevel.ERROR,
+              message: 'Failed to load video content',
+              component: 'App.tsx',
+              data: { videoFileName: videoFilenames[currentVideoIndex] }
+            });
           }
         } catch (err) {
           console.error('Error getting video content:', err);
@@ -121,14 +125,18 @@ function App(): JSX.Element {
   // Refetch when file change detected
   useEffect(() => {
     const refresh = debounce(() => {
-      console.log('[Renderer] Detected video folder update');
       window.electron.videoFilesUtil
         .getFiles()
         .then((response) => {
           dispatch(setVideoFileNames(response));
         })
         .catch((err) => {
-          console.error('Error re-fetching video filenames:', err);
+          loggingService.log({
+            level: LogLevel.ERROR,
+            message: 'Error re-fetching video filenames',
+            component: 'App.tsx',
+            data: err
+          });
         });
     }, 500);
 
@@ -142,10 +150,12 @@ function App(): JSX.Element {
   // Simplified auth error handler
   useEffect(() => {
     const handleAuthError = (): void => {
-      console.log('Auth error detected - token refresh failed completely');
-
-      // Just update UI state since token refresh already failed in the interceptor
       dispatch(setActivePage(PageRoute.UnderMaintenancePage));
+      loggingService.log({
+        level: 'error',
+        message: 'Authentication error detected, redirecting to under maintenance page',
+        component: 'App.tsx'
+      });
     };
 
     // Listen for auth errors from axios interceptor
@@ -174,10 +184,14 @@ function App(): JSX.Element {
 
   useEffect(() => {
     if (videoRef.current && currentVideoUrl) {
-      console.log('Setting video source:', currentVideoUrl);
       videoRef.current.src = currentVideoUrl;
       videoRef.current.play().catch((err) => {
-        console.error('Video play error:', err);
+        loggingService.log({
+          level: 'error',
+          message: 'Error playing video',
+          component: 'App.tsx',
+          data: err
+        });
       });
     }
   }, [currentVideoUrl]);
@@ -210,8 +224,6 @@ function App(): JSX.Element {
             }
           };
           LoggingService.logPerformance(logPayload);
-
-          console.log(logPayload);
         }
       };
 
