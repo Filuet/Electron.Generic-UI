@@ -1,4 +1,6 @@
-export const PaymentStyles = () => ({
+import { CSSPropertiesType } from '@/interfaces/modal';
+
+export const PaymentStyles = (): CSSPropertiesType => ({
   checkoutButton: {
     width: '7.9rem',
     height: '2.6rem',

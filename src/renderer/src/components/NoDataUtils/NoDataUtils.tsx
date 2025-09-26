@@ -1,6 +1,7 @@
 import { Box } from '@mui/system';
+import { JSX } from 'react';
 
-function NoDataUtils({ status }: { status: boolean }) {
+function NoDataUtils({ status }: { status: boolean }): JSX.Element | null {
   if (status)
     return (
       <Box

@@ -1,12 +1,7 @@
+import { CSS_MUI_PropertiesType } from '@/interfaces/modal';
 import { Theme } from '@mui/material';
 
-type StylesType = {
-  [key: string]: {
-    [key: string]: string | number | object;
-  };
-};
-
-export const ProductPageStyles = (theme: Theme): StylesType => ({
+export const ProductPageStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
   productPageMainContainer: {
     display: 'flex',
     justifyContent: 'space-between',

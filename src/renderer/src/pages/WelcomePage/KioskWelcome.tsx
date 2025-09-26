@@ -1,3 +1,4 @@
+import { JSX } from 'react';
 import { PageRoute } from '@/interfaces/modal';
 import { useAppDispatch } from '@/redux/core/utils/reduxHook';
 import { setActivePage } from '@/redux/features/pageNavigation/navigationSlice';
@@ -9,13 +10,13 @@ import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png
 import { KioskWelcomeStyle } from './kioskWelcomeStyle';
 import KioskWelcomePageBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';
 
-function KioskWelcomePage() {
+function KioskWelcomePage(): JSX.Element {
   const theme = useTheme();
   const { translate } = useTranslationHook();
   const globalStyle = GlobalStyles(theme);
   const kioskWelcomeStyle = KioskWelcomeStyle(theme);
   const dispatch = useAppDispatch();
-  const onNextPage = () => {
+  const onNextPage = (): void => {
     dispatch(setActivePage(PageRoute.LoginPage));
   };
 

@@ -8,14 +8,14 @@ interface LogPayload {
   timestamp?: string;
 }
 
-const logGeneric = (log: LogPayload) => {
+const logGeneric = (log: LogPayload): void => {
   window.electron.logs.generic({
     ...log,
     timestamp: log.timestamp ?? new Date().toISOString()
   });
 };
 
-const logPerformance = (log: LogPayload) => {
+const logPerformance = (log: LogPayload): void => {
   window.electron.logs.performance({
     ...log,
     timestamp: log.timestamp ?? new Date().toISOString()

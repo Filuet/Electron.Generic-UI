@@ -1,4 +1,6 @@
-export const ThankYouPageStyles = () => ({
+import { CSSPropertiesType } from '@/interfaces/modal';
+
+export const ThankYouPageStyles = (): CSSPropertiesType => ({
   thankYouMessageStyles: {
     fontSize: '24px',
     fontWeight: 'normal',

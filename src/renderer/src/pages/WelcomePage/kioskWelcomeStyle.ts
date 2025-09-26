@@ -1,6 +1,7 @@
+import { CSSPropertiesType } from '@/interfaces/modal';
 import { Theme } from '@mui/material';
 
-export const KioskWelcomeStyle = (theme: Theme) => ({
+export const KioskWelcomeStyle = (theme: Theme): CSSPropertiesType => ({
   logo: { width: '349px' },
   greetingsText: {
     margin: 'auto',

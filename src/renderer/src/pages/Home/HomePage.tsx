@@ -13,7 +13,6 @@ import {
   useTheme
 } from '@mui/material';
 import { Box, Stack } from '@mui/system';
-// import { isEqual } from 'lodash';
 import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
 import { Search } from '@mui/icons-material';

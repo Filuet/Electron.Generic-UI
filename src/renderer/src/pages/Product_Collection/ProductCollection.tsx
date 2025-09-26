@@ -20,7 +20,7 @@ import {
   MachineActiveStatus,
   LogLevel
 } from '@/interfaces/modal';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, JSX } from 'react';
 import { dispenseProduct, getAllStatuses, getDispenseStatus } from '@/utils/expoApiUtils';
 import { CartProduct } from '@/redux/features/cart/cartTypes';
 import { setActivePage } from '@/redux/features/pageNavigation/navigationSlice';
@@ -42,7 +42,7 @@ import DeactiveMachineImage from '../../assets/images/machines/DeactivateMachine
 import { ProductCollectionStyles } from './productCollectionStyles';
 import loggingService from '@/utils/loggingService';
 
-function ProductCollection() {
+function ProductCollection(): JSX.Element {
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const globalStyles = GlobalStyles(theme);
@@ -98,7 +98,7 @@ function ProductCollection() {
   const machineActiveStatus: MachineActiveStatus = useAppSelector(
     (state) => state.kioskSettings.kioskSettings.machines
   );
-  const checkMachines = async () => {
+  const checkMachines = async (): Promise<void> => {
     const activeMachines = getActiveMachines(machineActiveStatus);
     await checkMachinesStatus(activeMachines);
   };
@@ -111,7 +111,7 @@ function ProductCollection() {
     };
   }, []);
   useEffect(() => {
-    async function startProductDispensing() {
+    async function startProductDispensing(): Promise<void> {
       setIsPending(true);
       LoggingService.log({
         level: LogLevel.INFO,
@@ -147,7 +147,7 @@ function ProductCollection() {
     startProductDispensing();
   }, []);
 
-  const updatePlanogramForDispensedProducts = async (product: ProductAddress) => {
+  const updatePlanogramForDispensedProducts = async (product: ProductAddress): Promise<void> => {
     const planogramUpdateRequest: PlanogramUpdateRequest = {
       trayId: Number(product.trayId),
       beltId: Number(product.beltId),
@@ -404,7 +404,7 @@ function ProductCollection() {
 
   // get all dispensing status when partially or zero sku dispensed
   useEffect(() => {
-    const getAllDispensingStatuses = async () => {
+    const getAllDispensingStatuses = async (): Promise<void> => {
       if (isFinalCheckCompleted) {
         const machineStatuses: MachineStatus[] = await getAllStatuses();
         const filteredStatuses = machineStatuses.filter(
@@ -610,7 +610,7 @@ function ProductCollection() {
     };
   }, [isReadyToPick, blinkingMachine, isDispensedProcessFinished]);
 
-  const updateDispenseStatus = async (status: DispenseStatus) => {
+  const updateDispenseStatus = async (status: DispenseStatus): Promise<void> => {
     const updateDispenseStatusRequest: UpdateDispenseStatusModal = {
       status,
       orderCode

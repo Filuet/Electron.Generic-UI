@@ -8,7 +8,7 @@ import useTranslationHook from '@/localization/hook';
 import NavigationButtonUtils from '@/utils/navigationButtonUtils/NavigationButton';
 import { setClientType } from '@/redux/features/customerLogin/customerLogin';
 import { ClientType } from '@/redux/features/customerLogin/types';
-import { useEffect, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 import { fetchCustomerOrderDetails } from '@/redux/features/customerDetails/customerApiThunks';
 import OriflameLoader from '@/components/oriflameLoader/OriflameLoader';
 import { oriflameUserDetailsEndpoint } from '@/utils/endpoints';
@@ -21,7 +21,7 @@ import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png
 import { UserWelcomeStyles } from './UserWelcomeStyles';
 import loggingService from '@/utils/loggingService';
 
-function UserWelcomePage() {
+function UserWelcomePage(): JSX.Element {
   const theme = useTheme();
   const globalStyles = GlobalStyles(theme);
   const userWelcomeStyles = UserWelcomeStyles();
@@ -32,13 +32,13 @@ function UserWelcomePage() {
   const [isCustomerNotFound, setIsCustomerNotFound] = useState<boolean>(false);
   const [isMultipleUserFound, setIsMultipleUserFound] = useState<boolean>(false);
 
-  const onNextPage = () => {
+  const onNextPage = (): void => {
     dispatch(setActivePage(PageRoute.HomePage));
   };
-  const onLoginPage = () => {
+  const onLoginPage = (): void => {
     dispatch(setActivePage(PageRoute.LoginPage));
   };
-  const onRegisterPage = () => {
+  const onRegisterPage = (): void => {
     dispatch(setActivePage(PageRoute.SignUpPage));
   };
   const phoneNumber = useAppSelector((state) => state.customerLogin.phoneNumber);
@@ -46,7 +46,7 @@ function UserWelcomePage() {
   const loadingCustomerOrders = useAppSelector(
     (state) => state.customerOrderDetails.loadingCustomerOrders
   );
-  const onFetchingCustomerDetails = async () => {
+  const onFetchingCustomerDetails = async (): Promise<void> => {
     setIsCustomerDetailsLoading(true);
     await getData<CustomerDetails>(`${oriflameUserDetailsEndpoint}/${phoneNumber}`)
       .then((response) => {
@@ -110,7 +110,7 @@ function UserWelcomePage() {
   useEffect(() => {
     onFetchingCustomerDetails();
   }, []);
-  const onPreviousPage = () => {
+  const onPreviousPage = (): void => {
     dispatch(setActivePage(PageRoute.LoginPage));
   };
 

@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { CSS_MUI_PropertiesType } from '@/interfaces/modal';
 import { Theme } from '@mui/material/styles';
 
-export const supportStyles = (theme: Theme) => ({
+export const supportStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
   dialogPaper: {
     '.MuiDialog-paper': {
       bottom: '4.3%',

@@ -1,4 +1,6 @@
-export const HomePageStyles = (): Record<string, React.CSSProperties> => ({
+import { CSSPropertiesType } from '@/interfaces/modal';
+
+export const HomePageStyles = (): CSSPropertiesType => ({
   homePageMainContainer: {
     display: 'flex',
     justifyContent: 'space-between',

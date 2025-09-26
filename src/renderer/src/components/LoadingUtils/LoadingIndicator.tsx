@@ -1,7 +1,8 @@
 import { CircularProgress } from '@mui/material';
 import { Box } from '@mui/system';
+import { JSX } from 'react';
 
-function LoadingIndicator({ loading }: { loading: boolean }) {
+function LoadingIndicator({ loading }: { loading: boolean }): JSX.Element | null {
   if (loading)
     return (
       <Box

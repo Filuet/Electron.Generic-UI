@@ -1,3 +1,4 @@
+import { JSX } from 'react';
 import { GlobalStyles } from '@/globalStyles/globalStyles';
 import { Typography, useTheme } from '@mui/material';
 import { Box, Container } from '@mui/system';
@@ -6,7 +7,7 @@ import BackgroundBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Ban
 import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png';
 import MaintenanceImg from '../../assets/images/Ilustrations/App development-amico (1).png';
 
-function UnderMaintenance() {
+function UnderMaintenance(): JSX.Element {
   const theme = useTheme();
   const globalStyles = GlobalStyles(theme);
 
