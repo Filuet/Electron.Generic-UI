@@ -1,6 +1,7 @@
 import { IPC_CHANNELS } from '../../shared/ipcChannels';
+import { VideoFilesBridge } from '../../shared/sharedTypes';
 
-export function createVideoFilesBridge(ipc: Electron.IpcRenderer) {
+export function createVideoFilesBridge(ipc: Electron.IpcRenderer): VideoFilesBridge {
   return {
     getFiles: (): Promise<string[]> => ipc.invoke(IPC_CHANNELS.VIDEO_GET_FILES),
 

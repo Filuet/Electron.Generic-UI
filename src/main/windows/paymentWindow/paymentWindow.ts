@@ -29,7 +29,7 @@ export const createPaymentWindow = (link: string): BrowserWindow | null => {
   return paymentWindowObject;
 };
 
-export const onClosePaymentWindow = () => {
+export const onClosePaymentWindow = (): void => {
   if (paymentWindowObject && !paymentWindowObject.isDestroyed()) {
     paymentWindowObject.close();
     paymentWindowObject = null;

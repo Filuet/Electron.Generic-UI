@@ -17,7 +17,7 @@ const logFormat = winston.format.printf(({ timestamp, level, message, component,
   return `${timestamp} [${logLevel}] : ${componentInfo} Message: ${message} ${dataInfo}`;
 });
 
-export const createLogger = (filename: string) =>
+export const createLogger = (filename: string): winston.Logger =>
   winston.createLogger({
     level: 'info',
     format: winston.format.combine(

@@ -1,6 +1,7 @@
 import { IPC_CHANNELS } from '../../shared/ipcChannels';
+import { PaymentWindowBridge } from '../../shared/sharedTypes';
 
-const createPaymentWindowBridge = (ipc: Electron.IpcRenderer) => {
+const createPaymentWindowBridge = (ipc: Electron.IpcRenderer): PaymentWindowBridge => {
   return {
     open: (link: string): Promise<boolean> => ipc.invoke(IPC_CHANNELS.PAYMENT_OPEN, link),
     close: (): Promise<boolean> => ipc.invoke(IPC_CHANNELS.PAYMENT_CLOSE),

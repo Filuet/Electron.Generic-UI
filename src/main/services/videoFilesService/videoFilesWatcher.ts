@@ -3,7 +3,7 @@ import fs from 'fs';
 import config from '../../../../config.json';
 import { dailyLogger } from '../loggingService/loggingService';
 
-const setupVideoWatcher = (win: BrowserWindow) => {
+const setupVideoWatcher = (win: BrowserWindow): void => {
   const VIDEO_FILE_PATH = config.videoFilePath;
   const SUPPORTED_FORMATS = config.supportedVideoFormats.map((ext: string) => ext.toLowerCase());
 

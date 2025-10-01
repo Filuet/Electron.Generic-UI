@@ -1,33 +1,37 @@
 import type { ElectronAPI } from '@electron-toolkit/preload';
 
+export interface PaymentWindowBridge {
+  open: (link: string) => Promise<boolean>;
+  close: () => Promise<boolean>;
+  getHTML: () => Promise<string | null>;
+  isOpen: () => Promise<boolean>;
+}
+export interface ExpoBridge {
+  getDispenseStatus: () => Promise<ApiResponse<MachineStatus>>;
+  updatePlanogramJson: (routes: PogRoute[]) => Promise<ApiResponse<boolean>>;
+  getStockStatus: () => Promise<ApiResponse<ProductStock[]>>;
+  testMachine: () => Promise<ApiResponse<MachineTestResult[]>>;
+  unlockMachine: (machineId: number) => Promise<ApiResponse<{ success: boolean }>>;
+  updatePlanogram: (req: RouteUpdateRequest) => Promise<ApiResponse<number>>;
+  resetDispenseStatus: () => Promise<ApiResponse<number>>;
+  getAllStatuses: () => Promise<ApiResponse<MachineStatus[]>>;
+  dispenseProduct: (products: ExpoDispenseModal[]) => Promise<ApiResponse<DispenseResponse>>;
+}
+export interface VideoFilesBridge {
+  getFiles: () => Promise<string[]>;
+  getVideoContent: (filename: string) => Promise<string | null>;
+  onFolderChange: (callback: () => void) => void;
+  removeFolderListener: (callback: () => void) => void;
+}
+export interface LoggingServiceBridge {
+  generic: (entry: LogEntry) => Promise<void>;
+  performance: (entry: LogEntry) => Promise<void>;
+}
 export interface ElectronBridgeAPI extends ElectronAPI {
-  videoFilesUtil: {
-    getFiles: () => Promise<string[]>;
-    getVideoContent: (filename: string) => Promise<string | null>;
-    onFolderChange: (callback: () => void) => void;
-    removeFolderListener: (callback: () => void) => void;
-  };
-  logs: {
-    generic: (entry: LogEntry) => Promise<void>;
-    performance: (entry: LogEntry) => Promise<void>;
-  };
-  expo: {
-    getDispenseStatus: () => Promise<ApiResponse<MachineStatus>>;
-    updatePlanogramJson: (routes: PogRoute[]) => Promise<ApiResponse<boolean>>;
-    getStockStatus: () => Promise<ApiResponse<ProductStock[]>>;
-    testMachine: () => Promise<ApiResponse<MachineTestResult[]>>;
-    unlockMachine: (machineId: number) => Promise<ApiResponse<{ success: boolean }>>;
-    updatePlanogram: (req: RouteUpdateRequest) => Promise<ApiResponse<number>>;
-    resetDispenseStatus: () => Promise<ApiResponse<number>>;
-    getAllStatuses: () => Promise<ApiResponse<MachineStatus[]>>;
-    dispenseProduct: (products: ExpoDispenseModal[]) => Promise<ApiResponse<DispenseResponse>>;
-  };
-  payment: {
-    open: (link: string) => Promise<boolean>;
-    close: () => Promise<boolean>;
-    getHTML: () => Promise<string | null>;
-    isOpen: () => Promise<boolean>;
-  };
+  videoFilesUtil: VideoFilesBridge;
+  logs: LoggingServiceBridge;
+  expo: ExpoBridge;
+  payment: PaymentWindowBridge;
 }
 
 export type LogLevel = 'info' | 'error' | 'warn' | 'debug';

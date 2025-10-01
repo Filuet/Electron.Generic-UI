@@ -13,7 +13,7 @@ import {
   getAllStatuses
 } from '../services/expoService/expoApis';
 
-const expoIpcHandler = () => {
+const expoIpcHandler = (): void => {
   ipcMain.handle(IPC_CHANNELS.EXPO_DISPENSE_STATUS, async () => {
     const result = await getDispenseStatus();
     return { success: result.status, data: result.data, error: result.error };

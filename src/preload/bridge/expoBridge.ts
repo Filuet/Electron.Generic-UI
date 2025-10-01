@@ -1,7 +1,12 @@
 import { IPC_CHANNELS } from '../../shared/ipcChannels';
-import { ExpoDispenseModal, PogRoute, RouteUpdateRequest } from '../../shared/sharedTypes';
+import {
+  ExpoBridge,
+  ExpoDispenseModal,
+  PogRoute,
+  RouteUpdateRequest
+} from '../../shared/sharedTypes';
 
-export function createExpoBridge(ipc: Electron.IpcRenderer) {
+export function createExpoBridge(ipc: Electron.IpcRenderer): ExpoBridge {
   return {
     getDispenseStatus: () => ipc.invoke(IPC_CHANNELS.EXPO_DISPENSE_STATUS),
     updatePlanogramJson: (routes: PogRoute[]) =>

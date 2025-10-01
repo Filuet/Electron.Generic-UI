@@ -7,7 +7,7 @@ import {
 } from '../services/paymentService/paymentService';
 import { isPaymentWindowOpen } from '../windows/paymentWindow/paymentWindow';
 
-const paymentWindowIpc = () => {
+const paymentWindowIpc = (): void => {
   ipcMain.handle(IPC_CHANNELS.PAYMENT_OPEN, async (_event, link: string) => {
     return openPayment(link);
   });

@@ -3,7 +3,7 @@ import loggingIpcHandler from './loggingHandler';
 import paymentWindowIpc from './paymentWindowHandler';
 import videoFilesIpcHandler from './videoFilesHandler';
 
-const registerAllIpcHandlers = () => {
+const registerAllIpcHandlers = (): void => {
   expoIpcHandler();
   loggingIpcHandler();
   videoFilesIpcHandler();

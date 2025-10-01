@@ -6,7 +6,7 @@ import { IPC_CHANNELS } from '../../shared/ipcChannels';
 import config from '../../../config.json';
 import { dailyLogger } from '../services/loggingService/loggingService';
 
-const videoFilesIpcHandler = () => {
+const videoFilesIpcHandler = (): void => {
   ipcMain.handle(IPC_CHANNELS.VIDEO_GET_FILES, async (): Promise<string[]> => {
     return getVideoFileNames();
   });
