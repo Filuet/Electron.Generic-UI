@@ -26,12 +26,17 @@ import {
   RouteUpdateRequest
 } from '../../../shared/sharedTypes';
 import { expoDailyLogger } from '../loggingService/loggingService';
-import { join } from 'path';
+import path from 'path';
+import { is } from '@electron-toolkit/utils';
 
 const EXPO_BASE_URL = config.expoBaseUrl;
-const CERTIFICATE_PATH = '../../certificates/fullchain.pem';
+
+const CERTIFICATE_PATH = is.dev
+  ? path.join(__dirname, '../../certificates/fullchain.pem')
+  : path.join(process.resourcesPath, 'certificates', 'fullchain.pem');
+
 const agent = new https.Agent({
-  ca: fs.readFileSync(join(__dirname, CERTIFICATE_PATH)),
+  ca: fs.readFileSync(CERTIFICATE_PATH),
   rejectUnauthorized: true
 });
 const axiosInstance = axios.create({

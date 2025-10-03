@@ -51,6 +51,16 @@
   "build": {
     "appId": "Generic-UI",
     "productName": "Generic UI",
+    "asar": true,
+    "extraResources": [
+      {
+        "from": "certificates/",
+        "to": "certificates/",
+        "filter": [
+          "*.pem"
+        ]
+      }
+    ],
     "directories": {
       "buildResources": "resources",
       "output": "release"
@@ -103,3 +113,4 @@
     ]
   }
 }
+
