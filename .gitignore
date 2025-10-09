@@ -4,6 +4,6 @@ out
 .DS_Store
 .eslintcache
 *.log*
-certificates
+# certificates
 release
 .env
