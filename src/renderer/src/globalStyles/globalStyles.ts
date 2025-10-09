@@ -1,6 +1,7 @@
+import { CSSPropertiesType } from '@/interfaces/modal';
 import { Theme } from '@mui/material';
 
-export const GlobalStyles = (theme: Theme) => ({
+export const GlobalStyles = (theme: Theme): CSSPropertiesType => ({
   pageContainer: {
     backgroundSize: 'cover',
     backgroundPosition: 'center',

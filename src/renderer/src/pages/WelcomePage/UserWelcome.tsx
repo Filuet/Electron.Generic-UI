@@ -8,7 +8,7 @@ import useTranslationHook from '@/localization/hook';
 import NavigationButtonUtils from '@/utils/navigationButtonUtils/NavigationButton';
 import { setClientType } from '@/redux/features/customerLogin/customerLogin';
 import { ClientType } from '@/redux/features/customerLogin/types';
-import { useEffect, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 import { fetchCustomerOrderDetails } from '@/redux/features/customerDetails/customerApiThunks';
 import OriflameLoader from '@/components/oriflameLoader/OriflameLoader';
 import { oriflameUserDetailsEndpoint } from '@/utils/endpoints';
@@ -19,8 +19,9 @@ import LoggingService from '@/utils/loggingService';
 import UserWelcomeBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';
 import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png';
 import { UserWelcomeStyles } from './UserWelcomeStyles';
+import loggingService from '@/utils/loggingService';
 
-function UserWelcomePage() {
+function UserWelcomePage(): JSX.Element {
   const theme = useTheme();
   const globalStyles = GlobalStyles(theme);
   const userWelcomeStyles = UserWelcomeStyles();
@@ -31,13 +32,13 @@ function UserWelcomePage() {
   const [isCustomerNotFound, setIsCustomerNotFound] = useState<boolean>(false);
   const [isMultipleUserFound, setIsMultipleUserFound] = useState<boolean>(false);
 
-  const onNextPage = () => {
+  const onNextPage = (): void => {
     dispatch(setActivePage(PageRoute.HomePage));
   };
-  const onLoginPage = () => {
+  const onLoginPage = (): void => {
     dispatch(setActivePage(PageRoute.LoginPage));
   };
-  const onRegisterPage = () => {
+  const onRegisterPage = (): void => {
     dispatch(setActivePage(PageRoute.SignUpPage));
   };
   const phoneNumber = useAppSelector((state) => state.customerLogin.phoneNumber);
@@ -45,7 +46,7 @@ function UserWelcomePage() {
   const loadingCustomerOrders = useAppSelector(
     (state) => state.customerOrderDetails.loadingCustomerOrders
   );
-  const onFetchingCustomerDetails = async () => {
+  const onFetchingCustomerDetails = async (): Promise<void> => {
     setIsCustomerDetailsLoading(true);
     await getData<CustomerDetails>(`${oriflameUserDetailsEndpoint}/${phoneNumber}`)
       .then((response) => {
@@ -68,9 +69,12 @@ function UserWelcomePage() {
       })
       .catch((error: AxiosError) => {
         const res: ApiError = error.response?.data as ApiError;
-        console.log(`res:${res}`);
-        //   console.log(`desc${error.response?.description}`);
-        console.log(`data${error.response?.data}`);
+        loggingService.log({
+          level: 'error',
+          component: 'UserWelcome',
+          message: `Error in fetching customer details`,
+          data: { error, phoneNumber }
+        });
 
         if (res?.description && res.description.includes('Customer for telephone')) {
           setIsCustomerNotFound(true);
@@ -106,7 +110,7 @@ function UserWelcomePage() {
   useEffect(() => {
     onFetchingCustomerDetails();
   }, []);
-  const onPreviousPage = () => {
+  const onPreviousPage = (): void => {
     dispatch(setActivePage(PageRoute.LoginPage));
   };
 

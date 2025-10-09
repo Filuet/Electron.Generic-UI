@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useAppDispatch } from '@/redux/core/utils/reduxHook';
 import { fetchKioskSettings } from '@/redux/features/kioskSettings/kioskSettingThunk';
 
-export const useKioskReset = () => {
+export const useKioskReset = (): void => {
   const dispatch = useAppDispatch();
   const refreshKioskSettingsInterval = 1000 * 30; // 30 seconds
 

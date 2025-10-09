@@ -1,4 +1,6 @@
-export const UserWelcomeStyles = () => ({
+import { CSSPropertiesType } from '@/interfaces/modal';
+
+export const UserWelcomeStyles = (): CSSPropertiesType => ({
   header: {
     fontSize: '40px',
     lineHeight: '28.8px',

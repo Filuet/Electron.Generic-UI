@@ -1,3 +1,4 @@
+import { JSX } from 'react';
 import { PageRoute } from '@/interfaces/modal';
 import { useAppDispatch } from '@/redux/core/utils/reduxHook';
 import { setActivePage } from '@/redux/features/pageNavigation/navigationSlice';
@@ -10,14 +11,14 @@ import useTranslationHook from '@/localization/hook';
 import { Box, Container } from '@mui/system';
 import { SignUpPageStyles } from './signUpStyles';
 
-function SignUpPage() {
+function SignUpPage(): JSX.Element {
   const theme = useTheme();
   const { translate } = useTranslationHook();
   const globalStyles = GlobalStyles(theme);
   const signUpStyles = SignUpPageStyles();
   const dispatch = useAppDispatch();
 
-  const onPreviousPage = () => {
+  const onPreviousPage = (): void => {
     dispatch(setActivePage(PageRoute.LoginPage));
   };
   return (

@@ -1,10 +1,10 @@
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import './localization';
 import ThemeCustomization from './theme';
 import store from './redux/rootStore';
-import './main.css';
 import App from './App';
+import './main.css';
+import './localization';
 
 const rootElement = document.getElementById('root');
 

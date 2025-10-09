@@ -1,5 +1,5 @@
 import { TypographyOptions } from '@/interfaces/modal';
-import { Theme } from '@mui/material/styles';
+import { Theme } from '@mui/system';
 
 const Typography = (theme: Theme, fontFamily: string): TypographyOptions => ({
   fontFamily,

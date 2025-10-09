@@ -14,6 +14,7 @@ import {
 import * as signalR from '@microsoft/signalr';
 import { CustomerDetails } from '@/redux/features/customerDetails/types';
 import LoggingService from '@/utils/loggingService';
+import loggingService from '@/utils/loggingService';
 
 /**
  * Fetches the payment link and transaction ID.
@@ -149,9 +150,17 @@ export const cleanupSignalRConnection = async (
   if (connection) {
     try {
       await connection.stop();
-      console.log('SignalR connection cleaned up successfully');
+      loggingService.log({
+        level: 'info',
+        component: 'PaymentUtils',
+        message: 'SignalR connection stopped successfully'
+      });
     } catch (error) {
-      console.error('Error cleaning up SignalR connection:', error);
+      loggingService.log({
+        level: 'info',
+        component: 'paymentUtils.ts',
+        message: `Error cleaning up SignalR connection: ${error}`
+      });
     }
   }
 };

@@ -1,11 +1,11 @@
+import { JSX, useEffect, useState } from 'react';
 import { ImageObjectBase } from '@/interfaces/modal';
 import { ImageUtilsProps } from '@/interfaces/props';
 import { getData } from '@/services/axiosWrapper/apiService';
 import { getProductImageEndPoint } from '@/utils/endpoints';
 import { CircularProgress, Typography, Box } from '@mui/material';
-import { useEffect, useState } from 'react';
 
-function ImageUtils(props: ImageUtilsProps) {
+function ImageUtils(props: ImageUtilsProps): JSX.Element {
   const { skuCode, imgHeight, containerHeight, containerWidth } = props;
   const [image, setImage] = useState<ImageObjectBase | null>(null);
   const [loading, setLoading] = useState<boolean>(true);

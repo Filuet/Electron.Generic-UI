@@ -1,6 +1,7 @@
+import { CSS_MUI_PropertiesType } from '@/interfaces/modal';
 import { Theme } from '@mui/material';
 
-export const NavigationButtonStyles = (theme: Theme) => ({
+export const NavigationButtonStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
   stackStyle: {
     marginTop: '34px',
     '&:hover': {

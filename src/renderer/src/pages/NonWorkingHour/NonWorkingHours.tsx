@@ -4,8 +4,9 @@ import { useAppSelector } from '@/redux/core/utils/reduxHook';
 import { useKioskReset } from '@/hooks/useKioskReset';
 import UserWelcomeBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';
 import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png';
+import { JSX } from 'react';
 
-function NonWorkingHours() {
+function NonWorkingHours(): JSX.Element {
   const theme = useTheme();
   const globalStyles = GlobalStyles(theme);
 
@@ -14,8 +15,8 @@ function NonWorkingHours() {
 
   const { workingHours } = useAppSelector((state) => state.kioskSettings.kioskSettings);
 
-  const formatWorkingHours = (start: string, end: string) => {
-    const formatTime = (time: string) => {
+  const formatWorkingHours = (start: string, end: string): string => {
+    const formatTime = (time: string): string => {
       if (!/^(\d{2}):(\d{2}):(\d{2})$/.test(time)) {
         return 'Invalid time';
       }

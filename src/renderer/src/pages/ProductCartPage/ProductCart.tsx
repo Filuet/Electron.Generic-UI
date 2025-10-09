@@ -11,7 +11,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/core/utils/reduxHook';
 import ImageUtils from '@/components/ImageUtil/ImageUtil';
 import { addToCart, decrementProduct, removeProduct } from '@/redux/features/cart/cartSlice';
 import { ProductCartPageProps } from '@/interfaces/props';
-import { useEffect, useRef, useState } from 'react';
+import { JSX, useEffect, useRef, useState } from 'react';
 import { CartProduct } from '@/redux/features/cart/cartTypes';
 import ProductCard from '@/components/productCard/ProductCard';
 import OriflameModal from '@/components/oriflameModalUtils/OriflameModal';
@@ -19,7 +19,7 @@ import { setActivePage } from '@/redux/features/pageNavigation/navigationSlice';
 import { validateAddToCart } from '@/utils/cartValidationUtils';
 import { ProductCartStyles } from './productCartStyles';
 
-function ProductCart(props: ProductCartPageProps) {
+function ProductCart(props: ProductCartPageProps): JSX.Element {
   const { onCheckoutPageClose, productSuggestionList } = props;
   const theme = useTheme();
   const cartStyles = ProductCartStyles(theme);
@@ -34,7 +34,7 @@ function ProductCart(props: ProductCartPageProps) {
   const [showRightIcon, setShowRightIcon] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const onProductCardScroll = (direction: 'left' | 'right') => {
+  const onProductCardScroll = (direction: 'left' | 'right'): void => {
     if (containerRef.current) {
       const scrollAmount = direction === 'left' ? -167 : 167;
       containerRef.current.scrollBy({
@@ -43,7 +43,7 @@ function ProductCart(props: ProductCartPageProps) {
       });
     }
   };
-  const checkScrollIcons = () => {
+  const checkScrollIcons = (): void => {
     if (containerRef.current) {
       const isAtLeftEnd = containerRef.current.scrollLeft === 0;
       const isAtRightEnd =
@@ -59,7 +59,7 @@ function ProductCart(props: ProductCartPageProps) {
   };
 
   useEffect(() => {
-    const onWindowResize = () => {
+    const onWindowResize = (): void => {
       checkScrollIcons();
     };
     window.addEventListener('resize', onWindowResize);
@@ -69,7 +69,7 @@ function ProductCart(props: ProductCartPageProps) {
     };
   }, []);
   useEffect(() => {
-    const calculateTotalBPPoints = () => {
+    const calculateTotalBPPoints = (): void => {
       const totalBP = products.reduce((acc, product) => {
         return acc + product.bP_BRP * product.productCount;
       }, 0);
@@ -82,11 +82,11 @@ function ProductCart(props: ProductCartPageProps) {
       !products.some((cartProduct) => cartProduct.skuCode === productSuggestion.skuCode)
   );
 
-  const onCloseModal = () => {
+  const onCloseModal = (): void => {
     setShowProductLimitDialog(false);
   };
 
-  const onAddToCart = (product: CartProduct) => {
+  const onAddToCart = (product: CartProduct): void => {
     const productInCart = products.find((item) => item.skuCode === product.skuCode);
 
     const validationMessage = validateAddToCart(
@@ -123,7 +123,7 @@ function ProductCart(props: ProductCartPageProps) {
     );
   };
 
-  const onPaymentPage = () => {
+  const onPaymentPage = (): void => {
     dispatch(setActivePage(PageRoute.PaymentProcessingPage));
   };
 

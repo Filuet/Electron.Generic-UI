@@ -46,7 +46,6 @@ export default tseslint.config(
     rules: {
       // Use recommended rules for React Hooks
       ...eslintPluginReactHooks.configs.recommended.rules,
-      '@typescript-eslint/explicit-function-return-type': 'off',
       // Use Vite-specific rules for React Refresh (Fast Refresh)
       ...eslintPluginReactRefresh.configs.vite.rules
     }

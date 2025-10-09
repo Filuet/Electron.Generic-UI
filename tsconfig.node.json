@@ -9,7 +9,8 @@
     // All TypeScript files in the main process folder
     "src/main/**/*",
     // All TypeScript files in the preload folder
-    "src/preload/**/*"
+    "src/preload/**/*",
+    "src/shared/**/*"
   ],
 
   "compilerOptions": {

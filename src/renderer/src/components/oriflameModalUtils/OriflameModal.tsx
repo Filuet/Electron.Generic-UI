@@ -1,9 +1,10 @@
+import { JSX } from 'react';
 import { Button, Modal, Typography, useTheme } from '@mui/material';
 import { Box } from '@mui/system';
 import { OriflameModalProps } from '@/interfaces/props';
 import OriflameLogo from '../../assets/images/Logo/oriflameLogo.svg';
 
-function OriflameModal(oriflameModalProps: OriflameModalProps) {
+function OriflameModal(oriflameModalProps: OriflameModalProps): JSX.Element {
   const { content, isModalOpen, onCloseModal } = oriflameModalProps;
   const theme = useTheme();
   return (

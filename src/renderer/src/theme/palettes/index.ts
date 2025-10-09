@@ -5,6 +5,7 @@ import { darkDefault } from './paletteDefault/darkDefault';
 
 import { oriflameLight } from './themeOriflame/oriflameLight';
 import { oriflameDark } from './themeOriflame/oriflameDark';
+import { Theme } from '@mui/system';
 
 declare module '@mui/material/styles' {
   interface TypeText {
@@ -14,7 +15,7 @@ declare module '@mui/material/styles' {
 
 // ==============================|| THEME CREATION FUNCTION ||============================== //
 
-const Palette = (presetColor: string, mode: 'light' | 'dark') => {
+const Palette = (presetColor: string, mode: 'light' | 'dark'): Theme => {
   let colors;
   if (presetColor === 'themeOriflame') {
     colors = mode === 'dark' ? oriflameDark : oriflameLight;

@@ -38,9 +38,9 @@ export default defineConfig({
       // Use HTTPS with a local self-signed certificate (for development)
       https: {
         // Private key for the local HTTPS server
-        key: resolve('certificates/vendingmachine.key'),
+        key: resolve('certificates/vendingMachine.key'),
         // Certificate file for the local HTTPS server
-        cert: resolve('certificates/vendingmachine.cer')
+        cert: resolve('certificates/vendingMachine.crt')
       }
     }
   }

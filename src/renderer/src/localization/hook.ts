@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { TranslationKey } from '@/localization/types';
+import { TranslationHookReturnType, TranslationKey } from '@/localization/types';
 
-const useTranslationHook = () => {
+const useTranslationHook = (): TranslationHookReturnType => {
   const { t } = useTranslation();
 
   const translate = (key: TranslationKey): string => {

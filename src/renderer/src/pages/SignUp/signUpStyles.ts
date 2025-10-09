@@ -1,4 +1,6 @@
-export const SignUpPageStyles = () => ({
+import { CSSPropertiesType } from '@/interfaces/modal';
+
+export const SignUpPageStyles = (): CSSPropertiesType => ({
   header: {
     fontSize: '40px',
     lineHeight: '48px',

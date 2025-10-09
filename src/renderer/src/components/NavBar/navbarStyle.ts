@@ -1,6 +1,7 @@
+import { CSSPropertiesType } from '@/interfaces/modal';
 import { Theme } from '@mui/material';
 
-export const NavBarStyles = (theme: Theme) => ({
+export const NavBarStyles = (theme: Theme): CSSPropertiesType => ({
   navbarLogo: {
     width: '8.625rem',
     // height: '2.188rem',

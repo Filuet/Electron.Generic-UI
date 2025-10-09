@@ -2,7 +2,7 @@
   "name": "generic-ui",
   "version": "1.0.0",
   "description": "Kiosk E-Commerce App",
-  "main": "./out/main/index.js",
+  "main": "./out/main/main.js",
   "author": "https://ogmento.io/",
   "homepage": "https://ogmento.io/",
   "scripts": {
@@ -38,14 +38,29 @@
     "dayjs": "^1.11.13",
     "electron-updater": "^6.3.9",
     "formik": "^2.4.6",
+    "https": "^1.0.0",
     "i18next": "^25.2.1",
+    "lodash": "^4.17.21",
+    "moment-timezone": "^0.6.0",
     "react-i18next": "^15.5.2",
     "react-redux": "^9.2.0",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
     "yup": "^1.6.1"
   },
   "build": {
     "appId": "Generic-UI",
     "productName": "Generic UI",
+    "asar": true,
+    "extraResources": [
+      {
+        "from": "certificates/",
+        "to": "certificates/",
+        "filter": [
+          "*.pem"
+        ]
+      }
+    ],
     "directories": {
       "buildResources": "resources",
       "output": "release"
@@ -98,3 +113,4 @@
     ]
   }
 }
+

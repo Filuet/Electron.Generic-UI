@@ -1,4 +1,6 @@
-export const ValidateOtpStyles = () => ({
+import { CSS_MUI_PropertiesType } from '@/interfaces/modal';
+
+export const ValidateOtpStyles = (): CSS_MUI_PropertiesType => ({
   header: { fontSize: '40px', lineHeight: '48px', marginTop: '32px' },
   helperText: {
     width: '379px',

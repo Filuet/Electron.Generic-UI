@@ -1,3 +1,4 @@
+import { JSX } from 'react';
 import { GlobalStyles } from '@/globalStyles/globalStyles';
 import { Typography, useTheme } from '@mui/material';
 import { Box, Container } from '@mui/system';
@@ -7,11 +8,11 @@ import { useAppDispatch, useAppSelector } from '@/redux/core/utils/reduxHook';
 import { setActivePage } from '@/redux/features/pageNavigation/navigationSlice';
 import { resetReduxStore } from '@/redux/core/utils/resetReduxStore';
 import LoggingService from '@/utils/loggingService';
+import { ThankYouPageStyles } from './thankYouPageStyles';
 import PaymentPageBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';
 import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png';
-import { ThankYouPageStyles } from './thankYouPageStyles';
 
-function ThankyouPage() {
+function ThankyouPage(): JSX.Element {
   const theme = useTheme();
   const globalStyles = GlobalStyles(theme);
   const thankyouPageStyles = ThankYouPageStyles();

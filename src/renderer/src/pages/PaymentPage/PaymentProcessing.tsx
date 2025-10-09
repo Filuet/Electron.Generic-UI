@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { JSX, useEffect, useRef, useState } from 'react';
 import { Box, Container } from '@mui/system';
 import { GlobalStyles } from '@/globalStyles/globalStyles';
 import { Button, CircularProgress, Typography, useTheme } from '@mui/material';
@@ -10,6 +10,7 @@ import {
   DispenseStatus,
   LogLevel,
   PageRoute,
+  PaymentProcessingError,
   PaymentStatus,
   UpdateDispenseStatusModal
 } from '@/interfaces/modal';
@@ -28,13 +29,9 @@ import {
 } from './paymentUtils';
 import PaymentPageBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';
 import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png';
+import loggingService from '@/utils/loggingService';
 
-interface PaymentProcessingError {
-  message: string;
-  code?: string;
-}
-
-function PaymentProcessing() {
+function PaymentProcessing(): JSX.Element {
   const theme = useTheme();
   const globalStyles = GlobalStyles(theme);
   const { translate } = useTranslationHook();
@@ -48,7 +45,7 @@ function PaymentProcessing() {
   const dispatch = useAppDispatch();
   const [isPaymentProcessing, setIsPaymentProcessing] = useState<boolean>(false);
   const connectionRef = useRef<signalR.HubConnection | null>(null);
-  const cleanupConnection = async (reason: string) => {
+  const cleanupConnection = async (reason: string): Promise<void> => {
     if (connectionRef.current) {
       await LoggingService.log({
         level: LogLevel.INFO,
@@ -60,7 +57,7 @@ function PaymentProcessing() {
     }
   };
   const existingOrderCode = useAppSelector((state) => state.cart.orderCode);
-  const onNextPage = async (orderCodeToUse: string) => {
+  const onNextPage = async (orderCodeToUse: string): Promise<void> => {
     const updateDispenseRequest: UpdateDispenseStatusModal = {
       orderCode: orderCodeToUse,
       status: DispenseStatus.Started
@@ -75,10 +72,20 @@ function PaymentProcessing() {
       updateDispenseRequest
     )
       .then(() => {
-        console.log('dispense status: started, updated successfully');
+        loggingService.log({
+          level: 'info',
+          message: `Dispense status updated to Started for order code: ${orderCodeToUse}`,
+          component: 'PaymentProcessing',
+          data: { orderCode: orderCodeToUse }
+        });
       })
       .catch(() => {
-        console.log('dispense status: started, update failed');
+        loggingService.log({
+          level: 'error',
+          message: `Failed to update dispense status for order code: ${orderCodeToUse}`,
+          component: 'PaymentProcessing',
+          data: { orderCode: orderCodeToUse }
+        });
       });
     dispatch(setActivePage(PageRoute.ProductCollectionPage));
   };
@@ -86,7 +93,7 @@ function PaymentProcessing() {
     connectionObject: signalR.HubConnection,
     transactionId: string,
     orderCode: string
-  ) => {
+  ): void => {
     connectionObject.on('ReceivePaymentStatus', async function GetPaymentStatus(message: string) {
       let paymentStatusResponse: PaymentStatus;
       try {
@@ -125,11 +132,15 @@ function PaymentProcessing() {
       setIsPaymentProcessing(false);
     });
 
-    const startConnection = () => {
+    const startConnection = (): void => {
       connectionObject
         .start()
         .then(() => {
-          console.log('Connected to SignalR hub');
+          loggingService.log({
+            level: 'info',
+            message: 'SignalR connection started successfully',
+            component: 'PaymentProcessing'
+          });
         })
         .catch((err) => {
           console.error('Connection failed: ', err);
@@ -145,19 +156,38 @@ function PaymentProcessing() {
     };
   }, []);
 
-  const openPaymentWindowInNewTab = (link: string) => {
-    console.log('Attempting to open payment window with link:', link);
+  const openPaymentWindowInNewTab = async (link: string): Promise<void> => {
+    loggingService.log({
+      level: 'info',
+      component: 'PaymentProcessing',
+      message: `Attempting to open payment window with link: ${link}`
+    });
 
     try {
-      window.open(link, '_blank', 'noreferrer');
-      console.log('Payment window opening attempted');
+      const success = await window.electron.payment.open(link);
+
+      if (success) {
+        loggingService.log({
+          level: 'info',
+          component: 'PaymentProcessing',
+          message: 'Payment window opened successfully'
+        });
+      } else {
+        loggingService.log({
+          level: 'warn',
+          component: 'PaymentProcessing',
+          message: 'Failed to open payment window (possibly already open or invalid link)',
+          data: { link }
+        });
+        dispatch(setPaymentStatus(PaymentStatus.NotFound));
+        setIsPaymentProcessing(false);
+      }
     } catch (error) {
       const paymentError = error as PaymentProcessingError;
-      console.error('Error opening payment window:', paymentError);
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.ERROR,
         component: 'PaymentProcessing',
-        message: `Failed to open payment window: ${paymentError.message}`,
+        message: `Exception occurred while opening payment window: ${paymentError.message}`,
         data: { error: paymentError, link }
       });
       dispatch(setPaymentStatus(PaymentStatus.NotFound));
@@ -165,7 +195,7 @@ function PaymentProcessing() {
     }
   };
 
-  const onPaymentProcessing = async () => {
+  const onPaymentProcessing = async (): Promise<void> => {
     await LoggingService.log({
       level: LogLevel.INFO,
       component: 'PaymentProcessing',
@@ -201,7 +231,7 @@ function PaymentProcessing() {
       setIsPaymentLinkGenerationFailed(true);
     }
   };
-  const retryPayment = async () => {
+  const retryPayment = async (): Promise<void> => {
     await cleanupConnection('Retrying payment');
     await onPaymentProcessing();
   };
@@ -209,7 +239,7 @@ function PaymentProcessing() {
     onPaymentProcessing();
   }, []);
 
-  const renderPaymentStatusMessage = () => {
+  const renderPaymentStatusMessage = (): string => {
     switch (paymentStatus) {
       case PaymentStatus.Approved:
         return translate('paymentSuccessful');
@@ -234,7 +264,7 @@ function PaymentProcessing() {
         return translate('paymentNotFound');
     }
   };
-  const onPreviousPage = () => {
+  const onPreviousPage = (): void => {
     dispatch(setActivePage(PageRoute.HomePage));
   };
 

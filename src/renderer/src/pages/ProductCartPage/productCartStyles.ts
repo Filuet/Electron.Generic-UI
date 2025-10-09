@@ -1,6 +1,7 @@
+import { CSSPropertiesType } from '@/interfaces/modal';
 import { Theme } from '@mui/material';
 
-export const ProductCartStyles = (theme: Theme) => ({
+export const ProductCartStyles = (theme: Theme): CSSPropertiesType => ({
   cartHeaderContainer: {
     display: 'flex',
     justifyContent: 'space-between',

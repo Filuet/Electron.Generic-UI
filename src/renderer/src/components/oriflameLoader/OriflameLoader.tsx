@@ -1,9 +1,9 @@
 import { Backdrop, Typography, useTheme, Box, CircularProgress } from '@mui/material';
 import { OriflameLoaderProp } from '@/interfaces/props';
-
+import { JSX } from 'react';
 import OriflameLogo from '../../assets/images/Logo/oriflameLogo.svg';
 
-function OriflameLoader(props: OriflameLoaderProp) {
+function OriflameLoader(props: OriflameLoaderProp): JSX.Element {
   const { isLoading, message } = props;
   const theme = useTheme();
 
