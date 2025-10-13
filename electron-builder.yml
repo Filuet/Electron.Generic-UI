@@ -1,5 +1,5 @@
 appId: ogmento.generic.ui
-productName: generic-ui
+productName: GenericUI
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: generic-ui
+  executableName: GenericUI
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -40,6 +40,6 @@ appImage:
 npmRebuild: false
 publish:
   provider: generic
-  url: https://example.com/auto-updates
+  url: https://github.com/Filuet/Electron.Generic-UI
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/

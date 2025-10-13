@@ -13,7 +13,7 @@ export const windowProdSettings: BrowserWindowConstructorOptions = {
   show: false, // Don't show window until it's ready (use ready-to-show)
   center: true, // Center the window on the screen
   autoHideMenuBar: true, // Hide menu bar unless Alt key is pressed
-  title: 'Generic-UI', // Window title
+  title: 'GenericUI', // Window title
   webPreferences: {
     preload: resolve(__dirname, '../../out/preload/preload.js'), // Preload script path
     sandbox: false, // Disable sandbox for better compatibility (enable with caution)
