@@ -38,7 +38,7 @@ if (!gotTheLock) {
     autoUpdater.setFeedURL({
       provider: 'github',
       owner: 'Filuet',
-      repo: 'Temp'
+      repo: 'Electron.Generic-UI'
     });
 
     if (mainWindow) setupVideoWatcher(mainWindow);
