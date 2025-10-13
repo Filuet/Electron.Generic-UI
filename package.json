@@ -62,13 +62,6 @@
         ]
       }
     ],
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "AnkitSharma745",
-        "repo": "Electron.Generic-UI"
-      }
-    ],
     "directories": {
       "buildResources": "resources",
       "output": "release"
@@ -83,6 +76,13 @@
       "target": "nsis",
       "icon": "build/icon.ico"
     },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "AnkitSharma745",
+        "repo": "Electron.Generic-UI"
+      }
+    ],
     "nsis": {
       "oneClick": true,
       "perMachine": true,

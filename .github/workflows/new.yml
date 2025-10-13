@@ -3,6 +3,7 @@ name: Build and Release
 on:
   push:
     tags:
+      - 'test/auto-deployment'
       - 'v*' # Runs only when you push a version tag like v1.0.0
 
 jobs:

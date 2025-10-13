@@ -35,6 +35,12 @@ if (!gotTheLock) {
 
     registerAllIpcHandlers();
 
+    autoUpdater.setFeedURL({
+      provider: 'github',
+      owner: 'AnkitSharma745',
+      repo: 'Temp'
+    });
+
     if (mainWindow) setupVideoWatcher(mainWindow);
     autoUpdater.autoDownload = true;
     autoUpdater.autoInstallOnAppQuit = true;
