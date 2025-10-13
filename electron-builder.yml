@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: ogmento.generic.ui
 productName: generic-ui
 directories:
   buildResources: build

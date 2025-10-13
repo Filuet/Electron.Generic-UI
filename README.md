@@ -42,7 +42,7 @@ pnpm run dev
 
 ```javascript
 "build": {
-"appId": "Generic-UI",
+"appId": "ogmento.generic.ui",
 "productName": "Generic UI",
 "directories": {
 "buildResources": "resources",
@@ -89,7 +89,6 @@ This document explains the ESLint configuration used in your Electron + React + 
 
 - **Purpose:** Provides base ESLint rules for TypeScript projects in Electron apps.
 - **Contents:**
-
   - `@typescript-eslint/eslint-plugin`
   - `@typescript-eslint/parser`
   - Recommended rules for:
@@ -116,7 +115,6 @@ This document explains the ESLint configuration used in your Electron + React + 
 
 - **Purpose:** Provides linting rules for React code.
 - **Configs Used:**
-
   - `eslintPluginReact.configs.flat.recommended`
     - Includes rules like:
       - `react/no-deprecated`

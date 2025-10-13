@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron';
+import { autoUpdater } from 'electron-updater';
 import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { setupVideoWatcher } from './services/videoFilesService/videoFilesWatcher';
 import registerAllIpcHandlers from './ipcHandlers/registerAllIpcHandlers';
@@ -35,6 +36,13 @@ if (!gotTheLock) {
     registerAllIpcHandlers();
 
     if (mainWindow) setupVideoWatcher(mainWindow);
+    autoUpdater.autoDownload = true;
+    autoUpdater.autoInstallOnAppQuit = true;
+    autoUpdater.checkForUpdatesAndNotify();
+
+    autoUpdater.on('update-downloaded', () => {
+      autoUpdater.quitAndInstall(false, true);
+    });
 
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) {
