@@ -1,6 +1,6 @@
 {
   "name": "generic-ui",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Kiosk E-Commerce App",
   "main": "./out/main/main.js",
   "author": "https://ogmento.io/",
@@ -79,7 +79,7 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "AnkitSharma745",
+        "owner": "Filuet",
         "repo": "Electron.Generic-UI"
       }
     ],

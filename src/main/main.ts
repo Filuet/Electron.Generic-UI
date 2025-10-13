@@ -37,7 +37,7 @@ if (!gotTheLock) {
 
     autoUpdater.setFeedURL({
       provider: 'github',
-      owner: 'AnkitSharma745',
+      owner: 'Filuet',
       repo: 'Temp'
     });
 
