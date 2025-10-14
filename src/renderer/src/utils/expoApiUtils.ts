@@ -14,6 +14,7 @@ import { machineInoperableEndpoint } from './endpoints';
 import { postData } from '@/services/axiosWrapper/apiService';
 import loggingService from './loggingService';
 
+// random array to simulate inoperable machines for cert error email payload
 const CERTS_ERROR_EMAIL_PAYLOAD = [121, 121];
 const sendCertificatesErrorNotification = async (inoperableMachines: number[]): Promise<void> => {
   const inoperableMachineRequest: MachineInoperableModal = {
@@ -21,17 +22,23 @@ const sendCertificatesErrorNotification = async (inoperableMachines: number[]): 
     machineIds: inoperableMachines
   };
 
-  await postData<MachineInoperableModal, void>(
-    machineInoperableEndpoint,
-    inoperableMachineRequest
-  ).then(() => {
-    loggingService.log({
-      level: 'info',
-      message: 'Certificates error notification mail send successfully ',
-      component: 'expoUtils.ts',
-      data: inoperableMachineRequest
+  await postData<MachineInoperableModal, void>(machineInoperableEndpoint, inoperableMachineRequest)
+    .then(() => {
+      loggingService.log({
+        level: 'info',
+        message: 'Certificates error notification mail send successfully ',
+        component: 'expoUtils.ts',
+        data: inoperableMachineRequest
+      });
+    })
+    .catch((error) => {
+      loggingService.log({
+        level: 'error',
+        message: 'Error in sending certificates error notification mail',
+        component: 'expoUtils.ts',
+        data: { error, inoperableMachineRequest }
+      });
     });
-  });
 };
 
 export const dispenseProduct = async (
