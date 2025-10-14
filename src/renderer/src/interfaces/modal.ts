@@ -403,3 +403,9 @@ export interface ExtendedPerformance extends Performance {
     totalJSHeapSize: number;
   };
 }
+
+export interface ApiResponse<T> {
+  status: boolean;
+  data: T;
+  error: unknown;
+}

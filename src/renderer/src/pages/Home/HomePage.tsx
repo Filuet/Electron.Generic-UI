@@ -90,7 +90,7 @@ function HomePage(): JSX.Element {
             });
         } else {
           loggingService.log({
-            level: 'error',
+            level: LogLevel.INFO,
             message: 'The Planogram json from ExpoExtractor and the API are identical.',
             component: 'HomePage.tsx'
           });
@@ -114,7 +114,7 @@ function HomePage(): JSX.Element {
         setLoading(false);
       } catch (error) {
         loggingService.log({
-          level: 'error',
+          level: LogLevel.ERROR,
           message: 'Error fetching product data from API',
           component: 'HomePage.tsx',
           data: { error }

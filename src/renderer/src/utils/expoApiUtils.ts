@@ -6,18 +6,15 @@ import {
   RouteUpdateRequest,
   MachineStatus,
   PogRoute,
-  MachineInoperableModal
+  MachineInoperableModal,
+  ApiResponse
 } from '@/interfaces/modal';
 import { CartProduct } from '@/redux/features/cart/cartTypes';
 import { machineInoperableEndpoint } from './endpoints';
 import { postData } from '@/services/axiosWrapper/apiService';
 import loggingService from './loggingService';
-interface ApiResponse<T> {
-  status: boolean;
-  data: T;
-  error: unknown;
-}
 
+const CERTS_ERROR_EMAIL_PAYLOAD = [121, 121];
 const sendCertificatesErrorNotification = async (inoperableMachines: number[]): Promise<void> => {
   const inoperableMachineRequest: MachineInoperableModal = {
     kioskName: import.meta.env.VITE_KIOSK_NAME,
@@ -52,7 +49,7 @@ export const getDispenseStatus = async (): Promise<ApiResponse<MachineStatus>> =
   const response = await window.electron.expo.getDispenseStatus();
   if (!response.status && response.error) {
     if (response.error === 'self signed certificate') {
-      sendCertificatesErrorNotification([121, 121]);
+      sendCertificatesErrorNotification(CERTS_ERROR_EMAIL_PAYLOAD);
     }
   }
   return response;

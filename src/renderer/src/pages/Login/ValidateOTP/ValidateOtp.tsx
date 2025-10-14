@@ -165,12 +165,6 @@ function ValidateOtp(): JSX.Element {
             message: `Machine ${machineId} unlocked successfully.`,
             data: { machineId, response }
           });
-          loggingService.log({
-            level: 'info',
-            message: `Machine ${machineId} unlocked successfully`,
-            component: 'ValidateOtp.tsx',
-            data: { machineId, response }
-          });
         } else {
           LoggingService.log({
             level: LogLevel.ERROR,
@@ -179,12 +173,6 @@ function ValidateOtp(): JSX.Element {
             data: { machineId, response }
           });
           setUnlockMachineMessage(`Failed to unlock the Machine ${machineId}.`);
-          loggingService.log({
-            level: 'error',
-            message: `Failed to unlock the Machine ${machineId}`,
-            component: 'ValidateOtp.tsx',
-            data: { machineId, response }
-          });
         }
         if (apiResponse.error && !apiResponse.status) {
           setUnlockMachineMessage(`Failed to unlock the Machine ${machineId}.`);
@@ -192,8 +180,8 @@ function ValidateOtp(): JSX.Element {
       })
       .catch((err) => {
         loggingService.log({
-          level: 'error',
-          message: `Error in unlocking Machine ${machineId} `,
+          level: LogLevel.ERROR,
+          message: `Error while accessing electron expo api`,
           component: 'ValidateOtp.tsx',
           data: { err }
         });

@@ -37,18 +37,6 @@ export const initiatePayment = async (
   transactionId: string;
   orderCode: string;
 } | null> => {
-  // const transactionModal: TransactionModel = {
-  //   value: totalPrice,
-  //   fullName: 'minato',
-  //   code: '8870784905',
-  //   customerId: '9942197019',
-  //   isVIP: true,
-  //   kioskName: import.meta.env.VITE_KIOSK_NAME,
-  //   order: products.map((product) => ({
-  //     skuCode: product.skuCode,
-  //     quantity: product.productCount,
-  //   })),
-  // };
   const transactionModal: TransactionModel = {
     value: totalPrice,
     fullName: customerDetails.customerName,
@@ -151,13 +139,13 @@ export const cleanupSignalRConnection = async (
     try {
       await connection.stop();
       loggingService.log({
-        level: 'info',
+        level: LogLevel.INFO,
         component: 'PaymentUtils',
         message: 'SignalR connection stopped successfully'
       });
     } catch (error) {
       loggingService.log({
-        level: 'info',
+        level: LogLevel.ERROR,
         component: 'paymentUtils.ts',
         message: `Error cleaning up SignalR connection: ${error}`
       });
