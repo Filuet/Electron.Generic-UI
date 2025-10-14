@@ -20,7 +20,7 @@ import Badge from '@mui/material/Badge';
 import useTranslationHook from '@/localization/hook';
 import NoDataUtils from '@/components/NoDataUtils/NoDataUtils';
 import ProductCard from '@/components/productCard/ProductCard';
-import { ProductDataModal, Category, PogRoute } from '@/interfaces/modal';
+import { ProductDataModal, Category, PogRoute, LogLevel } from '@/interfaces/modal';
 import { getData } from '@/services/axiosWrapper/apiService';
 import {
   oriflameProductApi,
@@ -81,7 +81,12 @@ function HomePage(): JSX.Element {
               dispatch(setPlanogramJson(response));
             })
             .catch((err) => {
-              console.error('Error updating planogram json in expo extractor', err);
+              loggingService.log({
+                level: LogLevel.ERROR,
+                message: 'Error updating planogram json in expo extractor',
+                component: 'HomePage',
+                data: { error: JSON.stringify(err), kioskName }
+              });
             });
         } else {
           loggingService.log({
@@ -93,7 +98,12 @@ function HomePage(): JSX.Element {
         // }
       })
       .catch((err) => {
-        console.error('Error fetching planogram json from ogmentoAPI', err);
+        loggingService.log({
+          level: LogLevel.ERROR,
+          message: 'Error fetching planogram json from ogmentoAPI',
+          component: 'HomePage',
+          data: { error: JSON.stringify(err), kioskName }
+        });
       });
   }, []);
   useEffect(() => {

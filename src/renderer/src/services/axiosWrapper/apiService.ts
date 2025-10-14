@@ -97,6 +97,16 @@ export const getStreamData = async <Response>(
             const parsedChunk = JSON.parse(buffer);
             partialData = [...partialData, ...parsedChunk];
           } catch (error) {
+            LoggingService.log({
+              level: LogLevel.ERROR,
+              message: 'Error parsing JSON in stream (final buffer)',
+              component: 'apiService',
+              data: {
+                error: JSON.stringify(error),
+                buffer,
+                endpoint
+              }
+            });
             console.error('Error parsing JSON:', error, buffer);
             throw new Error('Received invalid JSON');
           }
@@ -114,6 +124,16 @@ export const getStreamData = async <Response>(
             const parsedChunk = JSON.parse(line);
             partialData = [...partialData, ...parsedChunk];
           } catch (error) {
+            LoggingService.log({
+              level: LogLevel.ERROR,
+              message: 'Error parsing JSON in stream (line)',
+              component: 'apiService',
+              data: {
+                error: JSON.stringify(error),
+                line,
+                endpoint
+              }
+            });
             console.error('Error parsing JSON:', error, line);
             throw new Error('Received invalid JSON');
           }
@@ -127,6 +147,16 @@ export const getStreamData = async <Response>(
     await reader.read().then(processChunk);
     return partialData;
   } catch (error) {
+    LoggingService.log({
+      level: LogLevel.ERROR,
+      message: 'Error fetching stream data',
+      component: 'apiService',
+      data: {
+        error: JSON.stringify(error),
+        endpoint,
+        errorMessage: error instanceof Error ? error.message : 'Unknown error'
+      }
+    });
     console.error('Error fetching data:', error);
     if (error instanceof Error) {
       console.error('Error message:', error.message);

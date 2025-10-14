@@ -51,6 +51,15 @@ const refreshAuthToken = async (): Promise<string | null> => {
     }
     return null;
   } catch (error) {
+    LoggingService.log({
+      level: LogLevel.ERROR,
+      message: 'Token refresh failed',
+      component: 'axiosInstance',
+      data: {
+        error: JSON.stringify(error),
+        endpoint: kioskLoginEndpoint
+      }
+    });
     console.error('Token refresh failed:', error);
     // Clear token and redirect to maintenance page
     LocalStorageWrapper.removeItem(AUTH_TOKEN_KEY);

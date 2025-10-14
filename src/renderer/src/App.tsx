@@ -97,7 +97,12 @@ function App(): JSX.Element {
             });
           }
         } catch (err) {
-          console.error('Error getting video content:', err);
+          loggingService.log({
+            level: LogLevel.ERROR,
+            message: 'Error getting video content',
+            component: 'App',
+            data: { error: JSON.stringify(err), videoFileName: videoFilenames[currentVideoIndex] }
+          });
         }
       }
     }
@@ -115,7 +120,12 @@ function App(): JSX.Element {
           }
         })
         .catch((err) => {
-          console.error('Error fetching video filenames:', err);
+          loggingService.log({
+            level: LogLevel.ERROR,
+            message: 'Error fetching video filenames',
+            component: 'App',
+            data: { error: JSON.stringify(err) }
+          });
         });
     }
 

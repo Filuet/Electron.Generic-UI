@@ -78,7 +78,7 @@ export const initiatePayment = async (
       level: LogLevel.ERROR,
       component: 'PaymentUtils',
       message: `Request body for TransactionModel`,
-      data: { transactionModal }
+      data: { transactionModal, error: JSON.stringify(error) }
     });
     console.error('Error fetching payment link:', error);
     return null;
@@ -121,7 +121,7 @@ export const createOrder = async (
       level: LogLevel.ERROR,
       component: 'PaymentUtils',
       message: `Request body for OrderModal`,
-      data: { orderModal }
+      data: { orderModal, error: JSON.stringify(error) }
     });
     console.error('Error creating order:', error);
     return null;

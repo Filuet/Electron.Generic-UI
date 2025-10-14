@@ -117,7 +117,20 @@ function PaymentProcessing(): JSX.Element {
           throw new Error('Invalid payment status');
         }
       } catch (error) {
-        console.error('Error handling payment status:', error);
+        loggingService.log({
+          level: LogLevel.ERROR,
+          message: 'Error handling payment status',
+          component: 'PaymentProcessing',
+          data: {
+            error: JSON.stringify(error),
+            transactionId,
+            orderCode,
+            products,
+            customerDetails,
+            phoneNumber,
+            totalPrice
+          }
+        });
         paymentStatusResponse = PaymentStatus.NotFound;
 
         // Clean up connection for error case as well
@@ -143,7 +156,12 @@ function PaymentProcessing(): JSX.Element {
           });
         })
         .catch((err) => {
-          console.error('Connection failed: ', err);
+          loggingService.log({
+            level: LogLevel.ERROR,
+            message: 'SignalR connection failed',
+            component: 'PaymentProcessing',
+            data: { error: JSON.stringify(err) }
+          });
         });
     };
 

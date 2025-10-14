@@ -237,8 +237,9 @@ function ProductCollection(): JSX.Element {
           LoggingService.log({
             level: LogLevel.ERROR,
             component: 'ProductCollection',
-            message: 'Request body for failed undispensed products email',
+            message: 'Failed to send undispensed products email',
             data: {
+              error: JSON.stringify(error),
               undispensedProducts
             }
           });
@@ -268,9 +269,11 @@ function ProductCollection(): JSX.Element {
           LoggingService.log({
             level: LogLevel.ERROR,
             component: 'ProductCollection',
-            message: 'Request body for failed dispensed error products email',
+            message: 'Failed to send dispensed error products email',
             data: {
-              unDispensedRequestModal
+              error: JSON.stringify(error),
+              unDispensedRequestModal,
+              dispenseErrorProducts
             }
           });
           console.error('Failed to send undispensed products email:', error);
@@ -298,9 +301,11 @@ function ProductCollection(): JSX.Element {
           LoggingService.log({
             level: LogLevel.ERROR,
             component: 'ProductCollection',
-            message: 'Request body for failed abandoned products email',
+            message: 'Failed to send abandoned products email',
             data: {
-              abandonedProductRequestModel
+              error: JSON.stringify(error),
+              abandonedProductRequestModel,
+              abandonedProducts
             }
           });
           console.error('Failed to send abandoned products email:', error);
@@ -336,6 +341,16 @@ function ProductCollection(): JSX.Element {
           updateDispensedErrorProductEndpoint,
           undispenseErrorProductsDto
         ).catch((err) => {
+          LoggingService.log({
+            level: LogLevel.ERROR,
+            component: 'ProductCollection',
+            message: 'Failed to update planogram quantity for empty and inactive belts',
+            data: {
+              error: JSON.stringify(err),
+              undispenseErrorProductsDto,
+              errorRoutes
+            }
+          });
           console.error('Failed to update planogram quantity for empty and inactive belts', err);
         });
       }
@@ -567,6 +582,20 @@ function ProductCollection(): JSX.Element {
               });
           }
         } catch (error) {
+          loggingService.log({
+            level: LogLevel.ERROR,
+            message: 'Error fetching dispense status',
+            component: 'ProductCollection',
+            data: {
+              error: JSON.stringify(error),
+              cartProducts: cartProducts.map(({ skuCode, productCount }) => ({
+                skuCode,
+                productCount
+              })),
+              dispensingStartedKeys,
+              dispenseFinishedKeys
+            }
+          });
           console.error('Error fetching dispense status:', error);
         }
       }, 2000);

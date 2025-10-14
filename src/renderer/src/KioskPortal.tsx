@@ -119,11 +119,15 @@ function KioskPortal(): JSX.Element {
               message: error.message
             }
           });
-          console.error('ExpoExtractor is not running:', error.message);
           dispatch(setActivePage(PageRoute.SupportContactPage));
           return;
         }
-        console.error('Error during dispenser check:', error);
+        loggingService.log({
+          level: LogLevel.ERROR,
+          component: 'KioskPortal',
+          message: 'Error during dispenser check',
+          data: { error: JSON.stringify(error) }
+        });
       }
     };
 
