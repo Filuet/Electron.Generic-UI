@@ -13,7 +13,6 @@ import {
 } from '@/interfaces/modal';
 import * as signalR from '@microsoft/signalr';
 import { CustomerDetails } from '@/redux/features/customerDetails/types';
-import LoggingService from '@/utils/loggingService';
 import loggingService from '@/utils/loggingService';
 
 /**
@@ -62,7 +61,7 @@ export const initiatePayment = async (
       orderCode: response.orderCode
     };
   } catch (error) {
-    LoggingService.log({
+    loggingService.log({
       level: LogLevel.ERROR,
       component: 'PaymentUtils',
       message: `Request body for TransactionModel`,
@@ -105,7 +104,7 @@ export const createOrder = async (
     );
     return response;
   } catch (error) {
-    LoggingService.log({
+    loggingService.log({
       level: LogLevel.ERROR,
       component: 'PaymentUtils',
       message: `Request body for OrderModal`,

@@ -23,7 +23,6 @@ import { setVideoFileNames } from './redux/features/welcomeScreen/welcomeScreenS
 import OriflameLoader from './components/oriflameLoader/OriflameLoader';
 import { resetReduxStore } from './redux/core/utils/resetReduxStore';
 import { setActivePage } from './redux/features/pageNavigation/navigationSlice';
-import LoggingService from './utils/loggingService';
 import loggingService from './utils/loggingService';
 
 function App(): JSX.Element {
@@ -233,7 +232,7 @@ function App(): JSX.Element {
               usagePercent
             }
           };
-          LoggingService.logPerformance(logPayload);
+          loggingService.logPerformance(logPayload);
         }
       };
 
@@ -271,7 +270,7 @@ function App(): JSX.Element {
         setIsModalOpen(false);
 
         if (customerId !== '' && customerName !== '') {
-          LoggingService.log({
+          loggingService.log({
             message: 'User logged out',
             level: LogLevel.INFO,
             data: {
@@ -305,7 +304,7 @@ function App(): JSX.Element {
           countdownTimer.current = null;
           setIsModalOpen(false);
           if (customerId !== '' && customerName !== '') {
-            LoggingService.log({
+            loggingService.log({
               message: 'User logged out',
               level: LogLevel.INFO,
               data: {

@@ -20,7 +20,6 @@ import { setExpoStatus, setInoperableMachines } from './redux/features/expoSetti
 import { checkMachinesStatus, delay, getActiveMachines } from './utils/dispenserUtils';
 import { getData } from './services/axiosWrapper/apiService';
 import { expoFailEndpoint } from './utils/endpoints';
-import LoggingService from './utils/loggingService';
 import SupportContact from './pages/UnderMaintenance/SupportContact';
 import loggingService from './utils/loggingService';
 
@@ -111,7 +110,7 @@ function KioskPortal(): JSX.Element {
           import.meta.env.VITE_IS_PROD === 'true'
         ) {
           getData(`${expoFailEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`);
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
             component: 'KioskPortal',
             message: `ExpoExtractor is not running`,

@@ -20,7 +20,7 @@ import { updateOrderCode, updateOrderNumber } from '@/redux/features/cart/cartSl
 import NavigationButtonUtils from '@/utils/navigationButtonUtils/NavigationButton';
 import { updateData } from '@/services/axiosWrapper/apiService';
 import { updateDispenseStatusEndpoint } from '@/utils/endpoints';
-import LoggingService from '@/utils/loggingService';
+import loggingService from '@/utils/loggingService';
 import {
   initiatePayment,
   createSignalRConnection,
@@ -29,7 +29,6 @@ import {
 } from './paymentUtils';
 import PaymentPageBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';
 import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png';
-import loggingService from '@/utils/loggingService';
 
 function PaymentProcessing(): JSX.Element {
   const theme = useTheme();
@@ -47,7 +46,7 @@ function PaymentProcessing(): JSX.Element {
   const connectionRef = useRef<signalR.HubConnection | null>(null);
   const cleanupConnection = async (reason: string): Promise<void> => {
     if (connectionRef.current) {
-      await LoggingService.log({
+      await loggingService.log({
         level: LogLevel.INFO,
         component: 'PaymentProcessing',
         message: `Cleaning up SignalR connection: ${reason}`
@@ -62,7 +61,7 @@ function PaymentProcessing(): JSX.Element {
       orderCode: orderCodeToUse,
       status: DispenseStatus.Started
     };
-    await LoggingService.log({
+    await loggingService.log({
       level: LogLevel.INFO,
       component: 'PaymentProcessing',
       message: `Updating dispense status to Started for order code: ${orderCodeToUse}`
@@ -214,7 +213,7 @@ function PaymentProcessing(): JSX.Element {
   };
 
   const onPaymentProcessing = async (): Promise<void> => {
-    await LoggingService.log({
+    await loggingService.log({
       level: LogLevel.INFO,
       component: 'PaymentProcessing',
       message: 'Starting payment processing'

@@ -11,7 +11,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/core/utils/reduxHook';
 import { LogLevel, PageRoute } from '@/interfaces/modal';
 import { setActivePage } from '@/redux/features/pageNavigation/navigationSlice';
 import { resetReduxStore } from '@/redux/core/utils/resetReduxStore';
-import LoggingService from '@/utils/loggingService';
+import loggingService from '@/utils/loggingService';
 import OriflameLogo from '../../assets/images/Logo/oriflameLogo.svg';
 import { NavBarStyles } from './navbarStyle';
 
@@ -24,7 +24,7 @@ function Navbar(): JSX.Element {
   const navbarStyle = NavBarStyles(theme);
   const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
   const onLogout = (): void => {
-    LoggingService.log({
+    loggingService.log({
       message: 'User logged out',
       level: LogLevel.INFO,
       data: {

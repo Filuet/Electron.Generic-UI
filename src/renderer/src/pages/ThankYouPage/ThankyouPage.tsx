@@ -7,7 +7,7 @@ import { LogLevel, PageRoute } from '@/interfaces/modal';
 import { useAppDispatch, useAppSelector } from '@/redux/core/utils/reduxHook';
 import { setActivePage } from '@/redux/features/pageNavigation/navigationSlice';
 import { resetReduxStore } from '@/redux/core/utils/resetReduxStore';
-import LoggingService from '@/utils/loggingService';
+import loggingService from '@/utils/loggingService';
 import { ThankYouPageStyles } from './thankYouPageStyles';
 import PaymentPageBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';
 import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png';
@@ -21,7 +21,7 @@ function ThankyouPage(): JSX.Element {
   const customerName = useAppSelector((state) => state.customerDetails.customerName);
   const customerId = useAppSelector((state) => state.customerDetails.customerId);
   setTimeout(() => {
-    LoggingService.log({
+    loggingService.log({
       message: 'User logged out',
       level: LogLevel.INFO,
       data: {

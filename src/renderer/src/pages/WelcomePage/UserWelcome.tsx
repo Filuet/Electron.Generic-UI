@@ -15,11 +15,10 @@ import { oriflameUserDetailsEndpoint } from '@/utils/endpoints';
 import { AxiosError } from 'axios';
 import { getData } from '@/services/axiosWrapper/apiService';
 import { setCustomerDetails } from '@/redux/features/customerDetails/customerDetailsSlice';
-import LoggingService from '@/utils/loggingService';
+import loggingService from '@/utils/loggingService';
 import UserWelcomeBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';
 import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png';
 import { UserWelcomeStyles } from './UserWelcomeStyles';
-import loggingService from '@/utils/loggingService';
 
 function UserWelcomePage(): JSX.Element {
   const theme = useTheme();
@@ -51,7 +50,7 @@ function UserWelcomePage(): JSX.Element {
     await getData<CustomerDetails>(`${oriflameUserDetailsEndpoint}/${phoneNumber}`)
       .then((response) => {
         dispatch(setCustomerDetails(response));
-        LoggingService.log({
+        loggingService.log({
           level: LogLevel.INFO,
           component: 'UserWelcome',
           message: `Customer Logged In`,
@@ -78,7 +77,7 @@ function UserWelcomePage(): JSX.Element {
 
         if (res?.description && res.description.includes('Customer for telephone')) {
           setIsCustomerNotFound(true);
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
             component: 'UserWelcome',
             message: `Customer not found. Customer needs to Sign In`,
@@ -86,14 +85,14 @@ function UserWelcomePage(): JSX.Element {
           });
         } else if (res?.description && res.description.includes('Multiple customers found')) {
           setIsMultipleUserFound(true);
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
             component: 'UserWelcome',
             message: `Multiple customers found for the phone number`,
             data: { phoneNumber, error }
           });
         } else {
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
             component: 'UserWelcome',
             message: `Customer details API failed`,

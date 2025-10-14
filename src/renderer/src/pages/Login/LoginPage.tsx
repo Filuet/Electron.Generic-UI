@@ -22,7 +22,7 @@ import { JSX, useState } from 'react';
 import { setPhoneNumber } from '@/redux/features/customerLogin/customerLogin';
 import { requestOtp } from '@/redux/features/customerLogin/customerLoginThunk';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import LoggingService from '@/utils/loggingService';
+import loggingService from '@/utils/loggingService';
 import LoginPageBanner from '../../assets/images/Banners/LoginPage_Banner.png';
 import { LoginPageStyles } from './loginPageStyles';
 
@@ -96,7 +96,7 @@ function LoginPage(): JSX.Element {
         onNextPage(PageRoute.ValidateOtpPage);
       })
       .catch((err) => {
-        LoggingService.log({
+        loggingService.log({
           level: LogLevel.ERROR,
           component: 'LoginPage',
           message: `Error while requesting OTP`,

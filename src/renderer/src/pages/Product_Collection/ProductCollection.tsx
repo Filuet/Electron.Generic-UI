@@ -34,13 +34,12 @@ import {
   updateDispenseStatusEndpoint
 } from '@/utils/endpoints';
 import { checkMachinesStatus, getActiveMachines } from '@/utils/dispenserUtils';
-import LoggingService from '@/utils/loggingService';
+import loggingService from '@/utils/loggingService';
 import ProductCollectionBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';
 import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png';
 import ActivatedMachineImage from '../../assets/images/machines/ActivatedCurrentMachineImage.png';
 import DeactiveMachineImage from '../../assets/images/machines/DeactivateMachineImage.png';
 import { ProductCollectionStyles } from './productCollectionStyles';
-import loggingService from '@/utils/loggingService';
 
 function ProductCollection(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -113,7 +112,7 @@ function ProductCollection(): JSX.Element {
   useEffect(() => {
     async function startProductDispensing(): Promise<void> {
       setIsPending(true);
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.INFO,
         component: 'ProductCollection',
         message: 'Dispensing process started',
@@ -169,7 +168,7 @@ function ProductCollection(): JSX.Element {
         data: response
       });
     } catch (error) {
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.ERROR,
         component: 'ProductCollection',
         message: 'Request Body to update planogram',
@@ -234,7 +233,7 @@ function ProductCollection(): JSX.Element {
           undispensedProductsEndpoint,
           undispensedProducts
         ).catch((error) => {
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
             component: 'ProductCollection',
             message: 'Failed to send undispensed products email',
@@ -266,7 +265,7 @@ function ProductCollection(): JSX.Element {
           undispensedProductsEndpoint,
           unDispensedRequestModal
         ).catch((error) => {
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
             component: 'ProductCollection',
             message: 'Failed to send dispensed error products email',
@@ -298,7 +297,7 @@ function ProductCollection(): JSX.Element {
           notTakenProductsEndpoint,
           abandonedProductRequestModel
         ).catch((error) => {
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
             component: 'ProductCollection',
             message: 'Failed to send abandoned products email',
@@ -329,7 +328,7 @@ function ProductCollection(): JSX.Element {
           clientName: import.meta.env.VITE_KIOSK_CLIENT_NAME,
           routes
         };
-        LoggingService.log({
+        loggingService.log({
           level: LogLevel.ERROR,
           component: 'ProductCollection',
           message: 'Empty or Inactive belts',
@@ -341,7 +340,7 @@ function ProductCollection(): JSX.Element {
           updateDispensedErrorProductEndpoint,
           undispenseErrorProductsDto
         ).catch((err) => {
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
             component: 'ProductCollection',
             message: 'Failed to update planogram quantity for empty and inactive belts',
@@ -357,7 +356,7 @@ function ProductCollection(): JSX.Element {
 
       // Log dispenser errors
       if (unTrackedDispenseErrors.length > 0) {
-        LoggingService.log({
+        loggingService.log({
           level: LogLevel.ERROR,
           component: 'ProductCollection',
           message: 'Untracked dispense errors',
@@ -405,7 +404,7 @@ function ProductCollection(): JSX.Element {
 
       setUnTrackedDispenseErrors((prev) => [...prev, errorEntry]);
 
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.ERROR,
         component: 'ProductCollection',
         message: `${errorCode.toLowerCase()}- ${message}`,
@@ -430,7 +429,7 @@ function ProductCollection(): JSX.Element {
           checkDispenseErrors(machineStatus);
         });
         setIsDispensedProcessFinished(true);
-        LoggingService.log({
+        loggingService.log({
           level: LogLevel.INFO,
           component: 'ProductCollection',
           message: 'Dispensing process completed'
@@ -470,7 +469,7 @@ function ProductCollection(): JSX.Element {
               ...prev,
               { code: 'API_ERROR', message: 'Failed to fetch dispenser status' }
             ]);
-            LoggingService.log({
+            loggingService.log({
               level: LogLevel.ERROR,
               component: 'ProductCollection',
               message: 'Failed to fetch dispense status',
@@ -511,7 +510,7 @@ function ProductCollection(): JSX.Element {
                     }
                   }));
 
-                  LoggingService.log({
+                  loggingService.log({
                     level: LogLevel.INFO,
                     component: 'ProductCollection',
                     message: `Dispensing in process ${sku}`,
@@ -547,7 +546,7 @@ function ProductCollection(): JSX.Element {
               setIsPending(false);
               setIsReadyToPick(true);
 
-              LoggingService.log({
+              loggingService.log({
                 level: LogLevel.INFO,
                 component: 'ProductCollection',
                 message: 'Products ready for pickup',
@@ -564,7 +563,7 @@ function ProductCollection(): JSX.Element {
                   // as we want to start the animation again
                   setIsReadyToPick(false);
                   setIsPending(true);
-                  LoggingService.log({
+                  loggingService.log({
                     level: LogLevel.INFO,
                     component: 'ProductCollection',
                     message: `Dispensing finished for Machine ID: ${machineId}`,
@@ -574,7 +573,7 @@ function ProductCollection(): JSX.Element {
               }
               break;
             default:
-              LoggingService.log({
+              loggingService.log({
                 level: LogLevel.DEBUG,
                 component: 'ProductCollection',
                 message: `Status update: ${status.action}`,
@@ -648,7 +647,7 @@ function ProductCollection(): JSX.Element {
       updateDispenseStatusEndpoint,
       updateDispenseStatusRequest
     ).catch((err) => {
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.ERROR,
         component: 'ProductCollection',
         message: 'Request body for failed dispense status update',
@@ -699,7 +698,7 @@ function ProductCollection(): JSX.Element {
 
       console.groupEnd();
 
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.INFO,
         component: 'ProductCollection',
         message: 'Dispensing process summary',
