@@ -3,6 +3,7 @@ import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { setupVideoWatcher } from './services/videoFilesService/videoFilesWatcher';
 import registerAllIpcHandlers from './ipcHandlers/registerAllIpcHandlers';
 import { mainWindowObject } from './windows/mainWindow/mainWindowObject';
+import { autoUpdater } from 'electron-updater';
 import { dailyLogger } from './services/loggingService/loggingService';
 
 let mainWindow: BrowserWindow | null = null;
@@ -45,6 +46,34 @@ if (!gotTheLock) {
   });
 }
 
+await autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+  dailyLogger.log({
+    level: 'error',
+    message: 'Failed to check for updates',
+    component: 'main.ts',
+    data: JSON.stringify(err)
+  });
+});
+autoUpdater.autoDownload = true;
+autoUpdater.autoInstallOnAppQuit = true;
+
+autoUpdater.on('update-downloaded', () => {
+  autoUpdater.quitAndInstall(false, true);
+  dailyLogger.log({
+    level: 'info',
+    message: 'Update downloaded successfully,',
+    component: 'main.ts'
+  });
+});
+
+autoUpdater.on('error', (error) => {
+  dailyLogger.log({
+    level: 'error',
+    message: 'Error in auto-updater',
+    component: 'main.ts',
+    data: JSON.stringify(error)
+  });
+});
 // Quit app on Windows/Linux when all windows are closed
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
@@ -80,7 +109,7 @@ process.on('uncaughtException', (err) => {
   dailyLogger.log({
     level: 'error',
     message: 'uncaughtException in main process',
-    component: 'Main.ts',
+    component: 'main.ts',
     error: err
   });
   if (err) {
@@ -89,11 +118,24 @@ process.on('uncaughtException', (err) => {
 });
 
 process.on('unhandledRejection', (reason) => {
+  let errorDetails = '';
+
+  if (reason instanceof Error) {
+    errorDetails = `${reason.name}: ${reason.message}\n${reason.stack}`;
+  } else {
+    try {
+      errorDetails = JSON.stringify(reason, null, 2);
+    } catch (jsonErr) {
+      errorDetails = `Unserializable reason: ${String(reason)}, error during serialization: ${jsonErr}`;
+    }
+  }
+
   dailyLogger.log({
     level: 'error',
     message: 'Unhandled Promise Rejection',
     component: 'Main.ts',
-    error: reason
+    error: errorDetails
   });
+
   app.quit();
 });
