@@ -1,9 +1,9 @@
 import { app, BrowserWindow } from 'electron';
+import { autoUpdater } from 'electron-updater';
 import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { setupVideoWatcher } from './services/videoFilesService/videoFilesWatcher';
 import registerAllIpcHandlers from './ipcHandlers/registerAllIpcHandlers';
 import { mainWindowObject } from './windows/mainWindow/mainWindowObject';
-import { autoUpdater } from 'electron-updater';
 import { dailyLogger } from './services/loggingService/loggingService';
 
 let mainWindow: BrowserWindow | null = null;
@@ -45,15 +45,23 @@ if (!gotTheLock) {
     });
   });
 }
-
-await autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+try {
+  autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+    dailyLogger.log({
+      level: 'error',
+      message: 'Failed to check for updates',
+      component: 'main.ts',
+      data: JSON.stringify(err)
+    });
+  });
+} catch (err) {
   dailyLogger.log({
     level: 'error',
-    message: 'Failed to check for updates',
+    message: 'Error in auto-updater',
     component: 'main.ts',
     data: JSON.stringify(err)
   });
-});
+}
 autoUpdater.autoDownload = true;
 autoUpdater.autoInstallOnAppQuit = true;
 
