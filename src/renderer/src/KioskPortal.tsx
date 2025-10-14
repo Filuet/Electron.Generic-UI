@@ -20,8 +20,8 @@ import { setExpoStatus, setInoperableMachines } from './redux/features/expoSetti
 import { checkMachinesStatus, delay, getActiveMachines } from './utils/dispenserUtils';
 import { getData } from './services/axiosWrapper/apiService';
 import { expoFailEndpoint } from './utils/endpoints';
-import LoggingService from './utils/loggingService';
 import SupportContact from './pages/UnderMaintenance/SupportContact';
+import loggingService from './utils/loggingService';
 
 function KioskPortal(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -38,12 +38,17 @@ function KioskPortal(): JSX.Element {
   const checkDispenserStatus = async (attempts: number = 3): Promise<boolean> => {
     if (attempts === 0) {
       dispatch(setExpoStatus(false));
-      console.log('Status is not as expected after 3 attempts.');
+      loggingService.log({
+        level: 'info',
+        component: 'KioskPortal.tsx',
+        message: 'Dispenser is not reachable after multiple attempts',
+        data: { attempts: attempts }
+      });
       return false;
     }
 
-    const statusResult = await getDispenseStatus();
-
+    const apiResponse = await getDispenseStatus();
+    const statusResult = apiResponse.data;
     if (
       statusResult.status === 'success' &&
       statusResult.action === 'pending' &&
@@ -91,7 +96,12 @@ function KioskPortal(): JSX.Element {
         const dispenserStatus = await checkDispenserStatus();
         if (!dispenserStatus) {
           await resetStatus();
-          console.log('Expo Status has been reset');
+          loggingService.log({
+            level: 'info',
+            component: 'KioskPortal.tsx',
+            message: 'Dispenser is not reachable',
+            data: { dispenserStatus: dispenserStatus }
+          });
         }
       } catch (error) {
         if (
@@ -100,7 +110,7 @@ function KioskPortal(): JSX.Element {
           import.meta.env.VITE_IS_PROD === 'true'
         ) {
           getData(`${expoFailEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`);
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
             component: 'KioskPortal',
             message: `ExpoExtractor is not running`,
@@ -108,11 +118,15 @@ function KioskPortal(): JSX.Element {
               message: error.message
             }
           });
-          console.error('ExpoExtractor is not running:', error.message);
           dispatch(setActivePage(PageRoute.SupportContactPage));
           return;
         }
-        console.error('Error during dispenser check:', error);
+        loggingService.log({
+          level: LogLevel.ERROR,
+          component: 'KioskPortal',
+          message: 'Error during dispenser check',
+          data: { error: JSON.stringify(error) }
+        });
       }
     };
 

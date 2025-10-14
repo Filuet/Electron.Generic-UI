@@ -41,3 +41,5 @@ export interface LanguageModal {
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 export type TranslationKey = keyof LanguageModal;
+
+export type TranslationHookReturnType = { translate: (key: TranslationKey) => string };

@@ -13,7 +13,6 @@ import {
   useTheme
 } from '@mui/material';
 import { Box, Stack } from '@mui/system';
-// import { isEqual } from 'lodash';
 import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
 import { Search } from '@mui/icons-material';
@@ -21,7 +20,7 @@ import Badge from '@mui/material/Badge';
 import useTranslationHook from '@/localization/hook';
 import NoDataUtils from '@/components/NoDataUtils/NoDataUtils';
 import ProductCard from '@/components/productCard/ProductCard';
-import { ProductDataModal, Category, PogRoute } from '@/interfaces/modal';
+import { ProductDataModal, Category, PogRoute, LogLevel } from '@/interfaces/modal';
 import { getData } from '@/services/axiosWrapper/apiService';
 import {
   oriflameProductApi,
@@ -37,6 +36,7 @@ import { HomePageStyles } from './homePageStyle';
 import CategoryBanner from '../../assets/images/Banners/CategoryBanner.png';
 import { ProductPageStyles } from './productPageStyles';
 import HomePageBanner from '../../assets/images/Banners/TopHomePageBanner.png';
+import loggingService from '@/utils/loggingService';
 
 function HomePage(): JSX.Element {
   const theme = useTheme();
@@ -81,15 +81,29 @@ function HomePage(): JSX.Element {
               dispatch(setPlanogramJson(response));
             })
             .catch((err) => {
-              console.error('Error updating planogram json in expoextractor', err);
+              loggingService.log({
+                level: LogLevel.ERROR,
+                message: 'Error updating planogram json in expo extractor',
+                component: 'HomePage',
+                data: { error: JSON.stringify(err), kioskName }
+              });
             });
         } else {
-          console.log('The Planogram json from ExpoExtractor and the API are identical.');
+          loggingService.log({
+            level: LogLevel.INFO,
+            message: 'The Planogram json from ExpoExtractor and the API are identical.',
+            component: 'HomePage.tsx'
+          });
         }
         // }
       })
       .catch((err) => {
-        console.error('Error fetching planogram json from ogmentoAPI', err);
+        loggingService.log({
+          level: LogLevel.ERROR,
+          message: 'Error fetching planogram json from ogmentoAPI',
+          component: 'HomePage',
+          data: { error: JSON.stringify(err), kioskName }
+        });
       });
   }, []);
   useEffect(() => {
@@ -99,7 +113,12 @@ function HomePage(): JSX.Element {
         setProductData(response);
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        loggingService.log({
+          level: LogLevel.ERROR,
+          message: 'Error fetching product data from API',
+          component: 'HomePage.tsx',
+          data: { error }
+        });
       }
     };
 

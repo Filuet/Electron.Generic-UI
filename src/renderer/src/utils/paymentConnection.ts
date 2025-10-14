@@ -1,7 +1,7 @@
 import * as signalR from '@microsoft/signalr';
 import { LogLevel, PaymentStatus } from '@/interfaces/modal';
 import { createSignalRConnection } from '@/pages/PaymentPage/paymentUtils';
-import LoggingService from './loggingService';
+import loggingService from './loggingService';
 
 type PaymentHandlerProps = {
   onStatusChange: (status: PaymentStatus) => void;
@@ -39,7 +39,7 @@ export class PaymentConnectionManager {
       await this.cleanup();
     }
 
-    await LoggingService.log({
+    await loggingService.log({
       level: LogLevel.INFO,
       component: 'PaymentConnectionManager',
       message: `Initializing connection for transaction ${transactionId}`
@@ -68,14 +68,14 @@ export class PaymentConnectionManager {
       this.connection = null;
       try {
         await conn.stop();
-        await LoggingService.log({
+        await loggingService.log({
           level: LogLevel.INFO,
           component: 'PaymentConnectionManager',
           message: 'Connection closed and cleaned up'
         });
       } catch (error) {
         const connError = error as PaymentConnectionError;
-        await LoggingService.log({
+        await loggingService.log({
           level: LogLevel.ERROR,
           component: 'PaymentConnectionManager',
           message: 'Error stopping connection',
@@ -111,14 +111,14 @@ export class PaymentConnectionManager {
 
     try {
       await this.connection.start();
-      await LoggingService.log({
+      await loggingService.log({
         level: LogLevel.INFO,
         component: 'PaymentConnectionManager',
         message: 'SignalR connection established'
       });
     } catch (error) {
       const connectionError = error as PaymentConnectionError;
-      await LoggingService.log({
+      await loggingService.log({
         level: LogLevel.ERROR,
         component: 'PaymentConnectionManager',
         message: 'Connection failed',

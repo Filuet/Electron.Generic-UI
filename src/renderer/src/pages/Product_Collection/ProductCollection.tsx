@@ -20,7 +20,7 @@ import {
   MachineActiveStatus,
   LogLevel
 } from '@/interfaces/modal';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, JSX } from 'react';
 import { dispenseProduct, getAllStatuses, getDispenseStatus } from '@/utils/expoApiUtils';
 import { CartProduct } from '@/redux/features/cart/cartTypes';
 import { setActivePage } from '@/redux/features/pageNavigation/navigationSlice';
@@ -34,14 +34,14 @@ import {
   updateDispenseStatusEndpoint
 } from '@/utils/endpoints';
 import { checkMachinesStatus, getActiveMachines } from '@/utils/dispenserUtils';
-import LoggingService from '@/utils/loggingService';
+import loggingService from '@/utils/loggingService';
 import ProductCollectionBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';
 import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png';
 import ActivatedMachineImage from '../../assets/images/machines/ActivatedCurrentMachineImage.png';
 import DeactiveMachineImage from '../../assets/images/machines/DeactivateMachineImage.png';
 import { ProductCollectionStyles } from './productCollectionStyles';
 
-function ProductCollection() {
+function ProductCollection(): JSX.Element {
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const globalStyles = GlobalStyles(theme);
@@ -72,19 +72,19 @@ function ProductCollection() {
     {} as Record<string, number>
   );
   const inOperableMachines = useAppSelector((state) => state.expoExtractor.inoperableMachines);
-  const getRemainingQuantities = (): SKUInventory[] => {
-    return Object.entries(expectedQuantities).map(([sku, expected]) => {
-      const finished = Object.values(dispenseFinishedKeys).reduce(
-        (sum, item) => (item.sku === sku ? sum + item.count : sum),
-        0
-      );
+  // const getRemainingQuantities = (): SKUInventory[] => {
+  //   return Object.entries(expectedQuantities).map(([sku, expected]) => {
+  //     const finished = Object.values(dispenseFinishedKeys).reduce(
+  //       (sum, item) => (item.sku === sku ? sum + item.count : sum),
+  //       0
+  //     );
 
-      return {
-        sku,
-        count: expected - finished
-      };
-    });
-  };
+  //     return {
+  //       sku,
+  //       count: expected - finished
+  //     };
+  //   });
+  // };
   const [unTrackedDispenseErrors, setUnTrackedDispenseErrors] = useState<DispenserError[]>([]);
   const [isPending, setIsPending] = useState(false);
 
@@ -97,7 +97,7 @@ function ProductCollection() {
   const machineActiveStatus: MachineActiveStatus = useAppSelector(
     (state) => state.kioskSettings.kioskSettings.machines
   );
-  const checkMachines = async () => {
+  const checkMachines = async (): Promise<void> => {
     const activeMachines = getActiveMachines(machineActiveStatus);
     await checkMachinesStatus(activeMachines);
   };
@@ -110,9 +110,9 @@ function ProductCollection() {
     };
   }, []);
   useEffect(() => {
-    async function startProductDispensing() {
+    async function startProductDispensing(): Promise<void> {
       setIsPending(true);
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.INFO,
         component: 'ProductCollection',
         message: 'Dispensing process started',
@@ -146,7 +146,7 @@ function ProductCollection() {
     startProductDispensing();
   }, []);
 
-  const updatePlanogramForDispensedProducts = async (product: ProductAddress) => {
+  const updatePlanogramForDispensedProducts = async (product: ProductAddress): Promise<void> => {
     const planogramUpdateRequest: PlanogramUpdateRequest = {
       trayId: Number(product.trayId),
       beltId: Number(product.beltId),
@@ -161,9 +161,14 @@ function ProductCollection() {
         updateDispensedProductQuantityEndpoint,
         planogramUpdateRequest
       );
-      console.log(`API call to update planogram for SKU: ${product.sku} was successful`, response);
+      loggingService.log({
+        level: 'info',
+        component: 'ProductCollection',
+        message: `API call to update planogram for SKU: ${product.sku} was successful`,
+        data: response
+      });
     } catch (error) {
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.ERROR,
         component: 'ProductCollection',
         message: 'Request Body to update planogram',
@@ -171,7 +176,6 @@ function ProductCollection() {
           planogramUpdateRequest
         }
       });
-      console.error(`API call to update planogram for SKU: ${product.sku} failed`, error);
     }
   };
 
@@ -229,11 +233,12 @@ function ProductCollection() {
           undispensedProductsEndpoint,
           undispensedProducts
         ).catch((error) => {
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
             component: 'ProductCollection',
-            message: 'Request body for failed undispensed products email',
+            message: 'Failed to send undispensed products email',
             data: {
+              error: JSON.stringify(error),
               undispensedProducts
             }
           });
@@ -260,12 +265,14 @@ function ProductCollection() {
           undispensedProductsEndpoint,
           unDispensedRequestModal
         ).catch((error) => {
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
             component: 'ProductCollection',
-            message: 'Request body for failed dispensed error products email',
+            message: 'Failed to send dispensed error products email',
             data: {
-              unDispensedRequestModal
+              error: JSON.stringify(error),
+              unDispensedRequestModal,
+              dispenseErrorProducts
             }
           });
           console.error('Failed to send undispensed products email:', error);
@@ -290,12 +297,14 @@ function ProductCollection() {
           notTakenProductsEndpoint,
           abandonedProductRequestModel
         ).catch((error) => {
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
             component: 'ProductCollection',
-            message: 'Request body for failed abandoned products email',
+            message: 'Failed to send abandoned products email',
             data: {
-              abandonedProductRequestModel
+              error: JSON.stringify(error),
+              abandonedProductRequestModel,
+              abandonedProducts
             }
           });
           console.error('Failed to send abandoned products email:', error);
@@ -319,7 +328,7 @@ function ProductCollection() {
           clientName: import.meta.env.VITE_KIOSK_CLIENT_NAME,
           routes
         };
-        LoggingService.log({
+        loggingService.log({
           level: LogLevel.ERROR,
           component: 'ProductCollection',
           message: 'Empty or Inactive belts',
@@ -331,13 +340,23 @@ function ProductCollection() {
           updateDispensedErrorProductEndpoint,
           undispenseErrorProductsDto
         ).catch((err) => {
+          loggingService.log({
+            level: LogLevel.ERROR,
+            component: 'ProductCollection',
+            message: 'Failed to update planogram quantity for empty and inactive belts',
+            data: {
+              error: JSON.stringify(err),
+              undispenseErrorProductsDto,
+              errorRoutes
+            }
+          });
           console.error('Failed to update planogram quantity for empty and inactive belts', err);
         });
       }
 
       // Log dispenser errors
       if (unTrackedDispenseErrors.length > 0) {
-        LoggingService.log({
+        loggingService.log({
           level: LogLevel.ERROR,
           component: 'ProductCollection',
           message: 'Untracked dispense errors',
@@ -345,11 +364,12 @@ function ProductCollection() {
             unTrackedDispenseErrors
           }
         });
-        console.log('Dispenser errors:', unTrackedDispenseErrors);
-        // log(`Dispenser errors: ${JSON.stringify(dispenserErrors)}`);
       } else {
-        console.log('No dispenser errors occurred.');
-        //  log('No dispenser errors occurred.');
+        loggingService.log({
+          level: 'info',
+          component: 'ProductCollection',
+          message: 'No untracked dispense errors'
+        });
       }
     }
   }, [isDispensedProcessFinished]);
@@ -384,7 +404,7 @@ function ProductCollection() {
 
       setUnTrackedDispenseErrors((prev) => [...prev, errorEntry]);
 
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.ERROR,
         component: 'ProductCollection',
         message: `${errorCode.toLowerCase()}- ${message}`,
@@ -398,7 +418,7 @@ function ProductCollection() {
 
   // get all dispensing status when partially or zero sku dispensed
   useEffect(() => {
-    const getAllDispensingStatuses = async () => {
+    const getAllDispensingStatuses = async (): Promise<void> => {
       if (isFinalCheckCompleted) {
         const machineStatuses: MachineStatus[] = await getAllStatuses();
         const filteredStatuses = machineStatuses.filter(
@@ -409,19 +429,22 @@ function ProductCollection() {
           checkDispenseErrors(machineStatus);
         });
         setIsDispensedProcessFinished(true);
-        LoggingService.log({
+        loggingService.log({
           level: LogLevel.INFO,
           component: 'ProductCollection',
           message: 'Dispensing process completed'
         });
-        console.log('Dispensing Process completed');
+
         // Add setTimeout here
         setTimeout(() => {
           dispatch(setActivePage(PageRoute.ThankYouPage));
         }, 5000); // 5 seconds delay
-
-        console.log('Dispenser errors:', unTrackedDispenseErrors);
-        console.log('---------------------------');
+        loggingService.log({
+          level: 'info',
+          component: 'ProductCollection',
+          message: 'Dispensing process completed, Navigated to thank you page after 5 seconds',
+          data: { unTrackedDispenseErrors }
+        });
       }
     };
 
@@ -433,9 +456,26 @@ function ProductCollection() {
     if (!isDispensedProcessFinished) {
       statusCheckIntervalRef.current = setInterval(async () => {
         try {
-          const status: MachineStatus = await getDispenseStatus();
-          console.log('Dispense status:', status);
-
+          const apiResponse = await getDispenseStatus();
+          const status: MachineStatus = apiResponse.data;
+          loggingService.log({
+            level: 'info',
+            component: 'ProductCollection',
+            message: 'API call to fetch dispenser status was successful',
+            data: status
+          });
+          if (apiResponse.error && !apiResponse.status) {
+            setUnTrackedDispenseErrors((prev) => [
+              ...prev,
+              { code: 'API_ERROR', message: 'Failed to fetch dispenser status' }
+            ]);
+            loggingService.log({
+              level: LogLevel.ERROR,
+              component: 'ProductCollection',
+              message: 'Failed to fetch dispense status',
+              data: apiResponse.error
+            });
+          }
           // Check for dispensing failure
           const dispensingFailure = checkDispenseErrors(status);
           if (dispensingFailure.isError) {
@@ -447,7 +487,12 @@ function ProductCollection() {
               {
                 const startMatch = status.message.match(/(\d+)\/(\d+)\/(\d+).*sku:(\d+)/);
                 if (startMatch) {
-                  console.log(`Dispensing started at ${startMatch[0]}`);
+                  loggingService.log({
+                    level: 'info',
+                    component: 'ProductCollection',
+                    message: `Dispensing in process ${startMatch[0]}`
+                  });
+
                   const dispenserKey = `${startMatch[1]}/${startMatch[2]}/${startMatch[3]}`;
                   const sku = startMatch[4];
 
@@ -465,7 +510,7 @@ function ProductCollection() {
                     }
                   }));
 
-                  LoggingService.log({
+                  loggingService.log({
                     level: LogLevel.INFO,
                     component: 'ProductCollection',
                     message: `Dispensing in process ${sku}`,
@@ -501,7 +546,7 @@ function ProductCollection() {
               setIsPending(false);
               setIsReadyToPick(true);
 
-              LoggingService.log({
+              loggingService.log({
                 level: LogLevel.INFO,
                 component: 'ProductCollection',
                 message: 'Products ready for pickup',
@@ -515,11 +560,10 @@ function ProductCollection() {
                 const pendingMatch = status.message.match(/unit #(\d+)/);
                 if (pendingMatch) {
                   const machineId = pendingMatch[1];
-                  console.log(`Dispensing finished for Machine ID: ${machineId}`);
                   // as we want to start the animation again
                   setIsReadyToPick(false);
                   setIsPending(true);
-                  LoggingService.log({
+                  loggingService.log({
                     level: LogLevel.INFO,
                     component: 'ProductCollection',
                     message: `Dispensing finished for Machine ID: ${machineId}`,
@@ -529,8 +573,7 @@ function ProductCollection() {
               }
               break;
             default:
-              console.log('Default Status:', status.action, status.message);
-              LoggingService.log({
+              loggingService.log({
                 level: LogLevel.DEBUG,
                 component: 'ProductCollection',
                 message: `Status update: ${status.action}`,
@@ -538,17 +581,21 @@ function ProductCollection() {
               });
           }
         } catch (error) {
-          console.error('Error fetching dispense status:', error);
-          setUnTrackedDispenseErrors((prev) => [
-            ...prev,
-            { code: 'API_ERROR', message: 'Failed to fetch dispenser status' }
-          ]);
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
+            message: 'Error fetching dispense status',
             component: 'ProductCollection',
-            message: 'Failed to fetch dispense status',
-            data: { error }
+            data: {
+              error: JSON.stringify(error),
+              cartProducts: cartProducts.map(({ skuCode, productCount }) => ({
+                skuCode,
+                productCount
+              })),
+              dispensingStartedKeys,
+              dispenseFinishedKeys
+            }
           });
+          console.error('Error fetching dispense status:', error);
         }
       }, 2000);
     }
@@ -591,7 +638,7 @@ function ProductCollection() {
     };
   }, [isReadyToPick, blinkingMachine, isDispensedProcessFinished]);
 
-  const updateDispenseStatus = async (status: DispenseStatus) => {
+  const updateDispenseStatus = async (status: DispenseStatus): Promise<void> => {
     const updateDispenseStatusRequest: UpdateDispenseStatusModal = {
       status,
       orderCode
@@ -600,13 +647,12 @@ function ProductCollection() {
       updateDispenseStatusEndpoint,
       updateDispenseStatusRequest
     ).catch((err) => {
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.ERROR,
         component: 'ProductCollection',
         message: 'Request body for failed dispense status update',
-        data: { updateDispenseStatusRequest }
+        data: { updateDispenseStatusRequest, error: err }
       });
-      console.log('error while updating dispense status in ogmentoAPI', err);
     });
   };
 
@@ -652,7 +698,7 @@ function ProductCollection() {
 
       console.groupEnd();
 
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.INFO,
         component: 'ProductCollection',
         message: 'Dispensing process summary',

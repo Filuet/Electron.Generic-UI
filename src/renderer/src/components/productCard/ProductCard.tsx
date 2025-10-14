@@ -6,7 +6,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import useTranslationHook from '@/localization/hook';
 import { useAppDispatch, useAppSelector } from '@/redux/core/utils/reduxHook';
 import { addToCart, decrementProduct, removeProduct } from '@/redux/features/cart/cartSlice';
-import { useState } from 'react';
+import { JSX, useState } from 'react';
 import { ClientType, ProductDataModal } from '@/interfaces/modal';
 import { validateAddToCart } from '@/utils/cartValidationUtils';
 import NewProductTag from '../../assets/images/tags/NewTag.png';
@@ -16,7 +16,7 @@ import ImageUtils from '../ImageUtil/ImageUtil';
 import OriflameModal from '../oriflameModalUtils/OriflameModal';
 import MultipleImageUtil from '../ImageUtil/MultipleImageUtil';
 
-function ProductCard({ product }: { product: ProductDataModal }) {
+function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
   const theme = useTheme();
   const productCardStyle = ProductCardStyles(theme);
   const { translate } = useTranslationHook();
@@ -36,7 +36,7 @@ function ProductCard({ product }: { product: ProductDataModal }) {
   const productInCart = cart.products.find((item) => item.skuCode === product.skuCode);
   const { customerOrderDetails } = useAppSelector((state) => state.customerOrderDetails);
 
-  const onAddToCart = () => {
+  const onAddToCart = (): void => {
     const validationMessage = validateAddToCart(
       product,
       productInCart,
@@ -68,7 +68,7 @@ function ProductCard({ product }: { product: ProductDataModal }) {
     );
   };
 
-  const handleDecrement = () => {
+  const handleDecrement = (): void => {
     if (productInCart && productInCart.productCount > 1) {
       dispatch(decrementProduct(product.skuCode));
     } else if (productInCart?.productCount === 1) {
@@ -83,7 +83,7 @@ function ProductCard({ product }: { product: ProductDataModal }) {
     tagImageSize = '25px';
   }
 
-  const onCloseProductLimitModal = () => {
+  const onCloseProductLimitModal = (): void => {
     setShowProductLimitDialog(false);
   };
 

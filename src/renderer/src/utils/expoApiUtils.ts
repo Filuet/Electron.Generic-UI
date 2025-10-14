@@ -5,122 +5,100 @@ import {
   ProductStock,
   RouteUpdateRequest,
   MachineStatus,
-  PogRoute
+  PogRoute,
+  MachineInoperableModal,
+  ApiResponse
 } from '@/interfaces/modal';
 import { CartProduct } from '@/redux/features/cart/cartTypes';
-import axios from 'axios';
+import { machineInoperableEndpoint } from './endpoints';
+import { postData } from '@/services/axiosWrapper/apiService';
+import loggingService from './loggingService';
 
-const apiUrl = import.meta.env.VITE_NODE_SERVER_URL;
-// this utils is created only to interact with the expo api
+// random array to simulate inoperable machines for cert error email payload
+const CERTS_ERROR_EMAIL_PAYLOAD = [121, 121];
+const sendCertificatesErrorNotification = async (inoperableMachines: number[]): Promise<void> => {
+  const inoperableMachineRequest: MachineInoperableModal = {
+    kioskName: import.meta.env.VITE_KIOSK_NAME,
+    machineIds: inoperableMachines
+  };
 
-const axiosInstance = axios.create({
-  baseURL: apiUrl,
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
+  await postData<MachineInoperableModal, void>(machineInoperableEndpoint, inoperableMachineRequest)
+    .then(() => {
+      loggingService.log({
+        level: 'info',
+        message: 'Certificates error notification mail send successfully ',
+        component: 'expoUtils.ts',
+        data: inoperableMachineRequest
+      });
+    })
+    .catch((error) => {
+      loggingService.log({
+        level: 'error',
+        message: 'Error in sending certificates error notification mail',
+        component: 'expoUtils.ts',
+        data: { error, inoperableMachineRequest }
+      });
+    });
+};
 
-// Error handler with never return type
-const handleError = (error: unknown, operation: string): never => {
-  if (axios.isAxiosError(error)) {
-    if (error.response?.data.error === 'ECONNREFUSED' && import.meta.env.VITE_IS_PROD) {
-      throw new Error(error.response?.data.error);
+export const dispenseProduct = async (
+  cartProducts: CartProduct[]
+): Promise<ApiResponse<DispenseResponse>> => {
+  const dispenseSkuAndQuantity: ExpoDispenseModal[] = cartProducts.map((product) => ({
+    sku: product.skuCode,
+    qty: product.productCount
+  }));
+  const response = await window.electron.expo.dispenseProduct(dispenseSkuAndQuantity);
+  return response;
+};
+
+export const getDispenseStatus = async (): Promise<ApiResponse<MachineStatus>> => {
+  const response = await window.electron.expo.getDispenseStatus();
+  if (!response.status && response.error) {
+    if (response.error === 'self signed certificate') {
+      sendCertificatesErrorNotification(CERTS_ERROR_EMAIL_PAYLOAD);
     }
-    console.error(`${operation} API Error:`, error.response?.data);
-  } else {
-    console.error(`${operation} error:`, error);
   }
-  throw new Error(`Failed to ${operation.toLowerCase()}`);
+  return response;
 };
 
-export const dispenseProduct = async (cartProducts: CartProduct[]): Promise<DispenseResponse> => {
-  try {
-    const dispenseSkuAndQuantity: ExpoDispenseModal[] = cartProducts.map((product) => ({
-      sku: product.skuCode,
-      qty: product.productCount
-    }));
-    const response = await axiosInstance.post<DispenseResponse>(
-      '/dispense',
-      dispenseSkuAndQuantity
-    );
-    return response.data;
-  } catch (error) {
-    return handleError(error, 'Dispense Product');
-  }
+export const updatePlanogramJson = async (
+  pogRoutesRequest: PogRoute[]
+): Promise<ApiResponse<boolean>> => {
+  const response = await window.electron.expo.updatePlanogramJson(pogRoutesRequest);
+  return response;
 };
 
-export const getDispenseStatus = async (): Promise<MachineStatus> => {
-  try {
-    const response = await axiosInstance.get<MachineStatus>('/dispense/status');
-    return response.data;
-  } catch (error) {
-    return handleError(error, 'Get Dispense Status');
-  }
-};
-export const getVideoFileNames = async (): Promise<string[]> => {
-  try {
-    const response = await axiosInstance.get<string[]>('video/filenames');
-    return response.data;
-  } catch (error) {
-    return handleError(error, 'Get Video File Names');
-  }
-};
-export const updatePlanogramJson = async (pogRoutesRequest: PogRoute[]): Promise<boolean> => {
-  try {
-    const response = await axiosInstance.post('/dispense/update-planogram', pogRoutesRequest);
-    return response.status === 200;
-  } catch (error) {
-    return handleError(error, 'Update Planogram Json');
-  }
-};
-export const getStockStatus = async (): Promise<ProductStock[]> => {
-  try {
-    const response = await axiosInstance.get<ProductStock[]>('/dispense/stock');
-    return response.data;
-  } catch (error) {
-    return handleError(error, 'Get Stock Status');
-  }
+export const getStockStatus = async (): Promise<ApiResponse<ProductStock[]>> => {
+  const response = await window.electron.expo.getStockStatus();
+  return response;
 };
 
-export const testMachine = async (): Promise<MachineTestResult[]> => {
-  try {
-    const response = await axiosInstance.get<MachineTestResult[]>('/dispense/test');
-    return response.data;
-  } catch (error) {
-    return handleError(error, 'Test Machine');
-  }
+export const testMachine = async (): Promise<ApiResponse<MachineTestResult[]>> => {
+  const response = await window.electron.expo.testMachine();
+  return response;
 };
 
-export const unlockMachine = async (machineId: number): Promise<{ success: boolean }> => {
-  try {
-    const response = await axiosInstance.get<{ success: boolean }>(`/dispense/unlock/${machineId}`);
-    return response.data;
-  } catch (error) {
-    return handleError(error, 'Unlock Machine');
-  }
+export const unlockMachine = async (
+  machineId: number
+): Promise<ApiResponse<{ success: boolean }>> => {
+  const response = await window.electron.expo.unlockMachine(machineId);
+  return response;
 };
 
-export const updatePlanogram = async (routeUpdateRequest: RouteUpdateRequest): Promise<boolean> => {
-  try {
-    const response = await axiosInstance.post('/dispense/planogram', routeUpdateRequest);
-    return response.status === 200;
-  } catch (error) {
-    return handleError(error, 'Update Planogram');
-  }
+export const updatePlanogram = async (
+  routeUpdateRequest: RouteUpdateRequest
+): Promise<ApiResponse<number>> => {
+  const response = await window.electron.expo.updatePlanogram(routeUpdateRequest);
+  return response;
 };
-export const resetStatus = async (): Promise<boolean> => {
-  try {
-    const response = await axiosInstance.post('/dispense/reset-status');
-    return response.status === 200;
-  } catch (error) {
-    return handleError(error, 'Reset Status');
-  }
+
+export const resetStatus = async (): Promise<number> => {
+  const response = await window.electron.expo.resetDispenseStatus();
+  return response.data;
 };
+
 export const getAllStatuses = async (): Promise<MachineStatus[]> => {
-  try {
-    const response = await axiosInstance.get('/dispense/all-statuses');
-    return response.data;
-  } catch (error) {
-    return handleError(error, 'Reset Status');
-  }
+  const response = await window.electron.expo.getAllStatuses();
+  return response.data;
 };

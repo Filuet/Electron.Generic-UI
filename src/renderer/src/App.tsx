@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback, JSX } from 'react';
 import { AxiosError } from 'axios';
+import { debounce } from 'lodash';
 import { Modal, Box, Button, Typography, useTheme } from '@mui/material';
 import KioskPortal from './KioskPortal';
 import { LocalStorageWrapper } from './utils/localStorageWrapper';
@@ -18,21 +19,16 @@ import { AUTH_TOKEN_KEY } from './utils/constants';
 import { kioskLoginEndpoint } from './utils/endpoints';
 import OriflameLogo from './assets/images/Logo/oriflameLogo.svg';
 import StartScreenBanner from './assets/images/Defaults/DefaultBackgroundImage.png';
-import { getVideoFileNames } from './utils/expoApiUtils';
 import { setVideoFileNames } from './redux/features/welcomeScreen/welcomeScreenSlice';
 import OriflameLoader from './components/oriflameLoader/OriflameLoader';
 import { resetReduxStore } from './redux/core/utils/resetReduxStore';
 import { setActivePage } from './redux/features/pageNavigation/navigationSlice';
-import LoggingService from './utils/loggingService';
+import loggingService from './utils/loggingService';
 
 function App(): JSX.Element {
   const theme = useTheme();
   const PERFORMANCE_LOGGING_INTERVAL = 30 * 60 * 1000; // 30 minutes
-  const VIDEO_BASE_PATH = `${import.meta.env.VITE_NODE_SERVER_URL}/video`;
   const dispatch = useAppDispatch();
-  const resetOnIdleTimerMs =
-    useAppSelector((state) => state.kioskSettings.kioskSettings.resetOnIdleTimerMs) ?? 3000;
-  // const [isLoadingVideos, setIsLoadingVideos] = useState(true);
 
   const videoFilenames = useAppSelector((state) => state.welcomeScreen);
   const currentPage = useAppSelector((state) => state.navigation.currentPage);
@@ -43,8 +39,12 @@ function App(): JSX.Element {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(30);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState<string>('');
   const customerName = useAppSelector((state) => state.customerDetails.customerName);
   const customerId = useAppSelector((state) => state.customerDetails.customerId);
+  const resetOnIdleTimerMs =
+    useAppSelector((state) => state.kioskSettings.kioskSettings.resetOnIdleTimerMs) ?? 3000;
+
   useEffect(() => {
     const initializeKiosk = async (): Promise<void> => {
       try {
@@ -79,31 +79,92 @@ function App(): JSX.Element {
     }
   }, [currentPage, dispatch]);
   useEffect(() => {
+    async function getVideoUrl(): Promise<void> {
+      if (videoFilenames[currentVideoIndex]) {
+        try {
+          const dataUrl = await window.electron.videoFilesUtil.getVideoContent(
+            videoFilenames[currentVideoIndex]
+          );
+          if (dataUrl) {
+            setCurrentVideoUrl(dataUrl);
+          } else {
+            loggingService.log({
+              level: LogLevel.ERROR,
+              message: 'Failed to load video content',
+              component: 'App.tsx',
+              data: { videoFileName: videoFilenames[currentVideoIndex] }
+            });
+          }
+        } catch (err) {
+          loggingService.log({
+            level: LogLevel.ERROR,
+            message: 'Error getting video content',
+            component: 'App',
+            data: { error: JSON.stringify(err), videoFileName: videoFilenames[currentVideoIndex] }
+          });
+        }
+      }
+    }
+
+    getVideoUrl();
+  }, [currentVideoIndex, videoFilenames]);
+
+  useEffect(() => {
     async function getVideoFilenames(): Promise<void> {
-      // setIsLoadingVideos(true);
-      getVideoFileNames()
+      window.electron.videoFilesUtil
+        .getFiles()
         .then((response) => {
           if (response.length !== 0) {
             dispatch(setVideoFileNames(response));
           }
         })
         .catch((err) => {
-          console.error('Error fetching video filenames:', err);
-        })
-        .finally(() => {
-          // setIsLoadingVideos(false);
+          loggingService.log({
+            level: LogLevel.ERROR,
+            message: 'Error fetching video filenames',
+            component: 'App',
+            data: { error: JSON.stringify(err) }
+          });
         });
     }
+
     getVideoFilenames();
-  }, []);
+  }, [dispatch]);
+
+  // Refetch when file change detected
+  useEffect(() => {
+    const refresh = debounce(() => {
+      window.electron.videoFilesUtil
+        .getFiles()
+        .then((response) => {
+          dispatch(setVideoFileNames(response));
+        })
+        .catch((err) => {
+          loggingService.log({
+            level: LogLevel.ERROR,
+            message: 'Error re-fetching video filenames',
+            component: 'App.tsx',
+            data: err
+          });
+        });
+    }, 500);
+
+    window.electron.videoFilesUtil.onFolderChange(refresh);
+
+    return () => {
+      window.electron.videoFilesUtil.removeFolderListener(refresh);
+    };
+  }, [dispatch]);
 
   // Simplified auth error handler
   useEffect(() => {
     const handleAuthError = (): void => {
-      console.log('Auth error detected - token refresh failed completely');
-
-      // Just update UI state since token refresh already failed in the interceptor
       dispatch(setActivePage(PageRoute.UnderMaintenancePage));
+      loggingService.log({
+        level: 'error',
+        message: 'Authentication error detected, redirecting to under maintenance page',
+        component: 'App.tsx'
+      });
     };
 
     // Listen for auth errors from axios interceptor
@@ -128,14 +189,21 @@ function App(): JSX.Element {
         videoElement.removeEventListener('ended', onVideoEnd);
       }
     };
-  }, [videoFilenames.length, currentVideoIndex, isVideoPlaying]);
+  }, [videoFilenames.length, currentVideoIndex, isVideoPlaying, onVideoEnd]);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.src = `${VIDEO_BASE_PATH}/${videoFilenames[currentVideoIndex]}`;
-      videoRef.current.play();
+    if (videoRef.current && currentVideoUrl) {
+      videoRef.current.src = currentVideoUrl;
+      videoRef.current.play().catch((err) => {
+        loggingService.log({
+          level: 'error',
+          message: 'Error playing video',
+          component: 'App.tsx',
+          data: err
+        });
+      });
     }
-  }, [currentVideoIndex, videoFilenames]);
+  }, [currentVideoUrl]);
 
   const loading = useAppSelector((state) => state.kioskSettings.loading);
 
@@ -164,9 +232,7 @@ function App(): JSX.Element {
               usagePercent
             }
           };
-          LoggingService.logPerformance(logPayload);
-
-          console.log(logPayload);
+          loggingService.logPerformance(logPayload);
         }
       };
 
@@ -204,7 +270,7 @@ function App(): JSX.Element {
         setIsModalOpen(false);
 
         if (customerId !== '' && customerName !== '') {
-          LoggingService.log({
+          loggingService.log({
             message: 'User logged out',
             level: LogLevel.INFO,
             data: {
@@ -238,7 +304,7 @@ function App(): JSX.Element {
           countdownTimer.current = null;
           setIsModalOpen(false);
           if (customerId !== '' && customerName !== '') {
-            LoggingService.log({
+            loggingService.log({
               message: 'User logged out',
               level: LogLevel.INFO,
               data: {
@@ -253,7 +319,7 @@ function App(): JSX.Element {
         return prev - 1;
       });
     }, 1000);
-  }, [currentPage, dispatch]);
+  }, [currentPage, customerId, customerName]);
 
   const onUserActivity = (): void => {
     // its needed to fetch kiosk settings when the user is on start page only
@@ -331,10 +397,10 @@ function App(): JSX.Element {
   return (
     <>
       <OriflameLoader isLoading={loading} />
-      {isVideoPlaying && videoFilenames.length !== 0 && (
+      {isVideoPlaying && videoFilenames.length !== 0 && currentVideoUrl && (
         <video
           ref={videoRef}
-          src={`${VIDEO_BASE_PATH}/${videoFilenames[currentVideoIndex]}`}
+          src={currentVideoUrl}
           className="video-player"
           autoPlay
           muted

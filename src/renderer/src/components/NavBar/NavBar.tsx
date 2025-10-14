@@ -3,20 +3,19 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useState } from 'react';
+import { JSX, useState } from 'react';
 import { Stack } from '@mui/system';
 import useTranslationHook from '@/localization/hook';
 import { Button, Modal, Typography, useTheme } from '@mui/material';
-// import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useAppDispatch, useAppSelector } from '@/redux/core/utils/reduxHook';
 import { LogLevel, PageRoute } from '@/interfaces/modal';
 import { setActivePage } from '@/redux/features/pageNavigation/navigationSlice';
 import { resetReduxStore } from '@/redux/core/utils/resetReduxStore';
-import LoggingService from '@/utils/loggingService';
+import loggingService from '@/utils/loggingService';
 import OriflameLogo from '../../assets/images/Logo/oriflameLogo.svg';
 import { NavBarStyles } from './navbarStyle';
 
-function Navbar() {
+function Navbar(): JSX.Element {
   const { translate } = useTranslationHook();
   const dispatch = useAppDispatch();
   const theme = useTheme();
@@ -24,8 +23,8 @@ function Navbar() {
   const customerId = useAppSelector((state) => state.customerDetails.customerId);
   const navbarStyle = NavBarStyles(theme);
   const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
-  const onLogout = () => {
-    LoggingService.log({
+  const onLogout = (): void => {
+    loggingService.log({
       message: 'User logged out',
       level: LogLevel.INFO,
       data: {

@@ -4,8 +4,9 @@ import { Box, Container } from '@mui/system';
 import PaymentPageBanner from '../../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';
 import OriflameLogo from '../../../assets/images/Logo/Oriflame_logo_WelcomePage.png';
 import { CancelPaymentStyles } from './cancelPaymentStyles';
+import { JSX } from 'react';
 
-function CancelPayment() {
+function CancelPayment(): JSX.Element {
   const theme = useTheme();
   const globalStyles = GlobalStyles(theme);
   const cancelPaymentStyle = CancelPaymentStyles();

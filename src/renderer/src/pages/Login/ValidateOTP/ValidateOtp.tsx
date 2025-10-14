@@ -12,7 +12,7 @@ import { AxiosError } from 'axios';
 import { otpValidateEndpoint } from '@/utils/endpoints';
 import { requestOtp } from '@/redux/features/customerLogin/customerLoginThunk';
 import { unlockMachine } from '@/utils/expoApiUtils';
-import LoggingService from '@/utils/loggingService';
+import loggingService from '@/utils/loggingService';
 import OTPValidationBanner from '../../../assets/images/Banners/LoginPage_Banner.png';
 import { ValidateOtpStyles } from './validateOtpStyles';
 import { supportStyles } from './supportStyles';
@@ -91,7 +91,7 @@ function ValidateOtp(): JSX.Element {
           const messageArray = response.split('|');
           if (messageArray.length > 2) {
             setError(messageArray[2]);
-            LoggingService.log({
+            loggingService.log({
               level: LogLevel.ERROR,
               component: 'ValidateOtp',
               message: `OTP validation failed`,
@@ -101,7 +101,7 @@ function ValidateOtp(): JSX.Element {
           }
         }
         setError('Validation failed, Please try again!');
-        LoggingService.log({
+        loggingService.log({
           level: LogLevel.ERROR,
           component: 'ValidateOtp',
           message: `Unknown Error: OTP validation failed`,
@@ -143,7 +143,7 @@ function ValidateOtp(): JSX.Element {
       .unwrap()
       .then(() => onTryAgain())
       .catch((err) => {
-        LoggingService.log({
+        loggingService.log({
           level: LogLevel.ERROR,
           component: 'ValidateOtp',
           message: `Resend OTP failed`,
@@ -154,30 +154,36 @@ function ValidateOtp(): JSX.Element {
   };
   const onUnlockMachine = async (machineId: number): Promise<void> => {
     await unlockMachine(machineId)
-      .then((response) => {
+      .then((apiResponse) => {
+        const response = apiResponse.data;
         if (response.success) {
           setUnlockMachineMessage(`Machine ${machineId} unlocked successfully.`);
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.INFO,
             component: 'ValidateOtp',
             message: `Machine ${machineId} unlocked successfully.`,
             data: { machineId, response }
           });
-          console.log(`Machine ${machineId} unlocked successfully`);
         } else {
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
             component: 'ValidateOtp',
             message: `Failed to unlock the Machine ${machineId}.`,
             data: { machineId, response }
           });
           setUnlockMachineMessage(`Failed to unlock the Machine ${machineId}.`);
-          console.log(`Error in unlocking Machine ${machineId} `);
+        }
+        if (apiResponse.error && !apiResponse.status) {
+          setUnlockMachineMessage(`Failed to unlock the Machine ${machineId}.`);
         }
       })
       .catch((err) => {
-        setUnlockMachineMessage(`Failed to unlock the Machine ${machineId}.`);
-        console.log(`Error in unlocking Machine ${machineId} `, err);
+        loggingService.log({
+          level: LogLevel.ERROR,
+          message: `Error while accessing electron expo api`,
+          component: 'ValidateOtp.tsx',
+          data: { err }
+        });
       })
       .finally(() => {
         setLoading(false);

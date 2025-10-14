@@ -30,7 +30,7 @@ function MultipleImageUtil(props: ImageUtilsProps): JSX.Element {
       });
   }, [skuCode]);
 
-  const onThumbnailClick = (index: number) => {
+  const onThumbnailClick = (index: number): void => {
     if (index !== selectedImageIndex) {
       setFadeIn(false);
       setTimeout(() => {
@@ -40,15 +40,15 @@ function MultipleImageUtil(props: ImageUtilsProps): JSX.Element {
     }
   };
 
-  const onTouchStart = (e: React.TouchEvent) => {
+  const onTouchStart = (e: React.TouchEvent): void => {
     setTouchStartX(e.touches[0].clientX);
   };
 
-  const onTouchMove = (e: React.TouchEvent) => {
+  const onTouchMove = (e: React.TouchEvent): void => {
     setTouchEndX(e.touches[0].clientX);
   };
 
-  const onTouchEnd = () => {
+  const onTouchEnd = (): void => {
     if (touchStartX === null || touchEndX === null) return;
 
     const diff = touchStartX - touchEndX;

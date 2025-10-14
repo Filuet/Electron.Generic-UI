@@ -3,7 +3,7 @@ import { AUTH_TOKEN_KEY } from '@/utils/constants';
 import { BASE_URL, kioskLoginEndpoint } from '@/utils/endpoints';
 import { LocalStorageWrapper } from '@/utils/localStorageWrapper';
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import LoggingService from '@/utils/loggingService';
+import loggingService from '@/utils/loggingService';
 
 export const axiosInstance = axios.create({
   baseURL: BASE_URL
@@ -51,6 +51,15 @@ const refreshAuthToken = async (): Promise<string | null> => {
     }
     return null;
   } catch (error) {
+    loggingService.log({
+      level: LogLevel.ERROR,
+      message: 'Token refresh failed',
+      component: 'axiosInstance',
+      data: {
+        error: JSON.stringify(error),
+        endpoint: kioskLoginEndpoint
+      }
+    });
     console.error('Token refresh failed:', error);
     // Clear token and redirect to maintenance page
     LocalStorageWrapper.removeItem(AUTH_TOKEN_KEY);
@@ -67,7 +76,7 @@ axiosInstance.interceptors.response.use(
 
     // Check if error is 401 and we haven't tried refreshing yet
     if (error.response?.status === 401 && originalRequest && !originalRequest.headers['X-Retry']) {
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.ERROR,
         message: 'Axios response error',
         component: 'axiosInstance',

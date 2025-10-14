@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { LocalStorageWrapper } from '@/utils/localStorageWrapper';
-import LoggingService from '@/utils/loggingService';
+import loggingService from '@/utils/loggingService';
 import { LogLevel } from '@/interfaces/modal';
 import { axiosInstance } from './axiosInstance';
 
@@ -8,7 +8,7 @@ import { axiosInstance } from './axiosInstance';
 const handleError = (error: unknown): Promise<never> => {
   if (error instanceof AxiosError) {
     const message = error.response?.data || error.response?.statusText || error.message;
-    LoggingService.log({
+    loggingService.log({
       level: LogLevel.ERROR,
       message: 'Axios error - API call failed',
       component: 'apiService',
@@ -22,7 +22,7 @@ const handleError = (error: unknown): Promise<never> => {
 
     console.error('Axios error:', message);
   } else if (error instanceof Error) {
-    LoggingService.log({
+    loggingService.log({
       level: LogLevel.ERROR,
       message: 'Unexpected error in API service',
       component: 'apiService',
@@ -97,6 +97,16 @@ export const getStreamData = async <Response>(
             const parsedChunk = JSON.parse(buffer);
             partialData = [...partialData, ...parsedChunk];
           } catch (error) {
+            loggingService.log({
+              level: LogLevel.ERROR,
+              message: 'Error parsing JSON in stream (final buffer)',
+              component: 'apiService',
+              data: {
+                error: JSON.stringify(error),
+                buffer,
+                endpoint
+              }
+            });
             console.error('Error parsing JSON:', error, buffer);
             throw new Error('Received invalid JSON');
           }
@@ -114,6 +124,16 @@ export const getStreamData = async <Response>(
             const parsedChunk = JSON.parse(line);
             partialData = [...partialData, ...parsedChunk];
           } catch (error) {
+            loggingService.log({
+              level: LogLevel.ERROR,
+              message: 'Error parsing JSON in stream (line)',
+              component: 'apiService',
+              data: {
+                error: JSON.stringify(error),
+                line,
+                endpoint
+              }
+            });
             console.error('Error parsing JSON:', error, line);
             throw new Error('Received invalid JSON');
           }
@@ -127,6 +147,16 @@ export const getStreamData = async <Response>(
     await reader.read().then(processChunk);
     return partialData;
   } catch (error) {
+    loggingService.log({
+      level: LogLevel.ERROR,
+      message: 'Error fetching stream data',
+      component: 'apiService',
+      data: {
+        error: JSON.stringify(error),
+        endpoint,
+        errorMessage: error instanceof Error ? error.message : 'Unknown error'
+      }
+    });
     console.error('Error fetching data:', error);
     if (error instanceof Error) {
       console.error('Error message:', error.message);

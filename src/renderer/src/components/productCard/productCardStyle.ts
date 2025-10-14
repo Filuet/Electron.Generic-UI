@@ -1,6 +1,7 @@
+import { CSS_MUI_PropertiesType } from '@/interfaces/modal';
 import { Theme } from '@mui/material';
 
-export const ProductCardStyles = (theme: Theme) => ({
+export const ProductCardStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
   cardStyle: {
     width: '10.9rem',
     height: '21.3rem',

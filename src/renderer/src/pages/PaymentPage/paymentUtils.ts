@@ -13,7 +13,7 @@ import {
 } from '@/interfaces/modal';
 import * as signalR from '@microsoft/signalr';
 import { CustomerDetails } from '@/redux/features/customerDetails/types';
-import LoggingService from '@/utils/loggingService';
+import loggingService from '@/utils/loggingService';
 
 /**
  * Fetches the payment link and transaction ID.
@@ -36,18 +36,6 @@ export const initiatePayment = async (
   transactionId: string;
   orderCode: string;
 } | null> => {
-  // const transactionModal: TransactionModel = {
-  //   value: totalPrice,
-  //   fullName: 'minato',
-  //   code: '8870784905',
-  //   customerId: '9942197019',
-  //   isVIP: true,
-  //   kioskName: import.meta.env.VITE_KIOSK_NAME,
-  //   order: products.map((product) => ({
-  //     skuCode: product.skuCode,
-  //     quantity: product.productCount,
-  //   })),
-  // };
   const transactionModal: TransactionModel = {
     value: totalPrice,
     fullName: customerDetails.customerName,
@@ -73,11 +61,11 @@ export const initiatePayment = async (
       orderCode: response.orderCode
     };
   } catch (error) {
-    LoggingService.log({
+    loggingService.log({
       level: LogLevel.ERROR,
       component: 'PaymentUtils',
       message: `Request body for TransactionModel`,
-      data: { transactionModal }
+      data: { transactionModal, error: JSON.stringify(error) }
     });
     console.error('Error fetching payment link:', error);
     return null;
@@ -116,11 +104,11 @@ export const createOrder = async (
     );
     return response;
   } catch (error) {
-    LoggingService.log({
+    loggingService.log({
       level: LogLevel.ERROR,
       component: 'PaymentUtils',
       message: `Request body for OrderModal`,
-      data: { orderModal }
+      data: { orderModal, error: JSON.stringify(error) }
     });
     console.error('Error creating order:', error);
     return null;
@@ -149,9 +137,17 @@ export const cleanupSignalRConnection = async (
   if (connection) {
     try {
       await connection.stop();
-      console.log('SignalR connection cleaned up successfully');
+      loggingService.log({
+        level: LogLevel.INFO,
+        component: 'PaymentUtils',
+        message: 'SignalR connection stopped successfully'
+      });
     } catch (error) {
-      console.error('Error cleaning up SignalR connection:', error);
+      loggingService.log({
+        level: LogLevel.ERROR,
+        component: 'paymentUtils.ts',
+        message: `Error cleaning up SignalR connection: ${error}`
+      });
     }
   }
 };

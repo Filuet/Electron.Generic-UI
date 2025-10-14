@@ -5,6 +5,12 @@
 - Node.js installed recommended version node LTS ( 22.16.0)
 - pnpm recommended version (10.9.0)
 
+If you don't have install pnpm then run below command -->
+
+```javascript
+npm install -g pnpm
+```
+
 ---
 
 Check Versions ---->

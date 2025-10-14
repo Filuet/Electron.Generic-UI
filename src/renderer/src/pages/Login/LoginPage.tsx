@@ -18,15 +18,15 @@ import { Box, Container } from '@mui/system';
 import { GlobalStyles } from '@/globalStyles/globalStyles';
 import NavigationButtonUtils from '@/utils/navigationButtonUtils/NavigationButton';
 import useTranslationHook from '@/localization/hook';
-import { useState } from 'react';
+import { JSX, useState } from 'react';
 import { setPhoneNumber } from '@/redux/features/customerLogin/customerLogin';
 import { requestOtp } from '@/redux/features/customerLogin/customerLoginThunk';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import LoggingService from '@/utils/loggingService';
+import loggingService from '@/utils/loggingService';
 import LoginPageBanner from '../../assets/images/Banners/LoginPage_Banner.png';
 import { LoginPageStyles } from './loginPageStyles';
 
-function LoginPage() {
+function LoginPage(): JSX.Element {
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const { translate } = useTranslationHook();
@@ -41,7 +41,7 @@ function LoginPage() {
   const supportPhoneNumbers: string[] = import.meta.env.VITE_SUPPORT_USER_PHONENUMBERS.split(
     ','
   ).map((phone) => phone.trim());
-  const handlePhoneNumberInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhoneNumberInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setContactNumber(e.target.value);
     setValidationError('');
   };
@@ -61,19 +61,19 @@ function LoginPage() {
     return true;
   };
 
-  const onPreviousPage = () => {
+  const onPreviousPage = (): void => {
     dispatch(setActivePage(PageRoute.KioskWelcomePage));
   };
 
-  const onNextPage = (page: PageRoute) => {
+  const onNextPage = (page: PageRoute): void => {
     dispatch(setActivePage(page));
   };
 
-  const onCloseRetryDialogue = () => {
+  const onCloseRetryDialogue = (): void => {
     setShowRetryLoginDialogue(false);
   };
 
-  const onUserLogin = () => {
+  const onUserLogin = (): void => {
     if (supportPhoneNumbers.includes(contactNumber)) {
       dispatch(setPhoneNumber(contactNumber));
       onNextPage(PageRoute.ValidateOtpPage);
@@ -96,7 +96,7 @@ function LoginPage() {
         onNextPage(PageRoute.ValidateOtpPage);
       })
       .catch((err) => {
-        LoggingService.log({
+        loggingService.log({
           level: LogLevel.ERROR,
           component: 'LoginPage',
           message: `Error while requesting OTP`,

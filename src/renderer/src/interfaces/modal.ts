@@ -22,6 +22,14 @@ export interface PaymentLinkResponse {
   orderCode: string;
 }
 
+export type CSSPropertiesType = Record<string, React.CSSProperties>;
+
+export type CSS_MUI_PropertiesType = {
+  [key: string]: {
+    [key: string]: string | number | object;
+  };
+};
+
 export interface TransactionModel {
   value: number;
   fullName: string;
@@ -166,6 +174,12 @@ export enum PaymentStatus {
   Timeout = 'Timeout',
   FailedToGenerateLink = 'Failed to create payment link'
 }
+
+export interface PaymentProcessingError {
+  message: string;
+  code?: string;
+}
+
 export enum DispenseStatus {
   Completed = 1,
   Pending = 2,
@@ -388,4 +402,10 @@ export interface ExtendedPerformance extends Performance {
     jsHeapSizeLimit: number;
     totalJSHeapSize: number;
   };
+}
+
+export interface ApiResponse<T> {
+  status: boolean;
+  data: T;
+  error: unknown;
 }

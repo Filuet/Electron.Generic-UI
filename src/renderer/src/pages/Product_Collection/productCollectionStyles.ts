@@ -1,4 +1,6 @@
-export const ProductCollectionStyles = () => ({
+import { CSSPropertiesType } from '@/interfaces/modal';
+
+export const ProductCollectionStyles = (): CSSPropertiesType => ({
   helperText: {
     textAlign: 'center',
     marginTop: 2,

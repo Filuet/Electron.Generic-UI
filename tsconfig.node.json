@@ -9,14 +9,18 @@
     // All TypeScript files in the main process folder
     "src/main/**/*",
     // All TypeScript files in the preload folder
-    "src/preload/**/*"
+    "src/preload/**/*",
+    "src/shared/**/*"
   ],
 
   "compilerOptions": {
     // Enables support for project references (important in multi-config setups like Electron + React)
     "composite": true,
-
     // Adds custom type definitions from electron-vite (e.g., Node-style import meta envs)
-    "types": ["electron-vite/node"]
+    "types": ["electron-vite/node"],
+     // Target modern JavaScript (ES2020) for better performance and features
+    "module": "node16",
+    // Uses Node.js-style module resolution (important for Electron projects)
+    "moduleResolution": "node16",
   }
 }
