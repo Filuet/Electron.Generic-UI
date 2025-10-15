@@ -16,13 +16,20 @@
 
   // TypeScript compiler options for this project
   "compilerOptions": {
+    "baseUrl": ".",
+   "paths": {
+      // Allows importing from '@/*' instead of relative paths like '../../../'
+      "@/*": [
+        "src/renderer/src/*"
+      ]
+    },
     // Enables project references — useful for multi-project setups like Electron (main + renderer)
     "composite": true,
     // Uses the modern JSX transform from React 17+ (no need to import React explicitly)
     "jsx": "react-jsx",
     // Target modern JavaScript (ES2020) for better performance and features
-    "module": "node16",
-    // Uses Node.js-style module resolution (important for Electron projects)
-    "moduleResolution": "node16",
+    // "module": "node16",
+    // // Uses Node.js-style module resolution (important for Electron projects)
+    // "moduleResolution": "node16",
   }
 }

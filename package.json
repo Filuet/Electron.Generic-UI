@@ -37,6 +37,7 @@
     "axios": "^1.9.0",
     "dayjs": "^1.11.13",
     "electron-updater": "^6.3.9",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "formik": "^2.4.6",
     "https": "^1.0.0",
     "i18next": "^25.2.1",
@@ -113,4 +114,3 @@
     ]
   }
 }
-
