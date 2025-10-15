@@ -256,7 +256,10 @@ export interface ProductAddress {
   machineId: string;
   quantity: number;
 }
-
+export interface PlanogramUpdateClientPortalModal {
+  kioskName: string;
+  productInfo: ProductAddress[];
+}
 // Add new types for all possible actions and statuses
 export type DispenserAction =
   | 'dispensing'

@@ -18,7 +18,8 @@ import {
   DispenseStatus,
   UpdateDispenseStatusModal,
   MachineActiveStatus,
-  LogLevel
+  LogLevel,
+  PlanogramUpdateClientPortalModal
 } from '@/interfaces/modal';
 import { useEffect, useState, useRef, JSX } from 'react';
 import { dispenseProduct, getAllStatuses, getDispenseStatus } from '@/utils/expoApiUtils';
@@ -28,6 +29,7 @@ import { DispensingErrorTracker } from '@/utils/DispensingFailedErrorTracker';
 import { postData, updateData } from '@/services/axiosWrapper/apiService';
 import {
   notTakenProductsEndpoint,
+  planogramUpdateClientPortalEndpoint,
   undispensedProductsEndpoint,
   updateDispensedErrorProductEndpoint,
   updateDispensedProductQuantityEndpoint,
@@ -215,17 +217,26 @@ function ProductCollection(): JSX.Element {
   // handle dispensed/undispensed products
   useEffect(() => {
     if (isDispensedProcessFinished) {
+      const productsDispensed: PlanogramUpdateClientPortalModal = {
+        kioskName: import.meta.env.VITE_KIOSK_NAME,
+        productInfo: []
+      };
       Object.entries(dispenseFinishedKeys).forEach(([address, { sku, count }]) => {
         const addressSplit = address.split('/');
-        updatePlanogramForDispensedProducts({
+        const productAddress: ProductAddress = {
           machineId: addressSplit[0],
           trayId: addressSplit[1],
           beltId: addressSplit[2],
           quantity: count,
           sku
-        });
+        };
+        updatePlanogramForDispensedProducts(productAddress);
+        productsDispensed.productInfo.push(productAddress);
       });
-
+      postData<PlanogramUpdateClientPortalModal, string | void>(
+        planogramUpdateClientPortalEndpoint,
+        productsDispensed
+      );
       const undispensedProducts: UndispenseProductDetailsDto = getUndispensedProducts();
 
       if (undispensedProducts.products.length > 0) {
