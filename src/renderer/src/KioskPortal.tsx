@@ -16,14 +16,11 @@ import ProductCollection from './pages/Product_Collection/ProductCollection';
 import ThankyouPage from './pages/ThankYouPage/ThankyouPage';
 import ValidateOtp from './pages/Login/ValidateOTP/ValidateOtp';
 import { resetStatus } from './utils/expoApiUtils';
-import {
-  setExpoStatus,
-  setInoperableMachines,
-} from './redux/features/expoSettings/expoSlice';
+import { setExpoStatus, setInoperableMachines } from './redux/features/expoSettings/expoSlice';
 import {
   checkDispenserStatus,
   checkMachinesStatus,
-  getActiveMachines,
+  getActiveMachines
 } from './utils/dispenserUtils';
 import { getData } from './services/axiosWrapper/apiService';
 import { expoFailEndpoint } from './utils/endpoints';
@@ -77,11 +74,11 @@ function KioskPortal(): JSX.Element {
         const dispenserStatus = await checkDispenserStatus();
         if (!dispenserStatus) {
           dispatch(setExpoStatus(false));
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
             component: 'KioskPortal',
             message: `Dispenser Status is not as expected after 3 attempts.`,
-            data: {},
+            data: {}
           });
           console.log('Dispenser Status is not as expected after 3 attempts.');
           await resetStatus();

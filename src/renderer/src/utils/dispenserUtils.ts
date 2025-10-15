@@ -2,15 +2,11 @@ import {
   DispenserAddress,
   LogLevel,
   MachineActiveStatus,
-  MachineInoperableModal,
+  MachineInoperableModal
 } from '@/interfaces/modal';
 import { getData, postData } from '@/services/axiosWrapper/apiService';
 import { getDispenseStatus, testMachine } from './expoApiUtils';
-import {
-  machineInoperableEndpoint,
-  machineStatusFailNotificationEndpoint,
-} from './endpoints';
-import LoggingService from './loggingService';
+import { machineInoperableEndpoint, machineStatusFailNotificationEndpoint } from './endpoints';
 import loggingService from './loggingService';
 
 export const parseDispenserAddress = (message: string): DispenserAddress | null => {
@@ -58,9 +54,7 @@ export const getActiveMachines = (machineStatus: MachineActiveStatus): number[] 
   }
   return [2];
 };
-export const checkDispenserStatus = async (
-  attempts: number = 3
-): Promise<boolean> => {
+export const checkDispenserStatus = async (attempts: number = 3): Promise<boolean> => {
   if (attempts === 0) {
     return false;
   }
@@ -68,9 +62,9 @@ export const checkDispenserStatus = async (
   const statusResult = await getDispenseStatus();
 
   if (
-    statusResult.status === 'success' &&
-    statusResult.action === 'pending' &&
-    statusResult.message === 'Waiting for command'
+    statusResult.data.status === 'success' &&
+    statusResult.data.action === 'pending' &&
+    statusResult.data.message === 'Waiting for command'
   ) {
     return true;
   }
@@ -146,16 +140,14 @@ export const checkMachinesStatus = async (
     await delay(2000);
     return await checkMachinesStatus(kioskMachines, attempts - 1);
   } catch (error) {
-    await getData(
-      `${machineStatusFailNotificationEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`
-    );
-    LoggingService.log({
+    await getData(`${machineStatusFailNotificationEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`);
+    loggingService.log({
       level: LogLevel.ERROR,
       component: 'KioskPortal',
       message: `Machine status checks failed, exception thrown by expo-extractor`,
       data: {
-        error,
-      },
+        error
+      }
     });
     console.error('Error during machine status check:', error);
     return { success: false, inoperableMachines: [] };
