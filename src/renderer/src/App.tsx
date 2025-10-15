@@ -84,11 +84,16 @@ function App(): JSX.Element {
       } catch (error) {
         const response = (error as AxiosError).response?.data as ValidationException;
         if (response?.exceptionType === 'ValidationException') {
-          alert('Invalid credentials');
+          loggingService.log({
+            level: LogLevel.ERROR,
+            component: 'App.tsx',
+            message: `Invalid kiosk credentials provided.`,
+            data: { error }
+          });
         }
         loggingService.log({
           level: LogLevel.ERROR,
-          component: 'App',
+          component: 'App.tsx',
           message: `Error occurred while logging kiosk. Navigating to Under Maintenance page.`,
           data: { error }
         });
