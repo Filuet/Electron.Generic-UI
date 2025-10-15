@@ -18,8 +18,8 @@ import {
   DispenseStatus,
   UpdateDispenseStatusModal,
   MachineActiveStatus,
-  LogLevel
-  PlanogramUpdateClientPortalModal,
+  LogLevel,
+  PlanogramUpdateClientPortalModal
 } from '@/interfaces/modal';
 import { useEffect, useState, useRef, JSX } from 'react';
 import { dispenseProduct, getAllStatuses, getDispenseStatus } from '@/utils/expoApiUtils';
@@ -219,20 +219,19 @@ function ProductCollection(): JSX.Element {
     if (isDispensedProcessFinished) {
       const productsDispensed: PlanogramUpdateClientPortalModal = {
         kioskName: import.meta.env.VITE_KIOSK_NAME,
-        productInfo: [],
+        productInfo: []
       };
-      Object.entries(dispenseFinishedKeys).forEach(
-        ([address, { sku, count }]) => {
+      Object.entries(dispenseFinishedKeys).forEach(([address, { sku, count }]) => {
         const addressSplit = address.split('/');
-          const productAddress: ProductAddress = {
+        const productAddress: ProductAddress = {
           machineId: addressSplit[0],
           trayId: addressSplit[1],
           beltId: addressSplit[2],
           quantity: count,
           sku
-          };
-          updatePlanogramForDispensedProducts(productAddress);
-          productsDispensed.productInfo.push(productAddress);
+        };
+        updatePlanogramForDispensedProducts(productAddress);
+        productsDispensed.productInfo.push(productAddress);
       });
       postData<PlanogramUpdateClientPortalModal, string | void>(
         planogramUpdateClientPortalEndpoint,
