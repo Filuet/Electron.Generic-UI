@@ -6,7 +6,11 @@ import {
 } from '@/interfaces/modal';
 import { getData, postData } from '@/services/axiosWrapper/apiService';
 import { getDispenseStatus, testMachine } from './expoApiUtils';
-import { machineInoperableEndpoint, machineStatusFailNotificationEndpoint } from './endpoints';
+import {
+  machineInoperableEndpoint,
+  machineStatusFailNotificationEndpoint,
+  machineStatusFailNotifyEndpoint
+} from './endpoints';
 import loggingService from './loggingService';
 
 export const parseDispenserAddress = (message: string): DispenserAddress | null => {
@@ -44,18 +48,11 @@ export const sendInoperableMachineNotification = async (
     });
   }
 };
-export const sendMachineStatusCheckFailNotification = async () => {
-  await getData<void>(
-    `${machineStatusFailNotifyEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`
-  );
+export const sendMachineStatusCheckFailNotification = async (): Promise<void> => {
+  await getData<void>(`${machineStatusFailNotifyEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`);
 };
-export const getActiveMachines = (
-  machineStatus: MachineActiveStatus
-): number[] => {
-  if (
-    machineStatus.isFirstMachineActive &&
-    machineStatus.isSecondMachineActive
-  ) {
+export const getActiveMachines = (machineStatus: MachineActiveStatus): number[] => {
+  if (machineStatus.isFirstMachineActive && machineStatus.isSecondMachineActive) {
     return [1, 2];
   }
   if (machineStatus.isFirstMachineActive) {
@@ -134,11 +131,11 @@ export const checkMachinesStatus = async (
         data: { inoperableMachines, testResults }
       });
 
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.ERROR,
         component: 'DispenserUtils',
         message: `Test Machine Failed: Max attempts reached while checking machines, sending notification.`,
-        data: { inoperableMachines },
+        data: { inoperableMachines }
       });
       console.groupEnd();
       await sendInoperableMachineNotification(inoperableMachines);
@@ -160,7 +157,7 @@ export const checkMachinesStatus = async (
       level: LogLevel.ERROR,
       component: 'DispenserUtils',
       message: `Test Machine Failed. Sending notification.`,
-      data: { error },
+      data: { error }
     });
     await sendMachineStatusCheckFailNotification();
     console.error('Error during machine status check:', error);

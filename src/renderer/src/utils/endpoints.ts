@@ -37,7 +37,6 @@ export const machineInoperableEndpoint = '/api/email/inoperable';
 export const updateDispenseStatusEndpoint = 'api/order/dispense-status';
 export const paymentTimeoutEndpoint = 'api/payment/timeout';
 export const expoFailEndpoint = '/api/notify/expo-failure';
-export const machineStatusFailNotifyEndpoint =
-  '/api/notify/machine-status-fail';
+export const machineStatusFailNotifyEndpoint = '/api/notify/machine-status-fail';
 export const planogramUpdateClientPortalEndpoint = '/api/planogram/hub';
 export const machineStatusFailNotificationEndpoint = '/api/notify/machine-status-fail';

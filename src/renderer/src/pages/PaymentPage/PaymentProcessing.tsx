@@ -78,17 +78,12 @@ function PaymentProcessing(): JSX.Element {
           data: { orderCode: orderCodeToUse }
         });
       })
-      .catch((err) => {
+      .catch(() => {
         loggingService.log({
           level: 'error',
           message: `Failed to update dispense status for order code: ${orderCodeToUse}`,
           component: 'PaymentProcessing',
           data: { orderCode: orderCodeToUse }
-        LoggingService.log({
-          level: LogLevel.ERROR,
-          component: 'PaymentProcessing',
-          message: `dispense status: started, update failed in Ogmento API for order code: ${orderCodeToUse}`,
-          data: { err },
         });
       });
     dispatch(setActivePage(PageRoute.ProductCollectionPage));
@@ -118,11 +113,11 @@ function PaymentProcessing(): JSX.Element {
           // Clean up connection since we have a valid terminal state
           await cleanupConnection(`Received status: ${paymentStatusResponse}`);
         } else {
-            LoggingService.log({
-              level: LogLevel.ERROR,
-              component: 'PaymentProcessing',
-              message: `Invalid payment status received from SignalR: ${message}`,
-            });
+          loggingService.log({
+            level: LogLevel.ERROR,
+            component: 'PaymentProcessing',
+            message: `Invalid payment status received from SignalR: ${message}`
+          });
           throw new Error('Invalid payment status');
         }
       } catch (error) {
