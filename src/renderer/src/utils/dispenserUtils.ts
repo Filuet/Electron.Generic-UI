@@ -1,7 +1,12 @@
-import { DispenserAddress, MachineActiveStatus, MachineInoperableModal } from '@/interfaces/modal';
-import { postData } from '@/services/axiosWrapper/apiService';
-import { testMachine } from './expoApiUtils';
-import { machineInoperableEndpoint } from './endpoints';
+import {
+  DispenserAddress,
+  LogLevel,
+  MachineActiveStatus,
+  MachineInoperableModal
+} from '@/interfaces/modal';
+import { getData, postData } from '@/services/axiosWrapper/apiService';
+import { getDispenseStatus, testMachine } from './expoApiUtils';
+import { machineInoperableEndpoint, machineStatusFailNotificationEndpoint } from './endpoints';
 import loggingService from './loggingService';
 
 export const parseDispenserAddress = (message: string): DispenserAddress | null => {
@@ -48,6 +53,24 @@ export const getActiveMachines = (machineStatus: MachineActiveStatus): number[] 
     return [1];
   }
   return [2];
+};
+export const checkDispenserStatus = async (attempts: number = 3): Promise<boolean> => {
+  if (attempts === 0) {
+    return false;
+  }
+
+  const statusResult = await getDispenseStatus();
+
+  if (
+    statusResult.data.status === 'success' &&
+    statusResult.data.action === 'pending' &&
+    statusResult.data.message === 'Waiting for command'
+  ) {
+    return true;
+  }
+
+  await delay(2000);
+  return checkDispenserStatus(attempts - 1);
 };
 export const checkMachinesStatus = async (
   kioskMachines: number[],
@@ -117,6 +140,15 @@ export const checkMachinesStatus = async (
     await delay(2000);
     return await checkMachinesStatus(kioskMachines, attempts - 1);
   } catch (error) {
+    await getData(`${machineStatusFailNotificationEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`);
+    loggingService.log({
+      level: LogLevel.ERROR,
+      component: 'KioskPortal',
+      message: `Machine status checks failed, exception thrown by expo-extractor`,
+      data: {
+        error
+      }
+    });
     console.error('Error during machine status check:', error);
     return { success: false, inoperableMachines: [] };
   }

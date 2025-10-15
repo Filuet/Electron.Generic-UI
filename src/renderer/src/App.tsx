@@ -9,14 +9,15 @@ import {
   LoginRequestModel,
   LoginResponseModel,
   LogLevel,
+  MachineActiveStatus,
   PageRoute,
   ValidationException
 } from './interfaces/modal';
-import { postData } from './services/axiosWrapper/apiService';
+import { getData, postData } from './services/axiosWrapper/apiService';
 import { useAppDispatch, useAppSelector } from './redux/core/utils/reduxHook';
 import { fetchKioskSettings } from './redux/features/kioskSettings/kioskSettingThunk';
 import { AUTH_TOKEN_KEY } from './utils/constants';
-import { kioskLoginEndpoint } from './utils/endpoints';
+import { kioskLoginEndpoint, machineStatusFailNotificationEndpoint } from './utils/endpoints';
 import OriflameLogo from './assets/images/Logo/oriflameLogo.svg';
 import StartScreenBanner from './assets/images/Defaults/DefaultBackgroundImage.png';
 import { setVideoFileNames } from './redux/features/welcomeScreen/welcomeScreenSlice';
@@ -24,10 +25,16 @@ import OriflameLoader from './components/oriflameLoader/OriflameLoader';
 import { resetReduxStore } from './redux/core/utils/resetReduxStore';
 import { setActivePage } from './redux/features/pageNavigation/navigationSlice';
 import loggingService from './utils/loggingService';
+import {
+  checkDispenserStatus,
+  checkMachinesStatus,
+  getActiveMachines
+} from './utils/dispenserUtils';
 
 function App(): JSX.Element {
   const theme = useTheme();
   const PERFORMANCE_LOGGING_INTERVAL = 30 * 60 * 1000; // 30 minutes
+  const MACHINE_STATUS_CHECK_INTERVAL = 10 * 60 * 1000; // 30 minutes;
   const dispatch = useAppDispatch();
 
   const videoFilenames = useAppSelector((state) => state.welcomeScreen);
@@ -44,6 +51,18 @@ function App(): JSX.Element {
   const customerId = useAppSelector((state) => state.customerDetails.customerId);
   const resetOnIdleTimerMs =
     useAppSelector((state) => state.kioskSettings.kioskSettings.resetOnIdleTimerMs) ?? 3000;
+
+  const machineStatus: MachineActiveStatus = useAppSelector(
+    (state) => state.kioskSettings.kioskSettings.machines
+  );
+  const machineStatusRef = useRef(machineStatus);
+  const customerIdRef = useRef(customerId);
+  const customerNameRef = useRef(customerName);
+  useEffect(() => {
+    machineStatusRef.current = machineStatus;
+    customerIdRef.current = customerId;
+    customerNameRef.current = customerName;
+  }, [machineStatus, customerId, customerName]);
 
   useEffect(() => {
     const initializeKiosk = async (): Promise<void> => {
@@ -393,6 +412,29 @@ function App(): JSX.Element {
     }
     clearInterval(countdownTimer.current!);
   };
+
+  useEffect(() => {
+    const checkStatus = (): void => {
+      if (customerIdRef.current === '' && customerNameRef.current === '') {
+        const activeMachines = getActiveMachines(machineStatusRef.current);
+        try {
+          checkMachinesStatus(activeMachines, 0);
+          checkDispenserStatus(1);
+        } catch (error) {
+          getData(`${machineStatusFailNotificationEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`);
+          loggingService.log({
+            level: LogLevel.ERROR,
+            component: 'App.tsx',
+            message: `Machine status checks failed, exception thrown by expo-extractor`,
+            data: { error }
+          });
+        }
+      }
+    };
+    checkStatus();
+    const intervalId = setInterval(checkStatus, MACHINE_STATUS_CHECK_INTERVAL);
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <>
