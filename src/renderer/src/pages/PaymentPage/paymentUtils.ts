@@ -148,12 +148,6 @@ export const cleanupSignalRConnection = async (
         component: 'paymentUtils.ts',
         message: `Error cleaning up SignalR connection: ${error}`
       });
-      LoggingService.log({
-        level: LogLevel.ERROR,
-        component: 'PaymentUtils',
-        message: `Error cleaning up SignalR connection`,
-        data: { error },
-      });
     }
   }
 };

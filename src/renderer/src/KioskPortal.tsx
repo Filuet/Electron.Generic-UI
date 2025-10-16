@@ -15,15 +15,11 @@ import PaymentProcessing from './pages/PaymentPage/PaymentProcessing';
 import ProductCollection from './pages/Product_Collection/ProductCollection';
 import ThankyouPage from './pages/ThankYouPage/ThankyouPage';
 import ValidateOtp from './pages/Login/ValidateOTP/ValidateOtp';
-import {
-  setExpoStatus,
-  setInoperableMachines,
-} from './redux/features/expoSettings/expoSlice';
+import { setInoperableMachines } from './redux/features/expoSettings/expoSlice';
 import {
   checkDispenserStatus,
   checkMachinesStatus,
-  delay,
-  getActiveMachines,
+  getActiveMachines
 } from './utils/dispenserUtils';
 import { getData } from './services/axiosWrapper/apiService';
 import { expoFailEndpoint } from './utils/endpoints';
@@ -66,8 +62,8 @@ function KioskPortal(): JSX.Element {
 
         const machines = !machineCheckResult.success
           ? machineCheckResult.inoperableMachines.map((id) => ({
-              machineId: id,
-              }))
+              machineId: id
+            }))
           : [];
 
         dispatch(setInoperableMachines(machines));
@@ -81,7 +77,7 @@ function KioskPortal(): JSX.Element {
           getData(`${expoFailEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`);
           loggingService.log({
             level: LogLevel.ERROR,
-            component: 'KioskPortal',
+            component: 'KioskPortal.tsx',
             message: `ExpoExtractor is not running`,
             data: {
               message: error.message
@@ -90,21 +86,13 @@ function KioskPortal(): JSX.Element {
           dispatch(setActivePage(PageRoute.SupportContactPage));
           return;
         } else {
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
-            component: 'KioskPortal',
-            message: `Error during dispenser check`,
-            data: {
-              message: error,
-            },
+            component: 'KioskPortal.tsx',
+            message: 'Error during dispenser check',
+            data: { error: JSON.stringify(error) }
           });
-        loggingService.log({
-          level: LogLevel.ERROR,
-          component: 'KioskPortal',
-          message: 'Error during dispenser check',
-          data: { error: JSON.stringify(error) }
-        });
-      }
+        }
       }
     };
     if (!underMaintenance) {

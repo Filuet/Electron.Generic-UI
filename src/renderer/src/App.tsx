@@ -13,7 +13,7 @@ import {
   PageRoute,
   ValidationException
 } from './interfaces/modal';
-import { getData, postData } from './services/axiosWrapper/apiService';
+import { postData } from './services/axiosWrapper/apiService';
 import { useAppDispatch, useAppSelector } from './redux/core/utils/reduxHook';
 import { fetchKioskSettings } from './redux/features/kioskSettings/kioskSettingThunk';
 import { AUTH_TOKEN_KEY } from './utils/constants';
@@ -151,16 +151,15 @@ function App(): JSX.Element {
         })
         .catch((err) => {
           console.error('Error fetching video filenames:', err);
-          LoggingService.log({
+          loggingService.log({
             level: LogLevel.ERROR,
             component: 'App',
             message: `Error fetching video filenames`,
-            data: { err },
+            data: { err }
           });
         })
         .finally(() => {
           // setIsLoadingVideos(false);
-          });
         });
     }
 
@@ -438,19 +437,19 @@ function App(): JSX.Element {
   };
 
   useEffect(() => {
-    const checkStatus = (): void => {
+    const checkStatus = async (): Promise<void> => {
       if (customerIdRef.current === '' && customerNameRef.current === '') {
         const activeMachines = getActiveMachines(machineStatusRef.current);
         const checkMachineResult = await checkMachinesStatus(activeMachines, 1);
         const machines = !checkMachineResult.success
           ? checkMachineResult.inoperableMachines.map((id) => ({
-              machineId: id,
+              machineId: id
             }))
           : [];
 
         dispatch(setInoperableMachines(machines));
         await checkDispenserStatus(1);
-        }
+      }
     };
     checkStatus();
     const intervalId = setInterval(checkStatus, MACHINE_STATUS_CHECK_INTERVAL);
