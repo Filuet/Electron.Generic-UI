@@ -25,7 +25,7 @@ export const windowDevSettings: BrowserWindowConstructorOptions = {
   // === Display and Appearance ===
   alwaysOnTop: false, // Keep window always on top
   skipTaskbar: false, // Don't show in taskbar
-  title: 'Generic-UI', // Title of the window
+  title: 'GenericUI', // Title of the window
   // icon: undefined, // Path to icon file (Windows, Linux)
   show: false, // Show window immediately
   frame: true, // Show OS window frame
