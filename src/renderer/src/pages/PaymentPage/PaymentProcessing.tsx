@@ -165,7 +165,6 @@ function PaymentProcessing(): JSX.Element {
             message: 'SignalR connection failed',
             component: 'PaymentProcessing',
             data: { error: JSON.stringify(err) }
-         
           });
         });
     };
@@ -185,19 +184,19 @@ function PaymentProcessing(): JSX.Element {
       component: 'PaymentProcessing',
       message: `Attempting to open payment window with link: ${link}`
     });
-    
+
     try {
       const success = await window.electron.payment.open(link);
 
       if (success) {
         loggingService.log({
-          level: LogLevel.INFO,
+          level: 'info',
           component: 'PaymentProcessing',
           message: 'Payment window opened successfully'
         });
       } else {
         loggingService.log({
-          level: LogLevel.WARN,
+          level: 'warn',
           component: 'PaymentProcessing',
           message: 'Failed to open payment window (possibly already open or invalid link)',
           data: { link }
@@ -205,7 +204,6 @@ function PaymentProcessing(): JSX.Element {
         dispatch(setPaymentStatus(PaymentStatus.NotFound));
         setIsPaymentProcessing(false);
       }
-     
     } catch (error) {
       const paymentError = error as PaymentProcessingError;
       loggingService.log({

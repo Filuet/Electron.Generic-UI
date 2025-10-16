@@ -30,7 +30,6 @@ import {
   checkMachinesStatus,
   getActiveMachines
 } from './utils/dispenserUtils';
-import { setInoperableMachines } from './redux/features/expoSettings/expoSlice';
 
 function App(): JSX.Element {
   const theme = useTheme();
@@ -448,6 +447,7 @@ function App(): JSX.Element {
             data: { error }
           });
         }
+      }
     };
     checkStatus();
     const intervalId = setInterval(checkStatus, MACHINE_STATUS_CHECK_INTERVAL);
