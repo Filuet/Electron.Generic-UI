@@ -105,6 +105,16 @@ export const checkDispenserStatus = async (attempts: number = 3): Promise<boolea
     });
     return false;
   }
+  } catch (error) {
+    console.error('Error fetching dispenser status:', error);
+    LoggingService.log({
+      level: LogLevel.ERROR,
+      component: 'DispenserUtils',
+      message: `Error fetching dispenser status.`,
+      data: { error },
+    });
+    return false;
+  }
 
   await delay(2000);
   return checkDispenserStatus(attempts - 1);

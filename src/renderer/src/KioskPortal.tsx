@@ -116,6 +116,7 @@ function KioskPortal(): JSX.Element {
           });
         }
       }
+      }
     };
     if (!underMaintenance) {
       const activeMachines = getActiveMachines(machineStatus);
