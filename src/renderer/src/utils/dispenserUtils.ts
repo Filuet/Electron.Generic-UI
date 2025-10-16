@@ -62,48 +62,46 @@ export const getActiveMachines = (machineStatus: MachineActiveStatus): number[] 
 };
 export const checkDispenserStatus = async (attempts: number = 3): Promise<boolean> => {
   if (attempts === 0) {
-    LoggingService.log({
+    loggingService.log({
       level: LogLevel.ERROR,
       component: 'DispenserUtils',
       message: `Dispenser Status is not as expected after 3 attempts.`,
-      data: {},
+      data: {}
     });
-    console.log('Dispenser Status is not as expected after 3 attempts.');
+
     try {
       await resetStatus();
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.INFO,
         component: 'DispenserUtils',
-        message: `Reset Status Api called. Expo Status has been reset.`,
+        message: `Reset Status Api called. Expo Status has been reset.`
       });
-      console.log('Expo Status has been reset');
     } catch (error) {
-      LoggingService.log({
+      loggingService.log({
         level: LogLevel.INFO,
         component: 'DispenserUtils',
         message: `Error while calling Reset Status Api.`,
-        data: { error },
+        data: { error }
       });
     }
     return false;
   }
   try {
-  const statusResult = await getDispenseStatus();
+    const statusResult = await getDispenseStatus();
 
-  if (
-    statusResult.data.status === 'success' &&
-    statusResult.data.action === 'pending' &&
-    statusResult.data.message === 'Waiting for command'
-  ) {
-    return true;
-  }
+    if (
+      statusResult.data.status === 'success' &&
+      statusResult.data.action === 'pending' &&
+      statusResult.data.message === 'Waiting for command'
+    ) {
+      return true;
+    }
   } catch (error) {
-    console.error('Error fetching dispenser status:', error);
-    LoggingService.log({
+    loggingService.log({
       level: LogLevel.ERROR,
       component: 'DispenserUtils',
       message: `Error fetching dispenser status.`,
-      data: { error },
+      data: { error }
     });
     return false;
   }
@@ -157,13 +155,6 @@ export const checkMachinesStatus = async (
 
     // If we have inoperable machines and last attempts
     if (attempts === 1) {
-      loggingService.log({
-        level: 'error',
-        message: 'Inoperable machines detected after maximum attempts',
-        component: 'dispenserUtils.ts',
-        data: { inoperableMachines, testResults }
-      });
-
       loggingService.log({
         level: LogLevel.ERROR,
         component: 'DispenserUtils',

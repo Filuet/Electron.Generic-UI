@@ -148,7 +148,6 @@ export const cleanupSignalRConnection = async (
         component: 'paymentUtils.ts',
         message: `Error cleaning up SignalR connection: ${error}`
       });
-      
     }
   }
 };
