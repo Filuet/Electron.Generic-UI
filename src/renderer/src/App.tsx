@@ -13,11 +13,11 @@ import {
   PageRoute,
   ValidationException
 } from './interfaces/modal';
-import { getData, postData } from './services/axiosWrapper/apiService';
+import { postData } from './services/axiosWrapper/apiService';
 import { useAppDispatch, useAppSelector } from './redux/core/utils/reduxHook';
 import { fetchKioskSettings } from './redux/features/kioskSettings/kioskSettingThunk';
 import { AUTH_TOKEN_KEY } from './utils/constants';
-import { kioskLoginEndpoint, machineStatusFailNotificationEndpoint } from './utils/endpoints';
+import { kioskLoginEndpoint } from './utils/endpoints';
 import OriflameLogo from './assets/images/Logo/oriflameLogo.svg';
 import StartScreenBanner from './assets/images/Defaults/DefaultBackgroundImage.png';
 import { setVideoFileNames } from './redux/features/welcomeScreen/welcomeScreenSlice';
@@ -433,21 +433,19 @@ function App(): JSX.Element {
   };
 
   useEffect(() => {
-    const checkStatus = (): void => {
+    const checkStatus = async (): Promise<void> => {
       if (customerIdRef.current === '' && customerNameRef.current === '') {
         const activeMachines = getActiveMachines(machineStatusRef.current);
-        try {
-          checkMachinesStatus(activeMachines, 0);
-          checkDispenserStatus(1);
-        } catch (error) {
-          getData(`${machineStatusFailNotificationEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`);
-          loggingService.log({
-            level: LogLevel.ERROR,
-            component: 'App.tsx',
-            message: `Machine status checks failed, exception thrown by expo-extractor`,
-            data: { error }
-          });
-        }
+        const checkMachineResult = await checkMachinesStatus(activeMachines, 1);
+        const machines = !checkMachineResult.success
+          ? checkMachineResult.inoperableMachines.map((id) => ({
+              machineId: id
+            }))
+          : [];
+
+        dispatch(setInoperableMachines(machines));
+        await checkDispenserStatus(1);
+      }
     };
     checkStatus();
     const intervalId = setInterval(checkStatus, MACHINE_STATUS_CHECK_INTERVAL);
