@@ -15,13 +15,9 @@ import PaymentProcessing from './pages/PaymentPage/PaymentProcessing';
 import ProductCollection from './pages/Product_Collection/ProductCollection';
 import ThankyouPage from './pages/ThankYouPage/ThankyouPage';
 import ValidateOtp from './pages/Login/ValidateOTP/ValidateOtp';
-import { resetStatus } from './utils/expoApiUtils';
+import { getDispenseStatus, resetStatus } from './utils/expoApiUtils';
 import { setExpoStatus, setInoperableMachines } from './redux/features/expoSettings/expoSlice';
-import {
-  checkDispenserStatus,
-  checkMachinesStatus,
-  getActiveMachines
-} from './utils/dispenserUtils';
+import { checkMachinesStatus, delay, getActiveMachines } from './utils/dispenserUtils';
 import { getData } from './services/axiosWrapper/apiService';
 import { expoFailEndpoint } from './utils/endpoints';
 import SupportContact from './pages/UnderMaintenance/SupportContact';
@@ -39,6 +35,31 @@ function KioskPortal(): JSX.Element {
     (state) => state.kioskSettings.kioskSettings.machines
   );
 
+  const checkDispenserStatus = async (attempts: number = 3): Promise<boolean> => {
+    if (attempts === 0) {
+      dispatch(setExpoStatus(false));
+      loggingService.log({
+        level: LogLevel.ERROR,
+        component: 'KioskPortal',
+        message: `Check Dispense Status api response is not as expected after 3 attempts.`
+      });
+      console.log('Status is not as expected after 3 attempts.');
+      return false;
+    }
+
+    const statusResult = await getDispenseStatus();
+
+    if (
+      statusResult.data.status === 'success' &&
+      statusResult.data.action === 'pending' &&
+      statusResult.data.message === 'Waiting for command'
+    ) {
+      return true;
+    }
+
+    await delay(2000);
+    return checkDispenserStatus(attempts - 1);
+  };
   const checkWorkingHours = useCallback(() => {
     const now = dayjs();
     const currentDay = now.format('dddd').toLowerCase();
@@ -83,7 +104,7 @@ function KioskPortal(): JSX.Element {
           console.log('Dispenser Status is not as expected after 3 attempts.');
           await resetStatus();
           loggingService.log({
-            level: LogLevel.ERROR,
+            level: LogLevel.INFO,
             component: 'KioskPortal.tsx',
             message: 'Dispenser is not reachable',
             data: { dispenserStatus: dispenserStatus }

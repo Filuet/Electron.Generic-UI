@@ -6,7 +6,11 @@ import {
 } from '@/interfaces/modal';
 import { getData, postData } from '@/services/axiosWrapper/apiService';
 import { getDispenseStatus, testMachine } from './expoApiUtils';
-import { machineInoperableEndpoint, machineStatusFailNotificationEndpoint } from './endpoints';
+import {
+  machineInoperableEndpoint,
+  machineStatusFailNotificationEndpoint,
+  machineStatusFailNotifyEndpoint
+} from './endpoints';
 import loggingService from './loggingService';
 
 export const parseDispenserAddress = (message: string): DispenserAddress | null => {
@@ -32,7 +36,6 @@ export const sendInoperableMachineNotification = async (
       kioskName: import.meta.env.VITE_KIOSK_NAME,
       machineIds: inoperableMachines
     };
-
     await postData<MachineInoperableModal, void>(
       machineInoperableEndpoint,
       inoperableMachineRequest
@@ -44,6 +47,9 @@ export const sendInoperableMachineNotification = async (
       data: { inoperableMachines }
     });
   }
+};
+export const sendMachineStatusCheckFailNotification = async (): Promise<void> => {
+  await getData<void>(`${machineStatusFailNotifyEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`);
 };
 export const getActiveMachines = (machineStatus: MachineActiveStatus): number[] => {
   if (machineStatus.isFirstMachineActive && machineStatus.isSecondMachineActive) {
@@ -125,6 +131,12 @@ export const checkMachinesStatus = async (
         data: { inoperableMachines, testResults }
       });
 
+      loggingService.log({
+        level: LogLevel.ERROR,
+        component: 'DispenserUtils',
+        message: `Test Machine Failed: Max attempts reached while checking machines, sending notification.`,
+        data: { inoperableMachines }
+      });
       console.groupEnd();
       await sendInoperableMachineNotification(inoperableMachines);
       return { success: false, inoperableMachines };
@@ -143,12 +155,11 @@ export const checkMachinesStatus = async (
     await getData(`${machineStatusFailNotificationEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`);
     loggingService.log({
       level: LogLevel.ERROR,
-      component: 'KioskPortal',
-      message: `Machine status checks failed, exception thrown by expo-extractor`,
-      data: {
-        error
-      }
+      component: 'DispenserUtils',
+      message: `Test Machine Failed. Sending notification.`,
+      data: { error }
     });
+    await sendMachineStatusCheckFailNotification();
     console.error('Error during machine status check:', error);
     return { success: false, inoperableMachines: [] };
   }

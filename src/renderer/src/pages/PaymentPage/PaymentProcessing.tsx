@@ -113,6 +113,11 @@ function PaymentProcessing(): JSX.Element {
           // Clean up connection since we have a valid terminal state
           await cleanupConnection(`Received status: ${paymentStatusResponse}`);
         } else {
+          loggingService.log({
+            level: LogLevel.ERROR,
+            component: 'PaymentProcessing',
+            message: `Invalid payment status received from SignalR: ${message}`
+          });
           throw new Error('Invalid payment status');
         }
       } catch (error) {
