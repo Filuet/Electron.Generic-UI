@@ -7,7 +7,8 @@ import {
   MachineStatus,
   PogRoute,
   MachineInoperableModal,
-  ApiResponse
+  ApiResponse,
+  LogLevel
 } from '@/interfaces/modal';
 import { CartProduct } from '@/redux/features/cart/cartTypes';
 import { machineInoperableEndpoint } from './endpoints';
@@ -25,7 +26,7 @@ const sendCertificatesErrorNotification = async (inoperableMachines: number[]): 
   await postData<MachineInoperableModal, void>(machineInoperableEndpoint, inoperableMachineRequest)
     .then(() => {
       loggingService.log({
-        level: 'info',
+        level: LogLevel.INFO,
         message: 'Certificates error notification mail send successfully ',
         component: 'expoUtils.ts',
         data: inoperableMachineRequest
@@ -33,7 +34,7 @@ const sendCertificatesErrorNotification = async (inoperableMachines: number[]): 
     })
     .catch((error) => {
       loggingService.log({
-        level: 'error',
+        level: LogLevel.ERROR,
         message: 'Error in sending certificates error notification mail',
         component: 'expoUtils.ts',
         data: { error, inoperableMachineRequest }

@@ -72,7 +72,7 @@ function PaymentProcessing(): JSX.Element {
     )
       .then(() => {
         loggingService.log({
-          level: 'info',
+          level: LogLevel.INFO,
           message: `Dispense status updated to Started for order code: ${orderCodeToUse}`,
           component: 'PaymentProcessing',
           data: { orderCode: orderCodeToUse }
@@ -154,7 +154,7 @@ function PaymentProcessing(): JSX.Element {
         .start()
         .then(() => {
           loggingService.log({
-            level: 'info',
+            level: LogLevel.INFO,
             message: 'SignalR connection started successfully',
             component: 'PaymentProcessing'
           });
@@ -180,7 +180,7 @@ function PaymentProcessing(): JSX.Element {
 
   const openPaymentWindowInNewTab = async (link: string): Promise<void> => {
     loggingService.log({
-      level: 'info',
+      level: LogLevel.INFO,
       component: 'PaymentProcessing',
       message: `Attempting to open payment window with link: ${link}`
     });
@@ -190,13 +190,13 @@ function PaymentProcessing(): JSX.Element {
 
       if (success) {
         loggingService.log({
-          level: 'info',
+          level: LogLevel.INFO,
           component: 'PaymentProcessing',
           message: 'Payment window opened successfully'
         });
       } else {
         loggingService.log({
-          level: 'warn',
+          level: LogLevel.ERROR,
           component: 'PaymentProcessing',
           message: 'Failed to open payment window (possibly already open or invalid link)',
           data: { link }
@@ -204,11 +204,6 @@ function PaymentProcessing(): JSX.Element {
         dispatch(setPaymentStatus(PaymentStatus.NotFound));
         setIsPaymentProcessing(false);
       }
-      loggingService.log({
-        level: LogLevel.INFO,
-        component: 'PaymentProcessing',
-        message: `Payment window Opened successfully`
-      });
     } catch (error) {
       const paymentError = error as PaymentProcessingError;
       loggingService.log({

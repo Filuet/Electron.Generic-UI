@@ -37,7 +37,7 @@ export const sendInoperableMachineNotification = async (
       inoperableMachineRequest
     );
     loggingService.log({
-      level: 'info',
+      level: LogLevel.INFO,
       message: 'Inoperable machine notification sent',
       component: 'dispenserUtils.ts',
       data: { inoperableMachines }
@@ -119,7 +119,7 @@ export const checkMachinesStatus = async (
     const apiResponse = await testMachine();
     const testResults = apiResponse.data;
     loggingService.log({
-      level: 'info',
+      level: LogLevel.INFO,
       message: 'Machine status test results',
       component: 'dispenserUtils.ts',
       data: { testResults }
@@ -130,7 +130,7 @@ export const checkMachinesStatus = async (
       return !machineTest || machineTest.status !== 'connected';
     });
     loggingService.log({
-      level: 'info',
+      level: LogLevel.INFO,
       message: 'Inoperable machines identified',
       component: 'dispenserUtils.ts',
       data: { inoperableMachines }
@@ -143,7 +143,7 @@ export const checkMachinesStatus = async (
 
       if (allConnected) {
         loggingService.log({
-          level: 'info',
+          level: LogLevel.INFO,
           message: 'All machines are operational',
           component: 'dispenserUtils.ts',
           data: { testResults }
@@ -156,7 +156,7 @@ export const checkMachinesStatus = async (
     // If we have inoperable machines and last attempts
     if (attempts === 1) {
       loggingService.log({
-        level: 'error',
+        level: LogLevel.ERROR,
         message: 'Inoperable machines detected after maximum attempts',
         component: 'dispenserUtils.ts',
         data: { inoperableMachines, testResults }
@@ -173,7 +173,7 @@ export const checkMachinesStatus = async (
     }
 
     loggingService.log({
-      level: 'warn',
+      level: LogLevel.WARN,
       message: 'Inoperable machines detected, retrying...',
       component: 'dispenserUtils.ts',
       data: { inoperableMachines, attemptsLeft: attempts, testResults }

@@ -164,7 +164,7 @@ function ProductCollection(): JSX.Element {
         planogramUpdateRequest
       );
       loggingService.log({
-        level: 'info',
+        level: LogLevel.INFO,
         component: 'ProductCollection',
         message: `API call to update planogram for SKU: ${product.sku} was successful`,
         data: response
@@ -377,7 +377,7 @@ function ProductCollection(): JSX.Element {
         });
       } else {
         loggingService.log({
-          level: 'info',
+          level: LogLevel.INFO,
           component: 'ProductCollection',
           message: 'No untracked dispense errors'
         });
@@ -451,7 +451,7 @@ function ProductCollection(): JSX.Element {
           dispatch(setActivePage(PageRoute.ThankYouPage));
         }, 5000); // 5 seconds delay
         loggingService.log({
-          level: 'info',
+          level: LogLevel.INFO,
           component: 'ProductCollection',
           message: 'Dispensing process completed, Navigated to thank you page after 5 seconds',
           data: { unTrackedDispenseErrors }
@@ -470,7 +470,7 @@ function ProductCollection(): JSX.Element {
           const apiResponse = await getDispenseStatus();
           const status: MachineStatus = apiResponse.data;
           loggingService.log({
-            level: 'info',
+            level: LogLevel.INFO,
             component: 'ProductCollection',
             message: 'API call to fetch dispenser status was successful',
             data: status
@@ -499,7 +499,7 @@ function ProductCollection(): JSX.Element {
                 const startMatch = status.message.match(/(\d+)\/(\d+)\/(\d+).*sku:(\d+)/);
                 if (startMatch) {
                   loggingService.log({
-                    level: 'info',
+                    level: LogLevel.INFO,
                     component: 'ProductCollection',
                     message: `Dispensing in process ${startMatch[0]}`
                   });
