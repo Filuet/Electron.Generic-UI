@@ -15,13 +15,20 @@ import PaymentProcessing from './pages/PaymentPage/PaymentProcessing';
 import ProductCollection from './pages/Product_Collection/ProductCollection';
 import ThankyouPage from './pages/ThankYouPage/ThankyouPage';
 import ValidateOtp from './pages/Login/ValidateOTP/ValidateOtp';
-import { setExpoStatus, setInoperableMachines } from './redux/features/expoSettings/expoSlice';
-import { checkMachinesStatus, delay, getActiveMachines } from './utils/dispenserUtils';
+import {
+  setExpoStatus,
+  setInoperableMachines,
+} from './redux/features/expoSettings/expoSlice';
+import {
+  checkDispenserStatus,
+  checkMachinesStatus,
+  delay,
+  getActiveMachines,
+} from './utils/dispenserUtils';
 import { getData } from './services/axiosWrapper/apiService';
 import { expoFailEndpoint } from './utils/endpoints';
 import SupportContact from './pages/UnderMaintenance/SupportContact';
 import loggingService from './utils/loggingService';
-import { getDispenseStatus } from './utils/expoApiUtils';
 
 function KioskPortal(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -84,8 +91,8 @@ function KioskPortal(): JSX.Element {
 
         const machines = !machineCheckResult.success
           ? machineCheckResult.inoperableMachines.map((id) => ({
-              machineId: id
-            }))
+              machineId: id,
+              }))
           : [];
 
         dispatch(setInoperableMachines(machines));
@@ -108,13 +115,14 @@ function KioskPortal(): JSX.Element {
           dispatch(setActivePage(PageRoute.SupportContactPage));
           return;
         } else {
-          loggingService.log({
-            level: LogLevel.ERROR,
-            component: 'KioskPortal',
-            message: 'Error during dispenser check',
-            data: { error: JSON.stringify(error) }
-          });
-        }
+         
+        loggingService.log({
+          level: LogLevel.ERROR,
+          component: 'KioskPortal',
+          message: 'Error during dispenser check',
+          data: { error: JSON.stringify(error) }
+        });
+      }
       }
     };
     if (!underMaintenance) {
