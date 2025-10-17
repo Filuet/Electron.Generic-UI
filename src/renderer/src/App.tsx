@@ -16,7 +16,7 @@ import {
 import { postData } from './services/axiosWrapper/apiService';
 import { useAppDispatch, useAppSelector } from './redux/core/utils/reduxHook';
 import { fetchKioskSettings } from './redux/features/kioskSettings/kioskSettingThunk';
-import { AUTH_TOKEN_KEY } from './utils/constants';
+import { AUTH_TOKEN_KEY, SESSION_ID } from './utils/constants';
 import { kioskLoginEndpoint } from './utils/endpoints';
 import OriflameLogo from './assets/images/Logo/oriflameLogo.svg';
 import StartScreenBanner from './assets/images/Defaults/DefaultBackgroundImage.png';
@@ -312,14 +312,15 @@ function App(): JSX.Element {
         setIsModalOpen(false);
 
         if (customerId !== '' && customerName !== '') {
+          LocalStorageWrapper.removeItem(SESSION_ID);
           loggingService.log({
-            message: 'User logged out',
             level: LogLevel.INFO,
+            message: 'User logged out, Customer session ended due to inactivity',
+            component: 'App.tsx',
             data: {
               customerId,
               customerName
-            },
-            component: 'App.tsx'
+            }
           });
         }
 

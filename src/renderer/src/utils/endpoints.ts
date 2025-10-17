@@ -39,3 +39,4 @@ export const paymentTimeoutEndpoint = 'api/payment/timeout';
 export const expoFailEndpoint = '/api/notify/expo-failure';
 export const planogramUpdateClientPortalEndpoint = '/api/planogram/hub';
 export const machineStatusFailNotificationEndpoint = '/api/notify/machine-status-fail';
+export const getSessionIdEndpoint = '/api/common/customer/session';

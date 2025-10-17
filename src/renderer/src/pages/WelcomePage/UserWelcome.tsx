@@ -19,6 +19,8 @@ import loggingService from '@/utils/loggingService';
 import UserWelcomeBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';
 import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png';
 import { UserWelcomeStyles } from './UserWelcomeStyles';
+import { LocalStorageWrapper } from '@/utils/localStorageWrapper';
+import { SESSION_ID } from '@/utils/constants';
 
 function UserWelcomePage(): JSX.Element {
   const theme = useTheme();
@@ -35,6 +37,15 @@ function UserWelcomePage(): JSX.Element {
     dispatch(setActivePage(PageRoute.HomePage));
   };
   const onLoginPage = (): void => {
+    const isSessionActive = LocalStorageWrapper.getItem(SESSION_ID);
+    if (isSessionActive) {
+      LocalStorageWrapper.removeItem(SESSION_ID);
+      loggingService.log({
+        level: LogLevel.INFO,
+        component: 'UserWelcome',
+        message: `customer session ended`
+      });
+    }
     dispatch(setActivePage(PageRoute.LoginPage));
   };
   const onRegisterPage = (): void => {

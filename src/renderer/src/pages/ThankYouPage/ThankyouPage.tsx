@@ -11,6 +11,8 @@ import loggingService from '@/utils/loggingService';
 import { ThankYouPageStyles } from './thankYouPageStyles';
 import PaymentPageBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';
 import OriflameLogo from '../../assets/images/Logo/Oriflame_logo_WelcomePage.png';
+import { SESSION_ID } from '@/utils/constants';
+import { LocalStorageWrapper } from '@/utils/localStorageWrapper';
 
 function ThankyouPage(): JSX.Element {
   const theme = useTheme();
@@ -22,7 +24,7 @@ function ThankyouPage(): JSX.Element {
   const customerId = useAppSelector((state) => state.customerDetails.customerId);
   setTimeout(() => {
     loggingService.log({
-      message: 'User logged out',
+      message: 'User logged out, Customer session ended',
       level: LogLevel.INFO,
       data: {
         customerId,
@@ -32,6 +34,7 @@ function ThankyouPage(): JSX.Element {
     });
 
     dispatch(setActivePage(PageRoute.KioskWelcomePage));
+    LocalStorageWrapper.removeItem(SESSION_ID);
     resetReduxStore();
   }, 5000);
 
