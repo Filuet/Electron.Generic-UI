@@ -2,5 +2,5 @@
   "videoFilePath": "C:/Ogmento/videos",
   "supportedVideoFormats": [".mp4"],
   "expoBaseUrl": "https://localhost:5001",
-  "logFilesPath": "c:/Filuet/Dispensing/logs"
+  "logFilePath": "c:/Filuet/Generic"
 }

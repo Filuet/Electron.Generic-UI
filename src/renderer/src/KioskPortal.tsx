@@ -84,7 +84,6 @@ function KioskPortal(): JSX.Element {
             }
           });
           dispatch(setActivePage(PageRoute.SupportContactPage));
-          return;
         } else {
           loggingService.log({
             level: LogLevel.ERROR,
