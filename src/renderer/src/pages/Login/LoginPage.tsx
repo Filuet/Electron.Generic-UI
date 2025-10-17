@@ -23,8 +23,12 @@ import { setPhoneNumber } from '@/redux/features/customerLogin/customerLogin';
 import { requestOtp } from '@/redux/features/customerLogin/customerLoginThunk';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import loggingService from '@/utils/loggingService';
-import LoginPageBanner from '../../assets/images/Banners/LoginPage_Banner.png';
 import { LoginPageStyles } from './loginPageStyles';
+import { getSessionIdEndpoint } from '@/utils/endpoints';
+import { getData } from '@/services/axiosWrapper/apiService';
+import { SESSION_ID } from '@/utils/constants';
+import { LocalStorageWrapper } from '@/utils/localStorageWrapper';
+import LoginPageBanner from '../../assets/images/Banners/LoginPage_Banner.png';
 
 function LoginPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -62,6 +66,15 @@ function LoginPage(): JSX.Element {
   };
 
   const onPreviousPage = (): void => {
+    const currentSessionId = LocalStorageWrapper.getItem(SESSION_ID);
+    if (currentSessionId) {
+      LocalStorageWrapper.removeItem(SESSION_ID);
+      loggingService.log({
+        level: LogLevel.INFO,
+        component: 'LoginPage',
+        message: `customer session ended`
+      });
+    }
     dispatch(setActivePage(PageRoute.KioskWelcomePage));
   };
 
@@ -73,7 +86,7 @@ function LoginPage(): JSX.Element {
     setShowRetryLoginDialogue(false);
   };
 
-  const onUserLogin = (): void => {
+  const onUserLogin = async (): Promise<void> => {
     if (supportPhoneNumbers.includes(contactNumber)) {
       dispatch(setPhoneNumber(contactNumber));
       onNextPage(PageRoute.ValidateOtpPage);
@@ -81,13 +94,26 @@ function LoginPage(): JSX.Element {
     }
     if (contactNumber === '1234567890' || contactNumber === '8870784905') {
       dispatch(setPhoneNumber(contactNumber));
+      loggingService.log({
+        level: LogLevel.INFO,
+        component: 'LoginPage',
+        message: `Test customer session started`,
+        data: { customerSessionId: 'TEST_SESSION_ID' }
+      });
       onNextPage(PageRoute.ValidateOtpPage);
       return;
     }
     if (!checkValidPhoneNumber()) {
       return;
     }
-
+    const customerSessionId: string = await getData(`${getSessionIdEndpoint}`);
+    LocalStorageWrapper.setItem(SESSION_ID, customerSessionId);
+    loggingService.log({
+      level: LogLevel.INFO,
+      component: 'LoginPage',
+      message: `customer session started`,
+      data: { customerSessionId }
+    });
     setValidationError('');
     dispatch(setPhoneNumber(contactNumber));
     dispatch(requestOtp(contactNumber))

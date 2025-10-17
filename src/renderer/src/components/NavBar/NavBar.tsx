@@ -14,6 +14,8 @@ import { resetReduxStore } from '@/redux/core/utils/resetReduxStore';
 import loggingService from '@/utils/loggingService';
 import OriflameLogo from '../../assets/images/Logo/oriflameLogo.svg';
 import { NavBarStyles } from './navbarStyle';
+import { LocalStorageWrapper } from '@/utils/localStorageWrapper';
+import { SESSION_ID } from '@/utils/constants';
 
 function Navbar(): JSX.Element {
   const { translate } = useTranslationHook();
@@ -25,7 +27,7 @@ function Navbar(): JSX.Element {
   const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
   const onLogout = (): void => {
     loggingService.log({
-      message: 'User logged out',
+      message: 'User logged out, Customer session ended by user',
       level: LogLevel.INFO,
       data: {
         customerId,
@@ -33,6 +35,7 @@ function Navbar(): JSX.Element {
       },
       component: 'Navbar.tsx'
     });
+    LocalStorageWrapper.removeItem(SESSION_ID);
     resetReduxStore();
     dispatch(setActivePage(PageRoute.KioskWelcomePage));
   };

@@ -1,5 +1,5 @@
 import { LoginResponseModel, LogLevel } from '@/interfaces/modal';
-import { AUTH_TOKEN_KEY } from '@/utils/constants';
+import { AUTH_TOKEN_KEY, SESSION_ID } from '@/utils/constants';
 import { BASE_URL, kioskLoginEndpoint } from '@/utils/endpoints';
 import { LocalStorageWrapper } from '@/utils/localStorageWrapper';
 import axios, { AxiosError, AxiosResponse } from 'axios';
@@ -15,6 +15,10 @@ axiosInstance.interceptors.request.use(
     const token: string | null = LocalStorageWrapper.getAuthToken();
     if (token) {
       myConfig.headers.Authorization = `Bearer ${token}`;
+    }
+    const customerSessionId: string | null = LocalStorageWrapper.getItem(SESSION_ID);
+    if (customerSessionId) {
+      myConfig.headers.set('X-Customer-Session-ID', customerSessionId);
     }
     return config;
   },

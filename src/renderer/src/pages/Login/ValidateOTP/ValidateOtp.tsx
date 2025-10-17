@@ -17,6 +17,8 @@ import OTPValidationBanner from '../../../assets/images/Banners/LoginPage_Banner
 import { ValidateOtpStyles } from './validateOtpStyles';
 import { supportStyles } from './supportStyles';
 import OriflameLogo from '../../../assets/images/Logo/oriflameLogo.svg';
+import { LocalStorageWrapper } from '@/utils/localStorageWrapper';
+import { SESSION_ID } from '@/utils/constants';
 
 function ValidateOtp(): JSX.Element {
   const theme = useTheme();
@@ -56,6 +58,15 @@ function ValidateOtp(): JSX.Element {
   };
 
   const onPreviousPage = (): void => {
+    const currentSessionId = LocalStorageWrapper.getItem(SESSION_ID);
+    if (currentSessionId) {
+      LocalStorageWrapper.removeItem(SESSION_ID);
+      loggingService.log({
+        level: LogLevel.INFO,
+        component: 'ValidateOtp',
+        message: `customer session ended`
+      });
+    }
     dispatch(setActivePage(PageRoute.LoginPage));
   };
   const onSupportDialogClose = (): void => {
