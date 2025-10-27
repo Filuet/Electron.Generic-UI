@@ -69,7 +69,7 @@ export const updatePlanogramJson = async (
   const response = await window.electron.expo.updatePlanogramJson(pogRoutesRequest);
   return response;
 };
-
+// not using anywhere
 export const getStockStatus = async (): Promise<ApiResponse<ProductStock[]>> => {
   const response = await window.electron.expo.getStockStatus();
   return response;
@@ -87,6 +87,7 @@ export const unlockMachine = async (
   return response;
 };
 
+// note used currently
 export const updatePlanogram = async (
   routeUpdateRequest: RouteUpdateRequest
 ): Promise<ApiResponse<number>> => {

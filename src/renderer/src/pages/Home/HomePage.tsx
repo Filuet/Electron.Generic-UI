@@ -76,18 +76,9 @@ function HomePage(): JSX.Element {
       .then((response) => {
         if (response.length !== 0) {
           // if (!isEqual(planogramJson, response)) {
-          updatePlanogramJson(response)
-            .then(() => {
-              dispatch(setPlanogramJson(response));
-            })
-            .catch((err) => {
-              loggingService.log({
-                level: LogLevel.ERROR,
-                message: 'Error updating planogram json in expo extractor',
-                component: 'HomePage',
-                data: { error: JSON.stringify(err), kioskName }
-              });
-            });
+          updatePlanogramJson(response).then(() => {
+            dispatch(setPlanogramJson(response));
+          });
         } else {
           loggingService.log({
             level: LogLevel.INFO,
