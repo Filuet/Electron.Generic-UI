@@ -174,7 +174,7 @@ function App(): JSX.Element {
       // Just update UI state since token refresh already failed in the interceptor
       dispatch(setActivePage(PageRoute.UnderMaintenancePage));
       loggingService.log({
-        level: 'error',
+        level: LogLevel.ERROR,
         message: 'Authentication error detected, redirecting to under maintenance page',
         component: 'App.tsx'
       });
@@ -209,7 +209,7 @@ function App(): JSX.Element {
       videoRef.current.src = currentVideoUrl;
       videoRef.current.play().catch((err) => {
         loggingService.log({
-          level: 'error',
+          level: LogLevel.ERROR,
           message: 'Error playing video',
           component: 'App.tsx',
           data: err

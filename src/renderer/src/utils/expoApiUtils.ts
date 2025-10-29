@@ -1,22 +1,24 @@
-import {
-  DispenseResponse,
-  ExpoDispenseModal,
-  MachineTestResult,
-  ProductStock,
-  RouteUpdateRequest,
-  MachineStatus,
-  PogRoute,
-  MachineInoperableModal,
-  ApiResponse,
-  LogLevel
-} from '@/interfaces/modal';
 import { CartProduct } from '@/redux/features/cart/cartTypes';
 import { machineInoperableEndpoint } from './endpoints';
 import { postData } from '@/services/axiosWrapper/apiService';
 import loggingService from './loggingService';
+import {
+  DispenseResponse,
+  ExpoDispenseModal,
+  LogLevel,
+  MachineStatus,
+  MachineTestResult,
+  PogRoute,
+  ProductStock,
+  RouteUpdateRequest
+} from '../../../shared/sharedTypes';
+import { MachineInoperableModal } from '@/interfaces/modal';
 
 // random array to simulate inoperable machines for cert error email payload
 const CERTS_ERROR_EMAIL_PAYLOAD = [121, 121];
+
+const ELECTRON_EXPO_API_PATH = window.electron.expo;
+
 const sendCertificatesErrorNotification = async (inoperableMachines: number[]): Promise<void> => {
   const inoperableMachineRequest: MachineInoperableModal = {
     kioskName: import.meta.env.VITE_KIOSK_NAME,
@@ -27,7 +29,7 @@ const sendCertificatesErrorNotification = async (inoperableMachines: number[]): 
     .then(() => {
       loggingService.log({
         level: LogLevel.INFO,
-        message: 'Certificates error notification mail send successfully ',
+        message: 'Certificates error notification mail send successfully',
         component: 'expoUtils.ts',
         data: inoperableMachineRequest
       });
@@ -42,65 +44,80 @@ const sendCertificatesErrorNotification = async (inoperableMachines: number[]): 
     });
 };
 
-export const dispenseProduct = async (
-  cartProducts: CartProduct[]
-): Promise<ApiResponse<DispenseResponse>> => {
+export const dispenseProduct = async (cartProducts: CartProduct[]): Promise<DispenseResponse> => {
   const dispenseSkuAndQuantity: ExpoDispenseModal[] = cartProducts.map((product) => ({
     sku: product.skuCode,
     qty: product.productCount
   }));
-  const response = await window.electron.expo.dispenseProduct(dispenseSkuAndQuantity);
-  return response;
+  return ELECTRON_EXPO_API_PATH.dispenseProduct(dispenseSkuAndQuantity);
 };
 
-export const getDispenseStatus = async (): Promise<ApiResponse<MachineStatus>> => {
-  const response = await window.electron.expo.getDispenseStatus();
-  if (!response.status && response.error) {
-    if (response.error === 'self signed certificate') {
-      sendCertificatesErrorNotification(CERTS_ERROR_EMAIL_PAYLOAD);
-    }
-  }
-  return response;
+export const getDispenseStatus = async (): Promise<MachineStatus> => {
+  return ELECTRON_EXPO_API_PATH.getDispenseStatus()
+    .then((response) => response)
+    .catch((err) => {
+      if (err === 'self signed certificate') {
+        sendCertificatesErrorNotification(CERTS_ERROR_EMAIL_PAYLOAD);
+      }
+      throw err;
+    });
 };
 
-export const updatePlanogramJson = async (
-  pogRoutesRequest: PogRoute[]
-): Promise<ApiResponse<boolean>> => {
-  const response = await window.electron.expo.updatePlanogramJson(pogRoutesRequest);
-  return response;
+export const updatePlanogramJson = async (pogRoutesRequest: PogRoute[]): Promise<boolean> => {
+  return ELECTRON_EXPO_API_PATH.updatePlanogramJson(pogRoutesRequest)
+    .then((response) => response)
+    .catch((error) => {
+      loggingService.log({
+        level: LogLevel.ERROR,
+        message: 'Error updating planogram json',
+        component: 'expoApiUtils.ts',
+        data: { error }
+      });
+      throw error;
+    });
 };
 // not using anywhere
-export const getStockStatus = async (): Promise<ApiResponse<ProductStock[]>> => {
-  const response = await window.electron.expo.getStockStatus();
-  return response;
+export const getStockStatus = async (): Promise<ProductStock[]> => {
+  return ELECTRON_EXPO_API_PATH.getStockStatus();
 };
 
-export const testMachine = async (): Promise<ApiResponse<MachineTestResult[]>> => {
-  const response = await window.electron.expo.testMachine();
-  return response;
+export const testMachine = async (): Promise<MachineTestResult[]> => {
+  return ELECTRON_EXPO_API_PATH.testMachine();
 };
 
-export const unlockMachine = async (
-  machineId: number
-): Promise<ApiResponse<{ success: boolean }>> => {
-  const response = await window.electron.expo.unlockMachine(machineId);
-  return response;
+export const unlockMachine = async (machineId: number): Promise<{ success: boolean }> => {
+  return ELECTRON_EXPO_API_PATH.unlockMachine(machineId);
 };
 
 // note used currently
-export const updatePlanogram = async (
-  routeUpdateRequest: RouteUpdateRequest
-): Promise<ApiResponse<number>> => {
-  const response = await window.electron.expo.updatePlanogram(routeUpdateRequest);
-  return response;
+export const updatePlanogram = async (routeUpdateRequest: RouteUpdateRequest): Promise<number> => {
+  return ELECTRON_EXPO_API_PATH.updatePlanogram(routeUpdateRequest);
 };
 
-export const resetStatus = async (): Promise<number> => {
-  const response = await window.electron.expo.resetDispenseStatus();
-  return response.data;
+export const resetStatus = async (): Promise<boolean> => {
+  return ELECTRON_EXPO_API_PATH.resetStatus()
+    .then((response) => response)
+    .catch((error) => {
+      loggingService.log({
+        level: LogLevel.ERROR,
+        message: 'Error resetting machine status',
+        component: 'expoApiUtils.ts',
+        data: { error }
+      });
+      throw error;
+    });
 };
 
 export const getAllStatuses = async (): Promise<MachineStatus[]> => {
-  const response = await window.electron.expo.getAllStatuses();
-  return response.data;
+  return ELECTRON_EXPO_API_PATH.getAllStatuses()
+    .then((response) => response)
+    .catch((error) => {
+      loggingService.log({
+        level: LogLevel.ERROR,
+        message: 'Error fetching all machine statuses',
+        component: 'expoApiUtils.ts',
+        data: { error }
+      });
+      throw error;
+    });
 };

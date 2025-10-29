@@ -7,15 +7,15 @@ export interface PaymentWindowBridge {
   isOpen: () => Promise<boolean>;
 }
 export interface ExpoBridge {
-  getDispenseStatus: () => Promise<ApiResponse<MachineStatus>>;
-  updatePlanogramJson: (routes: PogRoute[]) => Promise<ApiResponse<boolean>>;
-  getStockStatus: () => Promise<ApiResponse<ProductStock[]>>;
-  testMachine: () => Promise<ApiResponse<MachineTestResult[]>>;
-  unlockMachine: (machineId: number) => Promise<ApiResponse<{ success: boolean }>>;
-  updatePlanogram: (req: RouteUpdateRequest) => Promise<ApiResponse<number>>;
-  resetDispenseStatus: () => Promise<ApiResponse<number>>;
-  getAllStatuses: () => Promise<ApiResponse<MachineStatus[]>>;
-  dispenseProduct: (products: ExpoDispenseModal[]) => Promise<ApiResponse<DispenseResponse>>;
+  dispenseProduct: (products: ExpoDispenseModal[]) => Promise<DispenseResponse>;
+  getDispenseStatus: () => Promise<MachineStatus>;
+  updatePlanogramJson: (routes: PogRoute[]) => Promise<boolean>;
+  getStockStatus: () => Promise<ProductStock[]>;
+  testMachine: () => Promise<MachineTestResult[]>;
+  unlockMachine: (machineId: number) => Promise<{ success: boolean }>;
+  updatePlanogram: (req: RouteUpdateRequest) => Promise<number>;
+  resetStatus: () => Promise<boolean>;
+  getAllStatuses: () => Promise<MachineStatus[]>;
 }
 export interface VideoFilesBridge {
   getFiles: () => Promise<string[]>;
@@ -34,8 +34,12 @@ export interface ElectronBridgeAPI extends ElectronAPI {
   payment: PaymentWindowBridge;
 }
 
-export type LogLevel = 'info' | 'error' | 'warn' | 'debug';
-
+export enum LogLevel {
+  INFO = 'info',
+  ERROR = 'error',
+  WARN = 'warn',
+  DEBUG = 'debug'
+}
 export interface LogEntry {
   level: LogLevel;
   message: string;
@@ -99,8 +103,15 @@ export interface DispenseResponse {
   error?: DispenserError;
 }
 
-export interface ApiResponse<T> {
-  status: boolean;
-  data: T;
-  error: unknown;
+export type LoginRequestModel = {
+  email: string;
+  password: string;
+};
+export type LoginResponseModel = {
+  token: string | null;
+};
+
+export interface MachineInoperableModal {
+  kioskName: string;
+  machineIds: number[];
 }

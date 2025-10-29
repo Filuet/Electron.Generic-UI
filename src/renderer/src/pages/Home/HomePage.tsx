@@ -75,7 +75,6 @@ function HomePage(): JSX.Element {
     getData<PogRoute[]>(`${planogramJsonEndpoint}/${kioskName}`)
       .then((response) => {
         if (response.length !== 0) {
-          // if (!isEqual(planogramJson, response)) {
           updatePlanogramJson(response).then(() => {
             dispatch(setPlanogramJson(response));
           });
@@ -86,14 +85,13 @@ function HomePage(): JSX.Element {
             component: 'HomePage.tsx'
           });
         }
-        // }
       })
-      .catch((err) => {
+      .catch((error) => {
         loggingService.log({
           level: LogLevel.ERROR,
           message: 'Error fetching planogram json from ogmentoAPI',
           component: 'HomePage',
-          data: { error: JSON.stringify(err), kioskName }
+          data: { error, kioskName }
         });
       });
   }, []);

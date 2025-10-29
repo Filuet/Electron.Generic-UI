@@ -80,7 +80,7 @@ function UserWelcomePage(): JSX.Element {
       .catch((error: AxiosError) => {
         const res: ApiError = error.response?.data as ApiError;
         loggingService.log({
-          level: 'error',
+          level: LogLevel.ERROR,
           component: 'UserWelcome',
           message: `Error in fetching customer details`,
           data: { error, phoneNumber }

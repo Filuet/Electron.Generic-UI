@@ -79,7 +79,7 @@ function PaymentProcessing(): JSX.Element {
       })
       .catch(() => {
         loggingService.log({
-          level: 'error',
+          level: LogLevel.ERROR,
           message: `Failed to update dispense status for order code: ${orderCodeToUse}`,
           component: 'PaymentProcessing',
           data: { orderCode: orderCodeToUse }

@@ -18,7 +18,7 @@ export function createExpoBridge(ipc: Electron.IpcRenderer): ExpoBridge {
     unlockMachine: (id: number) => ipc.invoke(IPC_CHANNELS.EXPO_UNLOCK_MACHINE, id),
     updatePlanogram: (req: RouteUpdateRequest) =>
       ipc.invoke(IPC_CHANNELS.EXPO_PLANOGRAM_UPDATE, req),
-    resetDispenseStatus: () => ipc.invoke(IPC_CHANNELS.EXPO_RESET_STATUS),
+    resetStatus: () => ipc.invoke(IPC_CHANNELS.EXPO_RESET_STATUS),
     getAllStatuses: () => ipc.invoke(IPC_CHANNELS.EXPO_ALL_STATUSES)
   };
 }

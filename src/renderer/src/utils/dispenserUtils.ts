@@ -66,7 +66,6 @@ export const checkDispenserStatus = async (attempts: number = 3): Promise<boolea
       message: `Dispenser Status is not as expected after 3 attempts.`,
       data: {}
     });
-    console.log('Dispenser Status is not as expected after 3 attempts.');
     try {
       await resetStatus();
       loggingService.log({
@@ -74,7 +73,6 @@ export const checkDispenserStatus = async (attempts: number = 3): Promise<boolea
         component: 'DispenserUtils',
         message: `Reset Status Api called. Expo Status has been reset.`
       });
-      console.log('Expo Status has been reset');
     } catch (error) {
       loggingService.log({
         level: LogLevel.INFO,
@@ -89,14 +87,13 @@ export const checkDispenserStatus = async (attempts: number = 3): Promise<boolea
     const statusResult = await getDispenseStatus();
 
     if (
-      statusResult.data.status === 'success' &&
-      statusResult.data.action === 'pending' &&
-      statusResult.data.message === 'Waiting for command'
+      statusResult.status === 'success' &&
+      statusResult.action === 'pending' &&
+      statusResult.message === 'Waiting for command'
     ) {
       return true;
     }
   } catch (error) {
-    console.error('Error fetching dispenser status:', error);
     loggingService.log({
       level: LogLevel.ERROR,
       component: 'DispenserUtils',
@@ -116,8 +113,8 @@ export const checkMachinesStatus = async (
 ): Promise<{ success: boolean; inoperableMachines: number[] }> => {
   try {
     console.group(`Machine Status Check - Attempt ${4 - attempts + 1}/5`);
-    const apiResponse = await testMachine();
-    const testResults = apiResponse.data;
+
+    const testResults = await testMachine();
     loggingService.log({
       level: LogLevel.INFO,
       message: 'Machine status test results',
@@ -182,7 +179,6 @@ export const checkMachinesStatus = async (
     await delay(2000);
     return await checkMachinesStatus(kioskMachines, attempts - 1);
   } catch (error) {
-    await getData(`${machineStatusFailNotificationEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`);
     loggingService.log({
       level: LogLevel.ERROR,
       component: 'DispenserUtils',

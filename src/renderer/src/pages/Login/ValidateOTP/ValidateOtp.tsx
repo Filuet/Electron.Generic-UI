@@ -165,8 +165,7 @@ function ValidateOtp(): JSX.Element {
   };
   const onUnlockMachine = async (machineId: number): Promise<void> => {
     await unlockMachine(machineId)
-      .then((apiResponse) => {
-        const response = apiResponse.data;
+      .then((response) => {
         if (response.success) {
           setUnlockMachineMessage(`Machine ${machineId} unlocked successfully.`);
           loggingService.log({
@@ -176,22 +175,20 @@ function ValidateOtp(): JSX.Element {
             data: { machineId, response }
           });
         } else {
+          setUnlockMachineMessage(`Failed to unlock the Machine ${machineId}.`);
           loggingService.log({
             level: LogLevel.ERROR,
             component: 'ValidateOtp',
             message: `Failed to unlock the Machine ${machineId}.`,
             data: { machineId, response }
           });
-          setUnlockMachineMessage(`Failed to unlock the Machine ${machineId}.`);
-        }
-        if (apiResponse.error && !apiResponse.status) {
-          setUnlockMachineMessage(`Failed to unlock the Machine ${machineId}.`);
         }
       })
       .catch((err) => {
+        setUnlockMachineMessage(`Failed to unlock the Machine ${machineId}.`);
         loggingService.log({
           level: LogLevel.ERROR,
-          message: `Error while accessing electron expo api`,
+          message: `Failed to unlock the Machine ${machineId}.`,
           component: 'ValidateOtp.tsx',
           data: { err }
         });

@@ -1,4 +1,4 @@
-type LogLevel = 'info' | 'warn' | 'error' | 'debug';
+import { LogLevel } from 'src/shared/sharedTypes';
 
 interface LogPayload {
   level: LogLevel;
