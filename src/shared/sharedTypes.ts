@@ -7,14 +7,14 @@ export interface PaymentWindowBridge {
   isOpen: () => Promise<boolean>;
 }
 export interface ExpoBridge {
-  dispenseProduct: (products: ExpoDispenseModal[]) => Promise<DispenseResponse>;
+  dispenseProduct: (products: ExpoDispenseModal[]) => Promise<void>;
   getDispenseStatus: () => Promise<MachineStatus>;
-  updatePlanogramJson: (routes: PogRoute[]) => Promise<boolean>;
-  getStockStatus: () => Promise<ProductStock[]>;
+  updatePlanogramJson: (routes: PogRoute[]) => Promise<string>;
+  // getStockStatus: () => Promise<ProductStock[]>;
   testMachine: () => Promise<MachineTestResult[]>;
-  unlockMachine: (machineId: number) => Promise<{ success: boolean }>;
-  updatePlanogram: (req: RouteUpdateRequest) => Promise<number>;
-  resetStatus: () => Promise<boolean>;
+  unlockMachine: (machineId: number) => Promise<void>;
+  // updatePlanogram: (req: RouteUpdateRequest) => Promise<number>;
+  resetStatus: () => Promise<string>;
   getAllStatuses: () => Promise<MachineStatus[]>;
 }
 export interface VideoFilesBridge {

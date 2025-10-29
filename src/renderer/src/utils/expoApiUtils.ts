@@ -3,14 +3,13 @@ import { machineInoperableEndpoint } from './endpoints';
 import { postData } from '@/services/axiosWrapper/apiService';
 import loggingService from './loggingService';
 import {
-  DispenseResponse,
   ExpoDispenseModal,
   LogLevel,
   MachineStatus,
   MachineTestResult,
-  PogRoute,
-  ProductStock,
-  RouteUpdateRequest
+  PogRoute
+  // ProductStock
+  // RouteUpdateRequest
 } from '../../../shared/sharedTypes';
 import { MachineInoperableModal } from '@/interfaces/modal';
 
@@ -44,7 +43,7 @@ const sendCertificatesErrorNotification = async (inoperableMachines: number[]): 
     });
 };
 
-export const dispenseProduct = async (cartProducts: CartProduct[]): Promise<DispenseResponse> => {
+export const dispenseProduct = async (cartProducts: CartProduct[]): Promise<void> => {
   const dispenseSkuAndQuantity: ExpoDispenseModal[] = cartProducts.map((product) => ({
     sku: product.skuCode,
     qty: product.productCount
@@ -63,7 +62,7 @@ export const getDispenseStatus = async (): Promise<MachineStatus> => {
     });
 };
 
-export const updatePlanogramJson = async (pogRoutesRequest: PogRoute[]): Promise<boolean> => {
+export const updatePlanogramJson = async (pogRoutesRequest: PogRoute[]): Promise<string> => {
   return ELECTRON_EXPO_API_PATH.updatePlanogramJson(pogRoutesRequest)
     .then((response) => response)
     .catch((error) => {
@@ -77,24 +76,24 @@ export const updatePlanogramJson = async (pogRoutesRequest: PogRoute[]): Promise
     });
 };
 // not using anywhere
-export const getStockStatus = async (): Promise<ProductStock[]> => {
-  return ELECTRON_EXPO_API_PATH.getStockStatus();
-};
+// export const getStockStatus = async (): Promise<ProductStock[]> => {
+//   return ELECTRON_EXPO_API_PATH.getStockStatus();
+// };
 
 export const testMachine = async (): Promise<MachineTestResult[]> => {
   return ELECTRON_EXPO_API_PATH.testMachine();
 };
 
-export const unlockMachine = async (machineId: number): Promise<{ success: boolean }> => {
+export const unlockMachine = async (machineId: number): Promise<void> => {
   return ELECTRON_EXPO_API_PATH.unlockMachine(machineId);
 };
 
 // note used currently
-export const updatePlanogram = async (routeUpdateRequest: RouteUpdateRequest): Promise<number> => {
-  return ELECTRON_EXPO_API_PATH.updatePlanogram(routeUpdateRequest);
-};
+// export const updatePlanogram = async (routeUpdateRequest: RouteUpdateRequest): Promise<number> => {
+//   return ELECTRON_EXPO_API_PATH.updatePlanogram(routeUpdateRequest);
+// };
 
-export const resetStatus = async (): Promise<boolean> => {
+export const resetStatus = async (): Promise<string> => {
   return ELECTRON_EXPO_API_PATH.resetStatus()
     .then((response) => response)
     .catch((error) => {

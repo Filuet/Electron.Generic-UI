@@ -165,24 +165,14 @@ function ValidateOtp(): JSX.Element {
   };
   const onUnlockMachine = async (machineId: number): Promise<void> => {
     await unlockMachine(machineId)
-      .then((response) => {
-        if (response.success) {
-          setUnlockMachineMessage(`Machine ${machineId} unlocked successfully.`);
-          loggingService.log({
-            level: LogLevel.INFO,
-            component: 'ValidateOtp',
-            message: `Machine ${machineId} unlocked successfully.`,
-            data: { machineId, response }
-          });
-        } else {
-          setUnlockMachineMessage(`Failed to unlock the Machine ${machineId}.`);
-          loggingService.log({
-            level: LogLevel.ERROR,
-            component: 'ValidateOtp',
-            message: `Failed to unlock the Machine ${machineId}.`,
-            data: { machineId, response }
-          });
-        }
+      .then(() => {
+        setUnlockMachineMessage(`Machine ${machineId} unlocked successfully.`);
+        loggingService.log({
+          level: LogLevel.INFO,
+          component: 'ValidateOtp',
+          message: `Machine ${machineId} unlocked successfully.`,
+          data: { machineId }
+        });
       })
       .catch((err) => {
         setUnlockMachineMessage(`Failed to unlock the Machine ${machineId}.`);

@@ -1,14 +1,14 @@
 import { ipcMain } from 'electron';
 import { IPC_CHANNELS } from '../../shared/ipcChannels';
-import { ExpoDispenseModal, PogRoute, RouteUpdateRequest } from '../../shared/sharedTypes';
+import { ExpoDispenseModal, PogRoute } from '../../shared/sharedTypes';
 import {
   getDispenseStatus,
   dispenseProduct,
   updatePlanogramJson,
-  getStockStatus,
+  // getStockStatus,
   testMachine,
   unlockMachine,
-  updatePlanogram,
+  // updatePlanogram,
   resetStatus,
   getAllStatuses
 } from '../services/expoService/expoApis';
@@ -29,9 +29,9 @@ const expoIpcHandler = (): void => {
     return updatePlanogramJson(routes);
   });
 
-  ipcMain.handle(IPC_CHANNELS.EXPO_STOCK_STATUS, async () => {
-    return getStockStatus();
-  });
+  // ipcMain.handle(IPC_CHANNELS.EXPO_STOCK_STATUS, async () => {
+  //   return getStockStatus();
+  // });
 
   ipcMain.handle(IPC_CHANNELS.EXPO_TEST_MACHINE, async () => {
     return testMachine();
@@ -41,12 +41,12 @@ const expoIpcHandler = (): void => {
     return unlockMachine(machineId);
   });
 
-  ipcMain.handle(
-    IPC_CHANNELS.EXPO_PLANOGRAM_UPDATE,
-    async (_e, updateRequest: RouteUpdateRequest) => {
-      return updatePlanogram(updateRequest);
-    }
-  );
+  // ipcMain.handle(
+  //   IPC_CHANNELS.EXPO_PLANOGRAM_UPDATE,
+  //   async (_e, updateRequest: RouteUpdateRequest) => {
+  //     return updatePlanogram(updateRequest);
+  //   }
+  // );
 
   ipcMain.handle(IPC_CHANNELS.EXPO_RESET_STATUS, async () => {
     return resetStatus();

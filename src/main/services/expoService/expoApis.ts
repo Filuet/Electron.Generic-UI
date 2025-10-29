@@ -7,22 +7,21 @@ import {
   dispenseProductEndpoint,
   dispensingStatusEndpoint,
   getAllStatusEndpoint,
-  dispenseStockEndpoint,
   resetStatusEndpoint,
   testMachineEndpoint,
   unlockMachineEndpoint,
-  updatePlanogramEndpoint,
+  // dispenseStockEndpoint,
+  // updatePlanogramEndpoint,
   updatePlanogramJsonEndpoint
 } from './expoEndpoints';
 import {
-  DispenseResponse,
   ExpoDispenseModal,
   LogLevel,
   MachineStatus,
   MachineTestResult,
-  PogRoute,
-  ProductStock,
-  RouteUpdateRequest
+  PogRoute
+  // ProductStock
+  // RouteUpdateRequest
 } from '../../../shared/sharedTypes';
 import { expoDailyLogger } from '../loggingService/loggingService';
 import path from 'path';
@@ -90,13 +89,11 @@ const handleError = (error: unknown, customMessage = 'API error'): string => {
   return message;
 };
 
-// 🧪 Each method below follows the same return pattern
-
 export const dispenseProduct = async (
   dispenseSkuAndQuantity: ExpoDispenseModal[]
-): Promise<DispenseResponse> => {
+): Promise<void> => {
   try {
-    const response = await axiosInstance.post<DispenseResponse>(
+    const response = await axiosInstance.post<void>(
       dispenseProductEndpoint,
       dispenseSkuAndQuantity
     );
@@ -117,9 +114,9 @@ export const getDispenseStatus = async (): Promise<MachineStatus> => {
   }
 };
 
-export const updatePlanogramJson = async (pogRoutesRequest: PogRoute[]): Promise<boolean> => {
+export const updatePlanogramJson = async (pogRoutesRequest: PogRoute[]): Promise<string> => {
   try {
-    const response = await axiosInstance.post<boolean>(
+    const response = await axiosInstance.post<string>(
       updatePlanogramJsonEndpoint,
       pogRoutesRequest
     );
@@ -130,15 +127,15 @@ export const updatePlanogramJson = async (pogRoutesRequest: PogRoute[]): Promise
   }
 };
 
-export const getStockStatus = async (): Promise<ProductStock[]> => {
-  try {
-    const response = await axiosInstance.get<ProductStock[]>(dispenseStockEndpoint);
-    return response.data;
-  } catch (error) {
-    handleError(error, 'Get Stock Status');
-    throw error;
-  }
-};
+// export const getStockStatus = async (): Promise<ProductStock[]> => {
+//   try {
+//     const response = await axiosInstance.get<ProductStock[]>(dispenseStockEndpoint);
+//     return response.data;
+//   } catch (error) {
+//     handleError(error, 'Get Stock Status');
+//     throw error;
+//   }
+// };
 
 export const testMachine = async (): Promise<MachineTestResult[]> => {
   try {
@@ -150,11 +147,9 @@ export const testMachine = async (): Promise<MachineTestResult[]> => {
   }
 };
 
-export const unlockMachine = async (machineId: number): Promise<{ success: boolean }> => {
+export const unlockMachine = async (machineId: number): Promise<void> => {
   try {
-    const response = await axiosInstance.get<{ success: boolean }>(
-      `${unlockMachineEndpoint}/${machineId}`
-    );
+    const response = await axiosInstance.get<void>(`${unlockMachineEndpoint}/${machineId}`);
     return response.data;
   } catch (error) {
     handleError(error, 'Unlock Machine');
@@ -162,19 +157,19 @@ export const unlockMachine = async (machineId: number): Promise<{ success: boole
   }
 };
 
-export const updatePlanogram = async (routeUpdateRequest: RouteUpdateRequest): Promise<number> => {
-  try {
-    const response = await axiosInstance.post<number>(updatePlanogramEndpoint, routeUpdateRequest);
-    return response.status;
-  } catch (error) {
-    handleError(error, 'Update Planogram');
-    throw error;
-  }
-};
+// export const updatePlanogram = async (routeUpdateRequest: RouteUpdateRequest): Promise<number> => {
+//   try {
+//     const response = await axiosInstance.post<number>(updatePlanogramEndpoint, routeUpdateRequest);
+//     return response.status;
+//   } catch (error) {
+//     handleError(error, 'Update Planogram');
+//     throw error;
+//   }
+// };
 
-export const resetStatus = async (): Promise<boolean> => {
+export const resetStatus = async (): Promise<string> => {
   try {
-    const response = await axiosInstance.post<boolean>(resetStatusEndpoint);
+    const response = await axiosInstance.post<string>(resetStatusEndpoint);
     return response.data;
   } catch (error) {
     handleError(error, 'Reset Status');
