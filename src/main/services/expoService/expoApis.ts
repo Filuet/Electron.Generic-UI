@@ -4,15 +4,15 @@ import https from 'https';
 import fs from 'fs';
 import config from '../../../../config.json';
 import {
-  DISPENSE_PRODUCT,
-  DISPENSE_STATUS,
-  GET_ALL_STATUS,
-  GET_STOCK_STATUS,
-  RESET_STATUS,
-  TEST_MACHINE,
-  UNLOCK_MACHINE_STATUS,
-  UPDATE_PLANOGRAM,
-  UPDATE_PLANOGRAM_JSON
+  dispenseProductEndpoint,
+  dispensingStatusEndpoint,
+  getAllStatusEndpoint,
+  dispenseStockEndpoint,
+  resetStatusEndpoint,
+  testMachineEndpoint,
+  unlockMachineEndpoint,
+  updatePlanogramEndpoint,
+  updatePlanogramJsonEndpoint
 } from './expoEndpoints';
 import {
   DispenseResponse,
@@ -97,7 +97,7 @@ export const dispenseProduct = async (
 ): Promise<DispenseResponse> => {
   try {
     const response = await axiosInstance.post<DispenseResponse>(
-      DISPENSE_PRODUCT,
+      dispenseProductEndpoint,
       dispenseSkuAndQuantity
     );
     return response.data;
@@ -109,7 +109,7 @@ export const dispenseProduct = async (
 
 export const getDispenseStatus = async (): Promise<MachineStatus> => {
   try {
-    const response = await axiosInstance.get<MachineStatus>(DISPENSE_STATUS);
+    const response = await axiosInstance.get<MachineStatus>(dispensingStatusEndpoint);
     return response.data;
   } catch (error) {
     handleError(error, 'Get Dispense Status');
@@ -119,7 +119,10 @@ export const getDispenseStatus = async (): Promise<MachineStatus> => {
 
 export const updatePlanogramJson = async (pogRoutesRequest: PogRoute[]): Promise<boolean> => {
   try {
-    const response = await axiosInstance.post<boolean>(UPDATE_PLANOGRAM_JSON, pogRoutesRequest);
+    const response = await axiosInstance.post<boolean>(
+      updatePlanogramJsonEndpoint,
+      pogRoutesRequest
+    );
     return response.data;
   } catch (error) {
     handleError(error, 'Update Planogram JSON');
@@ -129,7 +132,7 @@ export const updatePlanogramJson = async (pogRoutesRequest: PogRoute[]): Promise
 
 export const getStockStatus = async (): Promise<ProductStock[]> => {
   try {
-    const response = await axiosInstance.get<ProductStock[]>(GET_STOCK_STATUS);
+    const response = await axiosInstance.get<ProductStock[]>(dispenseStockEndpoint);
     return response.data;
   } catch (error) {
     handleError(error, 'Get Stock Status');
@@ -139,7 +142,7 @@ export const getStockStatus = async (): Promise<ProductStock[]> => {
 
 export const testMachine = async (): Promise<MachineTestResult[]> => {
   try {
-    const response = await axiosInstance.get<MachineTestResult[]>(TEST_MACHINE);
+    const response = await axiosInstance.get<MachineTestResult[]>(testMachineEndpoint);
     return response.data;
   } catch (error) {
     handleError(error, 'Test Machine');
@@ -150,7 +153,7 @@ export const testMachine = async (): Promise<MachineTestResult[]> => {
 export const unlockMachine = async (machineId: number): Promise<{ success: boolean }> => {
   try {
     const response = await axiosInstance.get<{ success: boolean }>(
-      `${UNLOCK_MACHINE_STATUS}/${machineId}`
+      `${unlockMachineEndpoint}/${machineId}`
     );
     return response.data;
   } catch (error) {
@@ -161,7 +164,7 @@ export const unlockMachine = async (machineId: number): Promise<{ success: boole
 
 export const updatePlanogram = async (routeUpdateRequest: RouteUpdateRequest): Promise<number> => {
   try {
-    const response = await axiosInstance.post<number>(UPDATE_PLANOGRAM, routeUpdateRequest);
+    const response = await axiosInstance.post<number>(updatePlanogramEndpoint, routeUpdateRequest);
     return response.status;
   } catch (error) {
     handleError(error, 'Update Planogram');
@@ -171,7 +174,7 @@ export const updatePlanogram = async (routeUpdateRequest: RouteUpdateRequest): P
 
 export const resetStatus = async (): Promise<boolean> => {
   try {
-    const response = await axiosInstance.post<boolean>(RESET_STATUS);
+    const response = await axiosInstance.post<boolean>(resetStatusEndpoint);
     return response.data;
   } catch (error) {
     handleError(error, 'Reset Status');
@@ -181,7 +184,7 @@ export const resetStatus = async (): Promise<boolean> => {
 
 export const getAllStatuses = async (): Promise<MachineStatus[]> => {
   try {
-    const response = await axiosInstance.get<MachineStatus[]>(GET_ALL_STATUS);
+    const response = await axiosInstance.get<MachineStatus[]>(getAllStatusEndpoint);
     return response.data;
   } catch (error) {
     handleError(error, 'Get All Statuses');
