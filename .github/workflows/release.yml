@@ -37,5 +37,5 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pnpm run build
+          pnpm run release
           pnpm exec electron-builder --win --publish always
