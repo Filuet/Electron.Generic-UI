@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron';
+import { autoUpdater } from 'electron-updater';
 import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { setupVideoWatcher } from './services/advertisementService/videoFilesWatcher';
 import registerAllIpcHandlers from './ipcHandlers/registerAllIpcHandlers';
@@ -35,7 +36,43 @@ if (!gotTheLock) {
 
     registerAllIpcHandlers();
 
+    autoUpdater.setFeedURL({
+      provider: 'github',
+      owner: 'Filuet',
+      repo: 'Electron.Generic-UI'
+    });
+
     if (mainWindow) setupVideoWatcher(mainWindow);
+
+    await autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+      dailyLogger.log({
+        level: 'error',
+        message: 'Failed to check for updates',
+        component: 'main.ts',
+        data: JSON.stringify(err)
+      });
+    });
+
+    autoUpdater.autoDownload = true;
+    autoUpdater.autoInstallOnAppQuit = true;
+
+    autoUpdater.on('update-downloaded', () => {
+      autoUpdater.quitAndInstall(false, true);
+      dailyLogger.log({
+        level: 'info',
+        message: 'Update downloaded successfully,',
+        component: 'main.ts'
+      });
+    });
+
+    autoUpdater.on('error', (error) => {
+      dailyLogger.log({
+        level: 'error',
+        message: 'Error in auto-updater',
+        component: 'main.ts',
+        data: JSON.stringify(error)
+      });
+    });
 
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) {
@@ -90,11 +127,22 @@ process.on('uncaughtException', (err) => {
 });
 
 process.on('unhandledRejection', (reason) => {
+  let errorDetails = '';
+
+  if (reason instanceof Error) {
+    errorDetails = `${reason.name}: ${reason.message}\n${reason.stack}`;
+  } else {
+    try {
+      errorDetails = JSON.stringify(reason, null, 2);
+    } catch (jsonErr) {
+      errorDetails = `Unserializable reason: ${String(reason)}, error during serialization: ${jsonErr}`;
+    }
+  }
   dailyLogger.log({
     level: LogLevel.ERROR,
     message: 'Unhandled Promise Rejection',
     component: 'Main.ts',
-    error: reason
+    error: errorDetails
   });
   app.quit();
 });

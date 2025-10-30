@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: com.ogmento
 productName: generic-ui
 directories:
   buildResources: build
@@ -39,7 +39,8 @@ appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  provider: github
+  owner: Filuet
+  repo: Electron.Generic-UI
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/
