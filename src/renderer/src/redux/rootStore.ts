@@ -5,7 +5,6 @@ import { kioskSettingsReducer } from './features/kioskSettings/kioskSettingsSlic
 import { paymentReducer } from './features/payment/paymentSlice';
 import { customerLoginReducer } from './features/customerLogin/customerLogin';
 import { welcomeScreenReducer } from './features/welcomeScreen/welcomeScreenSlice';
-import { planogramReducer } from './features/Planogram/planogramSlice';
 import { customerDetailsReducer } from './features/customerDetails/customerDetailsSlice';
 import { customerOrderDetailsReducer } from './features/customerDetails/customerOrderDetailsSlice';
 import { expoReducer } from './features/expoSettings/expoSlice';
@@ -20,7 +19,6 @@ const store = configureStore({
     welcomeScreen: welcomeScreenReducer,
     customerDetails: customerDetailsReducer,
     customerOrderDetails: customerOrderDetailsReducer,
-    planogram: planogramReducer,
     expoExtractor: expoReducer
   },
   middleware: (getDefaultMiddleware) =>
