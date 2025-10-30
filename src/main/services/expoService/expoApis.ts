@@ -4,30 +4,29 @@ import https from 'https';
 import fs from 'fs';
 import config from '../../../../config.json';
 import {
-  DISPENSE_PRODUCT,
-  DISPENSE_STATUS,
-  GET_ALL_STATUS,
-  GET_STOCK_STATUS,
-  RESET_STATUS,
-  TEST_MACHINE,
-  UNLOCK_MACHINE_STATUS,
-  UPDATE_PLANOGRAM,
-  UPDATE_PLANOGRAM_JSON
+  dispenseProductEndpoint,
+  dispensingStatusEndpoint,
+  getAllStatusEndpoint,
+  resetStatusEndpoint,
+  testMachineEndpoint,
+  unlockMachineEndpoint,
+  // dispenseStockEndpoint,
+  // updatePlanogramEndpoint,
+  updatePlanogramJsonEndpoint
 } from './expoEndpoints';
 import {
-  ApiResponse,
-  DispenseResponse,
   ExpoDispenseModal,
   LogLevel,
   MachineStatus,
   MachineTestResult,
-  PogRoute,
-  ProductStock,
-  RouteUpdateRequest
+  PogRoute
+  // ProductStock
+  // RouteUpdateRequest
 } from '../../../shared/sharedTypes';
 import { expoDailyLogger } from '../loggingService/loggingService';
 import path from 'path';
 import { is } from '@electron-toolkit/utils';
+import { sendEmailNotification } from '../../../utils/emailService';
 
 const EXPO_BASE_URL = config.expoBaseUrl;
 
@@ -52,7 +51,7 @@ const handleError = (error: unknown, customMessage = 'API error'): string => {
       error.response?.data?.message || error.response?.statusText || error.message || message;
 
     expoDailyLogger.log({
-      level: 'error' as LogLevel,
+      level: LogLevel.ERROR,
       message: customMessage,
       data: {
         url: error.config?.url,
@@ -62,16 +61,26 @@ const handleError = (error: unknown, customMessage = 'API error'): string => {
         message
       }
     });
-
+    if (
+      error.code === 'UNABLE_TO_VERIFY_LEAF_SIGNATURE' ||
+      error.code === 'CERT_HAS_EXPIRED' ||
+      error.code === 'CERT_NOT_YET_VALID' ||
+      error.message?.includes('certificate') ||
+      error.message?.includes('unable to verify')
+    ) {
+      sendEmailNotification([444]);
+      return 'SSL Certificate verification failed. Please check your certificates.';
+    }
     if (error.code === 'ECONNREFUSED') {
-      return 'Connection refused by server';
+      sendEmailNotification([333, 333]);
+      return 'Connection refused by server'; //send a mail
     }
   } else if (error instanceof Error) {
     message = error.message;
-    expoDailyLogger.log({ level: 'error', message: customMessage, data: { message } });
+    expoDailyLogger.log({ level: LogLevel.ERROR, message: customMessage, data: { message } });
   } else {
     expoDailyLogger.error('Unknown error occurred', {
-      level: 'error',
+      level: LogLevel.ERROR,
       message: customMessage,
       data: { error }
     });
@@ -80,105 +89,100 @@ const handleError = (error: unknown, customMessage = 'API error'): string => {
   return message;
 };
 
-// 🧪 Each method below follows the same return pattern
-
 export const dispenseProduct = async (
   dispenseSkuAndQuantity: ExpoDispenseModal[]
-): Promise<ApiResponse<DispenseResponse>> => {
+): Promise<void> => {
   try {
-    const response = await axiosInstance.post(DISPENSE_PRODUCT, dispenseSkuAndQuantity);
-    return { status: true, data: response.data, error: '' };
+    const response = await axiosInstance.post<void>(
+      dispenseProductEndpoint,
+      dispenseSkuAndQuantity
+    );
+    return response.data;
   } catch (error) {
-    return {
-      status: false,
-      data: {} as DispenseResponse,
-      error: handleError(error, 'Dispense Product')
-    };
+    handleError(error, 'Dispense Product Failed');
+    throw error;
   }
 };
 
-export const getDispenseStatus = async (): Promise<ApiResponse<MachineStatus>> => {
+export const getDispenseStatus = async (): Promise<MachineStatus> => {
   try {
-    const response = await axiosInstance.get(DISPENSE_STATUS);
-    return { status: true, data: response.data, error: '' };
+    const response = await axiosInstance.get<MachineStatus>(dispensingStatusEndpoint);
+    return response.data;
   } catch (error) {
-    return {
-      status: false,
-      data: {} as MachineStatus,
-      error: handleError(error, 'Get Dispense Status')
-    };
+    handleError(error, 'Get Dispense Status');
+    throw error;
   }
 };
 
-export const updatePlanogramJson = async (
-  pogRoutesRequest: PogRoute[]
-): Promise<ApiResponse<boolean>> => {
+export const updatePlanogramJson = async (pogRoutesRequest: PogRoute[]): Promise<string> => {
   try {
-    const response = await axiosInstance.post(UPDATE_PLANOGRAM_JSON, pogRoutesRequest);
-    return { status: true, data: response.status === 200, error: '' };
+    const response = await axiosInstance.post<string>(
+      updatePlanogramJsonEndpoint,
+      pogRoutesRequest
+    );
+    return response.data;
   } catch (error) {
-    return { status: false, data: false, error: handleError(error, 'Update Planogram JSON') };
+    handleError(error, 'Update Planogram JSON');
+    throw error;
   }
 };
 
-export const getStockStatus = async (): Promise<ApiResponse<ProductStock[]>> => {
+// export const getStockStatus = async (): Promise<ProductStock[]> => {
+//   try {
+//     const response = await axiosInstance.get<ProductStock[]>(dispenseStockEndpoint);
+//     return response.data;
+//   } catch (error) {
+//     handleError(error, 'Get Stock Status');
+//     throw error;
+//   }
+// };
+
+export const testMachine = async (): Promise<MachineTestResult[]> => {
   try {
-    const response = await axiosInstance.get(GET_STOCK_STATUS);
-    return { status: true, data: response.data, error: '' };
+    const response = await axiosInstance.get<MachineTestResult[]>(testMachineEndpoint);
+    return response.data;
   } catch (error) {
-    return { status: false, data: [], error: handleError(error, 'Get Stock Status') };
+    handleError(error, 'Test Machine');
+    throw error;
   }
 };
 
-export const testMachine = async (): Promise<ApiResponse<MachineTestResult[]>> => {
+export const unlockMachine = async (machineId: number): Promise<void> => {
   try {
-    const response = await axiosInstance.get(TEST_MACHINE);
-    return { status: true, data: response.data, error: '' };
+    const response = await axiosInstance.get<void>(`${unlockMachineEndpoint}/${machineId}`);
+    return response.data;
   } catch (error) {
-    return { status: false, data: [], error: handleError(error, 'Test Machine') };
+    handleError(error, 'Unlock Machine');
+    throw error;
   }
 };
 
-export const unlockMachine = async (
-  machineId: number
-): Promise<ApiResponse<{ success: boolean }>> => {
+// export const updatePlanogram = async (routeUpdateRequest: RouteUpdateRequest): Promise<number> => {
+//   try {
+//     const response = await axiosInstance.post<number>(updatePlanogramEndpoint, routeUpdateRequest);
+//     return response.status;
+//   } catch (error) {
+//     handleError(error, 'Update Planogram');
+//     throw error;
+//   }
+// };
+
+export const resetStatus = async (): Promise<string> => {
   try {
-    const response = await axiosInstance.get(`${UNLOCK_MACHINE_STATUS}/${machineId}`);
-    return { status: true, data: response.data, error: '' };
+    const response = await axiosInstance.post<string>(resetStatusEndpoint);
+    return response.data;
   } catch (error) {
-    return {
-      status: false,
-      data: { success: false },
-      error: handleError(error, 'Unlock Machine')
-    };
+    handleError(error, 'Reset Status');
+    throw error;
   }
 };
 
-export const updatePlanogram = async (
-  routeUpdateRequest: RouteUpdateRequest
-): Promise<ApiResponse<number>> => {
+export const getAllStatuses = async (): Promise<MachineStatus[]> => {
   try {
-    const response = await axiosInstance.post(UPDATE_PLANOGRAM, routeUpdateRequest);
-    return { status: true, data: response.status, error: '' };
+    const response = await axiosInstance.get<MachineStatus[]>(getAllStatusEndpoint);
+    return response.data;
   } catch (error) {
-    return { status: false, data: 500, error: handleError(error, 'Update Planogram') };
-  }
-};
-
-export const resetStatus = async (): Promise<ApiResponse<number>> => {
-  try {
-    const response = await axiosInstance.post(RESET_STATUS);
-    return { status: true, data: response.status, error: '' };
-  } catch (error) {
-    return { status: false, data: 500, error: handleError(error, 'Reset Status') };
-  }
-};
-
-export const getAllStatuses = async (): Promise<ApiResponse<MachineStatus[]>> => {
-  try {
-    const response = await axiosInstance.get(GET_ALL_STATUS);
-    return { status: true, data: response.data, error: '' };
-  } catch (error) {
-    return { status: false, data: [], error: handleError(error, 'Get All Statuses') };
+    handleError(error, 'Get All Statuses');
+    throw error;
   }
 };

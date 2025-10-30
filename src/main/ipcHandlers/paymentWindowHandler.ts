@@ -8,7 +8,7 @@ import {
 import { isPaymentWindowOpen } from '../windows/paymentWindow/paymentWindow';
 
 const paymentWindowIpc = (): void => {
-  ipcMain.handle(IPC_CHANNELS.PAYMENT_OPEN, async (_event, link: string) => {
+  ipcMain.handle(IPC_CHANNELS.PAYMENT_OPEN, async (_event, link: string): Promise<boolean> => {
     return openPayment(link);
   });
 

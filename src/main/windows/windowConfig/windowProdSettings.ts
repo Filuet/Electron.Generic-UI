@@ -1,9 +1,9 @@
-import { BrowserWindowConstructorOptions, app } from 'electron';
+import { BrowserWindowConstructorOptions } from 'electron';
 import { resolve } from 'path';
 
 // Set Chromium command-line switches before app is ready
-app.commandLine.appendSwitch('force-device-scale-factor', '1'); // Force 100% scaling regardless of system setting
-app.commandLine.appendSwitch('high-dpi-support', '1'); // Enable high-DPI support without scaling
+// app.commandLine.appendSwitch('force-device-scale-factor', '1'); // Force 100% scaling regardless of system setting
+// app.commandLine.appendSwitch('high-dpi-support', '1'); // Enable high-DPI support without scaling
 
 export const windowProdSettings: BrowserWindowConstructorOptions = {
   resizable: false, // Prevent window resizing

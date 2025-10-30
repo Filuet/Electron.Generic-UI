@@ -11,7 +11,11 @@
     // All TypeScript React component files
     "src/renderer/src/**/*.tsx",
     // Declaration files for preload scripts
-    "src/preload/*.d.ts"
+    "src/preload/*.d.ts",
+    // Shared TypeScript modals used across main and renderer processes
+    "src/shared/**/*.ts",
+    // Utility TypeScript files
+    "src/utils/**/*.ts"
   ],
 
   // TypeScript compiler options for this project

@@ -1,17 +1,17 @@
-export const DISPENSE_PRODUCT = '/dispensing/extract';
+export const dispenseProductEndpoint = '/dispensing/extract';
 
-export const DISPENSE_STATUS = '/dispensing/status';
+export const dispensingStatusEndpoint = '/dispensing/status';
 
-export const UPDATE_PLANOGRAM_JSON = '/dispensing/update-planogram';
+export const updatePlanogramJsonEndpoint = '/dispensing/update-planogram';
 
-export const GET_STOCK_STATUS = '/dispensing/stock';
+export const dispenseStockEndpoint = '/dispensing/stock';
 
-export const TEST_MACHINE = '/dispensing/test';
+export const testMachineEndpoint = '/dispensing/test';
 
-export const UNLOCK_MACHINE_STATUS = '/dispensing/unlock';
+export const unlockMachineEndpoint = '/dispensing/unlock';
 
-export const UPDATE_PLANOGRAM = '/dispensing/planogram';
+export const updatePlanogramEndpoint = '/dispensing/planogram';
 
-export const RESET_STATUS = '/dispensing/reset-status';
+export const resetStatusEndpoint = '/dispensing/reset-status';
 
-export const GET_ALL_STATUS = '/dispensing/all-statuses';
+export const getAllStatusEndpoint = '/dispensing/all-statuses';

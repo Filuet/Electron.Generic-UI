@@ -10,7 +10,6 @@ import {
   DispenseStatus,
   LogLevel,
   PageRoute,
-  PaymentProcessingError,
   PaymentStatus,
   UpdateDispenseStatusModal
 } from '@/interfaces/modal';
@@ -80,7 +79,7 @@ function PaymentProcessing(): JSX.Element {
       })
       .catch(() => {
         loggingService.log({
-          level: 'error',
+          level: LogLevel.ERROR,
           message: `Failed to update dispense status for order code: ${orderCodeToUse}`,
           component: 'PaymentProcessing',
           data: { orderCode: orderCodeToUse }
@@ -185,32 +184,20 @@ function PaymentProcessing(): JSX.Element {
       message: `Attempting to open payment window with link: ${link}`
     });
 
-    try {
-      const success = await window.electron.payment.open(link);
+    const success = await window.electron.payment.open(link);
 
-      if (success) {
-        loggingService.log({
-          level: LogLevel.INFO,
-          component: 'PaymentProcessing',
-          message: 'Payment window opened successfully'
-        });
-      } else {
-        loggingService.log({
-          level: LogLevel.ERROR,
-          component: 'PaymentProcessing',
-          message: 'Failed to open payment window (possibly already open or invalid link)',
-          data: { link }
-        });
-        dispatch(setPaymentStatus(PaymentStatus.NotFound));
-        setIsPaymentProcessing(false);
-      }
-    } catch (error) {
-      const paymentError = error as PaymentProcessingError;
+    if (success) {
+      loggingService.log({
+        level: LogLevel.INFO,
+        component: 'PaymentProcessing',
+        message: 'Payment window opened successfully'
+      });
+    } else {
       loggingService.log({
         level: LogLevel.ERROR,
         component: 'PaymentProcessing',
-        message: `Exception occurred while opening payment window: ${paymentError.message}`,
-        data: { error: paymentError, link }
+        message: 'Failed to open payment window (possibly already open or invalid link)',
+        data: { link }
       });
       dispatch(setPaymentStatus(PaymentStatus.NotFound));
       setIsPaymentProcessing(false);

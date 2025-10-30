@@ -27,10 +27,10 @@ import {
   oriflameCategoriesApi,
   planogramJsonEndpoint
 } from '@/utils/endpoints';
-import { useAppDispatch, useAppSelector } from '@/redux/core/utils/reduxHook';
+import { useAppSelector } from '@/redux/core/utils/reduxHook';
 import OriflameLoader from '@/components/oriflameLoader/OriflameLoader';
 import { updatePlanogramJson } from '@/utils/expoApiUtils';
-import { setPlanogramJson } from '@/redux/features/Planogram/planogramSlice';
+
 import ProductCart from '../ProductCartPage/ProductCart';
 import { HomePageStyles } from './homePageStyle';
 import CategoryBanner from '../../assets/images/Banners/CategoryBanner.png';
@@ -45,8 +45,7 @@ function HomePage(): JSX.Element {
   const { translate } = useTranslationHook();
   const [isProductCartOpen, setIsProductCartOpen] = useState<boolean>(false);
   const [productSuggestions, setProductSuggestion] = useState<ProductDataModal[]>([]);
-  const dispatch = useAppDispatch();
-  // const planogramJson = useAppSelector((state) => state.planogram.routes);
+
   const [categories, setCategories] = useState<string[]>([]);
   const [productData, setProductData] = useState<ProductDataModal[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -75,19 +74,14 @@ function HomePage(): JSX.Element {
     getData<PogRoute[]>(`${planogramJsonEndpoint}/${kioskName}`)
       .then((response) => {
         if (response.length !== 0) {
-          // if (!isEqual(planogramJson, response)) {
-          updatePlanogramJson(response)
-            .then(() => {
-              dispatch(setPlanogramJson(response));
-            })
-            .catch((err) => {
-              loggingService.log({
-                level: LogLevel.ERROR,
-                message: 'Error updating planogram json in expo extractor',
-                component: 'HomePage',
-                data: { error: JSON.stringify(err), kioskName }
-              });
+          updatePlanogramJson(response).then((response) => {
+            loggingService.log({
+              level: LogLevel.INFO,
+              message: 'Planogram json updated successfully from ExpoExtractor',
+              component: 'HomePage.tsx',
+              data: { response }
             });
+          });
         } else {
           loggingService.log({
             level: LogLevel.INFO,
@@ -95,14 +89,13 @@ function HomePage(): JSX.Element {
             component: 'HomePage.tsx'
           });
         }
-        // }
       })
-      .catch((err) => {
+      .catch((error) => {
         loggingService.log({
           level: LogLevel.ERROR,
           message: 'Error fetching planogram json from ogmentoAPI',
           component: 'HomePage',
-          data: { error: JSON.stringify(err), kioskName }
+          data: { error, kioskName }
         });
       });
   }, []);

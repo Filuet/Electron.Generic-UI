@@ -1,9 +1,10 @@
 import { app, BrowserWindow } from 'electron';
 import { electronApp, optimizer } from '@electron-toolkit/utils';
-import { setupVideoWatcher } from './services/videoFilesService/videoFilesWatcher';
+import { setupVideoWatcher } from './services/advertisementService/videoFilesWatcher';
 import registerAllIpcHandlers from './ipcHandlers/registerAllIpcHandlers';
 import { mainWindowObject } from './windows/mainWindow/mainWindowObject';
 import { dailyLogger } from './services/loggingService/loggingService';
+import { LogLevel } from '../shared/sharedTypes';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -52,7 +53,7 @@ app.on('window-all-closed', () => {
 
 app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
   dailyLogger.log({
-    level: 'error',
+    level: LogLevel.ERROR,
     message: `Error in certificates --> ${certificate}`,
     error: error,
     data: webContents
@@ -68,7 +69,7 @@ app.on('certificate-error', (event, webContents, url, error, certificate, callba
 // Optional cleanup before quitting
 app.on('before-quit', () => {
   dailyLogger.log({
-    level: 'info',
+    level: LogLevel.INFO,
     message: 'App is quitting'
   });
 });
@@ -78,7 +79,7 @@ app.on('before-quit', () => {
 // but the renderer will not exit means the renderer may be accessible, for closing the window and whole app execution these event will be used
 process.on('uncaughtException', (err) => {
   dailyLogger.log({
-    level: 'error',
+    level: LogLevel.ERROR,
     message: 'uncaughtException in main process',
     component: 'Main.ts',
     error: err
@@ -90,7 +91,7 @@ process.on('uncaughtException', (err) => {
 
 process.on('unhandledRejection', (reason) => {
   dailyLogger.log({
-    level: 'error',
+    level: LogLevel.ERROR,
     message: 'Unhandled Promise Rejection',
     component: 'Main.ts',
     error: reason

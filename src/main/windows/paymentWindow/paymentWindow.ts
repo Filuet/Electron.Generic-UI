@@ -3,6 +3,7 @@ import { paymentWindowDevSettings } from '../windowConfig/paymentWindowDevSettin
 import { is } from '@electron-toolkit/utils';
 import { paymentWindowProdSettings } from '../windowConfig/paymentWindowProdSettings';
 import { dailyLogger } from '../../services/loggingService/loggingService';
+import { LogLevel } from '../../../shared/sharedTypes';
 
 let paymentWindowObject: BrowserWindow | null = null;
 
@@ -54,7 +55,7 @@ export const getPaymentWindowHtml = async (): Promise<string | null> => {
       const content = await webContents.executeJavaScript('document.documentElement.outerHTML');
 
       dailyLogger.log({
-        level: 'info',
+        level: LogLevel.INFO,
         message: 'Fetched HTML content from payment window',
         data: {
           ...meta,
@@ -65,7 +66,7 @@ export const getPaymentWindowHtml = async (): Promise<string | null> => {
       return content;
     } catch (error) {
       dailyLogger.log({
-        level: 'error',
+        level: LogLevel.ERROR,
         message: 'Failed to get the HTML content of the payment window',
         data: {
           ...meta,
@@ -77,7 +78,7 @@ export const getPaymentWindowHtml = async (): Promise<string | null> => {
   }
 
   dailyLogger.log({
-    level: 'warn',
+    level: LogLevel.WARN,
     message: 'Attempted to get HTML content but payment window was not available'
   });
 

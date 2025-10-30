@@ -453,7 +453,7 @@ function ProductCollection(): JSX.Element {
         loggingService.log({
           level: LogLevel.INFO,
           component: 'ProductCollection',
-          message: 'Dispensing process completed, Navigated to thank you page after 5 seconds',
+          message: 'Dispensing process completed, Navigating to thank you page after 5 seconds',
           data: { unTrackedDispenseErrors }
         });
       }
@@ -467,26 +467,13 @@ function ProductCollection(): JSX.Element {
     if (!isDispensedProcessFinished) {
       statusCheckIntervalRef.current = setInterval(async () => {
         try {
-          const apiResponse = await getDispenseStatus();
-          const status: MachineStatus = apiResponse.data;
+          const status: MachineStatus = await getDispenseStatus();
           loggingService.log({
             level: LogLevel.INFO,
             component: 'ProductCollection',
             message: 'API call to fetch dispenser status was successful',
             data: status
           });
-          if (apiResponse.error && !apiResponse.status) {
-            setUnTrackedDispenseErrors((prev) => [
-              ...prev,
-              { code: 'API_ERROR', message: 'Failed to fetch dispenser status' }
-            ]);
-            loggingService.log({
-              level: LogLevel.ERROR,
-              component: 'ProductCollection',
-              message: 'Failed to fetch dispense status',
-              data: apiResponse.error
-            });
-          }
           // Check for dispensing failure
           const dispensingFailure = checkDispenseErrors(status);
           if (dispensingFailure.isError) {
@@ -592,12 +579,16 @@ function ProductCollection(): JSX.Element {
               });
           }
         } catch (error) {
+          setUnTrackedDispenseErrors((prev) => [
+            ...prev,
+            { code: 'API_ERROR', message: 'Failed to fetch dispenser status' }
+          ]);
           loggingService.log({
             level: LogLevel.ERROR,
             message: 'Error fetching dispense status',
             component: 'ProductCollection',
             data: {
-              error: JSON.stringify(error),
+              error,
               cartProducts: cartProducts.map(({ skuCode, productCount }) => ({
                 skuCode,
                 productCount
@@ -606,7 +597,6 @@ function ProductCollection(): JSX.Element {
               dispenseFinishedKeys
             }
           });
-          console.error('Error fetching dispense status:', error);
         }
       }, 2000);
     }

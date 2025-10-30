@@ -3,7 +3,7 @@ import { electronAPI as toolkitAPI } from '@electron-toolkit/preload';
 import { createVideoFilesBridge } from './bridge/videoFilesBridge';
 import { createLoggerBridge } from './bridge/loggerBridge';
 import { createExpoBridge } from './bridge/expoBridge';
-import { ElectronBridgeAPI } from '../shared/sharedTypes';
+import { ElectronBridgeAPI, LogLevel } from '../shared/sharedTypes';
 import createPaymentWindowBridge from './bridge/paymentWindowBridge';
 import { dailyLogger } from '../main/services/loggingService/loggingService';
 
@@ -20,7 +20,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('electron', electronAPI);
   } catch (error) {
     dailyLogger.log({
-      level: 'error',
+      level: LogLevel.ERROR,
       message: 'Preload contextBridge error',
       component: 'preload',
       error: error

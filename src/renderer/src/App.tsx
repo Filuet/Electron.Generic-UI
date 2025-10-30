@@ -112,26 +112,21 @@ function App(): JSX.Element {
   useEffect(() => {
     async function getVideoUrl(): Promise<void> {
       if (videoFilenames[currentVideoIndex]) {
-        try {
-          const dataUrl = await window.electron.videoFilesUtil.getVideoContent(
-            videoFilenames[currentVideoIndex]
-          );
-          if (dataUrl) {
-            setCurrentVideoUrl(dataUrl);
-          } else {
-            loggingService.log({
-              level: LogLevel.ERROR,
-              message: 'Failed to load video content',
-              component: 'App.tsx',
-              data: { videoFileName: videoFilenames[currentVideoIndex] }
-            });
-          }
-        } catch (err) {
+        const dataUrl = await window.electron.videoFilesUtil.getVideoContent(
+          videoFilenames[currentVideoIndex]
+        );
+        if (dataUrl) {
+          setCurrentVideoUrl(dataUrl);
+        } else {
           loggingService.log({
             level: LogLevel.ERROR,
-            message: 'Error getting video content',
-            component: 'App',
-            data: { error: JSON.stringify(err), videoFileName: videoFilenames[currentVideoIndex] }
+            message: 'Failed to load video content',
+            component: 'App.tsx',
+            data: {
+              videoFileName: videoFilenames[currentVideoIndex],
+              index: currentVideoIndex,
+              videoFilenames
+            }
           });
         }
       }
@@ -142,25 +137,11 @@ function App(): JSX.Element {
 
   useEffect(() => {
     async function getVideoFilenames(): Promise<void> {
-      window.electron.videoFilesUtil
-        .getFiles()
-        .then((response) => {
-          if (response.length !== 0) {
-            dispatch(setVideoFileNames(response));
-          }
-        })
-        .catch((err) => {
-          console.error('Error fetching video filenames:', err);
-          loggingService.log({
-            level: LogLevel.ERROR,
-            component: 'App',
-            message: `Error fetching video filenames`,
-            data: { err }
-          });
-        })
-        .finally(() => {
-          // setIsLoadingVideos(false);
-        });
+      window.electron.videoFilesUtil.getFiles().then((response) => {
+        if (response.length !== 0) {
+          dispatch(setVideoFileNames(response));
+        }
+      });
     }
 
     getVideoFilenames();
@@ -169,19 +150,9 @@ function App(): JSX.Element {
   // Refetch when file change detected
   useEffect(() => {
     const refresh = debounce(() => {
-      window.electron.videoFilesUtil
-        .getFiles()
-        .then((response) => {
-          dispatch(setVideoFileNames(response));
-        })
-        .catch((err) => {
-          loggingService.log({
-            level: LogLevel.ERROR,
-            message: 'Error re-fetching video filenames',
-            component: 'App.tsx',
-            data: err
-          });
-        });
+      window.electron.videoFilesUtil.getFiles().then((response) => {
+        dispatch(setVideoFileNames(response));
+      });
     }, 500);
 
     window.electron.videoFilesUtil.onFolderChange(refresh);
@@ -203,7 +174,7 @@ function App(): JSX.Element {
       // Just update UI state since token refresh already failed in the interceptor
       dispatch(setActivePage(PageRoute.UnderMaintenancePage));
       loggingService.log({
-        level: 'error',
+        level: LogLevel.ERROR,
         message: 'Authentication error detected, redirecting to under maintenance page',
         component: 'App.tsx'
       });
@@ -238,7 +209,7 @@ function App(): JSX.Element {
       videoRef.current.src = currentVideoUrl;
       videoRef.current.play().catch((err) => {
         loggingService.log({
-          level: 'error',
+          level: LogLevel.ERROR,
           message: 'Error playing video',
           component: 'App.tsx',
           data: err
