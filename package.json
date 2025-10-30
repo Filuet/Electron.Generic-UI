@@ -1,6 +1,6 @@
 {
   "name": "generic-ui",
-  "version": "1.0.0",
+  "version": "1.5.2",
   "description": "Kiosk E-Commerce App",
   "main": "./out/main/main.js",
   "author": "https://ogmento.io/",
@@ -18,7 +18,8 @@
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
-    "build:linux": "electron-vite build && electron-builder --linux"
+    "build:linux": "electron-vite build && electron-builder --linux",
+    "release": "npm run build:win && electron-builder --publish always"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
@@ -50,7 +51,7 @@
     "yup": "^1.6.1"
   },
   "build": {
-    "appId": "Generic-UI",
+    "appId": "ogmento.generic.ui",
     "productName": "Generic UI",
     "asar": true,
     "extraResources": [
@@ -76,10 +77,18 @@
       "target": "nsis",
       "icon": "build/icon.ico"
     },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Filuet",
+        "repo": "Electron.Generic-UI"
+      }
+    ],
     "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "allowToChangeInstallationDirectory": true
+      "oneClick": true,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": false,
+      "runAfterFinish": true
     }
   },
   "devDependencies": {
