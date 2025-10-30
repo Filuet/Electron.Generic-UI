@@ -9,121 +9,244 @@ import { LogLevel } from '../shared/sharedTypes';
 
 let mainWindow: BrowserWindow | null = null;
 
-// app.commandLine.appendSwitch('ignore-certificate-errors');
-
-// Single instance lock true/false , true - this instance owns the lock , false --> another instance already has the lock
+// ----------------------------
+// SINGLE INSTANCE ENFORCEMENT
+// ----------------------------
 const gotTheLock = app.requestSingleInstanceLock();
+
 if (!gotTheLock) {
-  // when gotTheLock is false then quit this app instance
+  dailyLogger.log({
+    level: LogLevel.INFO,
+    message: 'Another instance detected. Quitting this instance.',
+    component: 'main.ts'
+  });
   app.quit();
 } else {
-  // if this window has that lock means true , then focus this window
   app.on('second-instance', () => {
+    dailyLogger.log({
+      level: LogLevel.INFO,
+      message: 'Second instance detected; focusing existing window.',
+      component: 'main.ts'
+    });
+
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
     }
   });
 
+  // ----------------------------
+  // APP READY EVENT
+  // ----------------------------
   app.whenReady().then(async () => {
-    electronApp.setAppUserModelId('Generic-UI');
-
-    app.on('browser-window-created', (_, window) => {
-      optimizer.watchWindowShortcuts(window);
+    dailyLogger.log({
+      level: LogLevel.INFO,
+      message: 'App initializing...',
+      component: 'main.ts'
     });
 
-    mainWindow = mainWindowObject();
+    try {
+      electronApp.setAppUserModelId('Generic-UI');
 
-    registerAllIpcHandlers();
-
-    autoUpdater.setFeedURL({
-      provider: 'github',
-      owner: 'Filuet',
-      repo: 'Electron.Generic-UI'
-    });
-
-    if (mainWindow) setupVideoWatcher(mainWindow);
-
-    await autoUpdater.checkForUpdatesAndNotify().catch((err) => {
-      dailyLogger.log({
-        level: 'error',
-        message: 'Failed to check for updates',
-        component: 'main.ts',
-        data: JSON.stringify(err)
+      app.on('browser-window-created', (_, window) => {
+        optimizer.watchWindowShortcuts(window);
       });
-    });
 
-    autoUpdater.autoDownload = true;
-    autoUpdater.autoInstallOnAppQuit = true;
-
-    autoUpdater.on('update-downloaded', () => {
-      autoUpdater.quitAndInstall(false, true);
+      mainWindow = mainWindowObject();
       dailyLogger.log({
-        level: 'info',
-        message: 'Update downloaded successfully,',
+        level: LogLevel.INFO,
+        message: 'Main window created successfully.',
         component: 'main.ts'
       });
-    });
 
-    autoUpdater.on('error', (error) => {
+      registerAllIpcHandlers();
       dailyLogger.log({
-        level: 'error',
-        message: 'Error in auto-updater',
-        component: 'main.ts',
-        data: JSON.stringify(error)
+        level: LogLevel.INFO,
+        message: 'IPC handlers registered successfully.',
+        component: 'main.ts'
       });
-    });
 
-    app.on('activate', () => {
-      if (BrowserWindow.getAllWindows().length === 0) {
-        mainWindow = mainWindowObject();
+      if (mainWindow) {
         setupVideoWatcher(mainWindow);
+        dailyLogger.log({
+          level: LogLevel.INFO,
+          message: 'Video watcher initialized.',
+          component: 'main.ts'
+        });
       }
-    });
+
+      // ----------------------------
+      // AUTO-UPDATER CONFIGURATION
+      // ----------------------------
+      autoUpdater.autoDownload = true;
+      autoUpdater.autoInstallOnAppQuit = true;
+
+      dailyLogger.log({
+        level: LogLevel.INFO,
+        message: 'Starting update check...',
+        component: 'autoUpdater'
+      });
+
+      await autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+        dailyLogger.log({
+          level: LogLevel.ERROR,
+          message: 'Failed to check for updates',
+          component: 'autoUpdater',
+          data: JSON.stringify(err)
+        });
+      });
+
+      dailyLogger.log({
+        level: LogLevel.INFO,
+        message: 'Update check complete.',
+        component: 'autoUpdater'
+      });
+
+      // ----------------------------
+      // AUTO-UPDATER EVENT HANDLERS
+      // ----------------------------
+      autoUpdater.on('checking-for-update', () => {
+        dailyLogger.log({
+          level: LogLevel.INFO,
+          message: 'Checking for update...',
+          component: 'autoUpdater'
+        });
+      });
+
+      autoUpdater.on('update-available', (info) => {
+        dailyLogger.log({
+          level: LogLevel.INFO,
+          message: 'Update available.',
+          component: 'autoUpdater',
+          data: JSON.stringify(info)
+        });
+      });
+
+      autoUpdater.on('update-not-available', (info) => {
+        dailyLogger.log({
+          level: LogLevel.INFO,
+          message: 'No updates available.',
+          component: 'autoUpdater',
+          data: JSON.stringify(info)
+        });
+      });
+
+      autoUpdater.on('download-progress', (progressObj) => {
+        dailyLogger.log({
+          level: LogLevel.INFO,
+          message: 'Download progress.',
+          component: 'autoUpdater',
+          data: JSON.stringify(progressObj)
+        });
+      });
+
+      autoUpdater.on('update-downloaded', () => {
+        dailyLogger.log({
+          level: LogLevel.INFO,
+          message: 'Update downloaded successfully. Installing...',
+          component: 'autoUpdater'
+        });
+        autoUpdater.quitAndInstall(false, true);
+      });
+
+      autoUpdater.on('error', (error) => {
+        dailyLogger.log({
+          level: LogLevel.ERROR,
+          message: 'Error in auto-updater',
+          component: 'autoUpdater',
+          data: JSON.stringify(error)
+        });
+      });
+
+      // ----------------------------
+      // MACOS ACTIVATE EVENT
+      // ----------------------------
+      app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+          mainWindow = mainWindowObject();
+          setupVideoWatcher(mainWindow);
+          dailyLogger.log({
+            level: LogLevel.INFO,
+            message: 'Main window recreated on macOS activate.',
+            component: 'main.ts'
+          });
+        }
+      });
+    } catch (error) {
+      dailyLogger.log({
+        level: LogLevel.ERROR,
+        message: 'Error during app initialization',
+        component: 'main.ts',
+        error
+      });
+      app.quit();
+    }
   });
 }
 
-// Quit app on Windows/Linux when all windows are closed
+// ----------------------------
+// WINDOW ALL CLOSED HANDLER
+// ----------------------------
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
+  if (process.platform !== 'darwin') {
+    dailyLogger.log({
+      level: LogLevel.INFO,
+      message: 'All windows closed. Quitting app...',
+      component: 'main.ts'
+    });
+    app.quit();
+  }
 });
 
-app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
+// ----------------------------
+// CERTIFICATE ERROR HANDLER
+// ----------------------------
+app.on('certificate-error', (event, _webContents, url, error, certificate, callback) => {
+  const certInfo = JSON.stringify(certificate, null, 2);
+
   dailyLogger.log({
     level: LogLevel.ERROR,
-    message: `Error in certificates --> ${certificate}`,
-    error: error,
-    data: webContents
+    message: `Certificate error on URL: ${url}`,
+    component: 'main.ts',
+    data: `Error: ${error}, Certificate: ${certInfo}`
   });
+
   if (url.startsWith('https://localhost')) {
     event.preventDefault();
-    callback(true); // Trust this cert
+    callback(true);
   } else {
     callback(false);
   }
 });
 
-// Optional cleanup before quitting
+// ----------------------------
+// BEFORE QUIT HANDLER
+// ----------------------------
 app.on('before-quit', () => {
   dailyLogger.log({
     level: LogLevel.INFO,
-    message: 'App is quitting'
+    message: 'App is quitting...',
+    component: 'main.ts'
   });
+
+  if (mainWindow) {
+    mainWindow.removeAllListeners();
+    mainWindow = null;
+  }
 });
 
-// Error handling
-// both event will occur when main process may have some unexpected errors and stop working,
-// but the renderer will not exit means the renderer may be accessible, for closing the window and whole app execution these event will be used
+// ----------------------------
+// GLOBAL ERROR HANDLING
+// ----------------------------
 process.on('uncaughtException', (err) => {
   dailyLogger.log({
     level: LogLevel.ERROR,
-    message: 'uncaughtException in main process',
-    component: 'Main.ts',
+    message: 'Uncaught Exception in main process',
+    component: 'main.ts',
     error: err
   });
-  if (err) {
-    app.quit();
-  }
+
+  app.quit();
 });
 
 process.on('unhandledRejection', (reason) => {
@@ -138,11 +261,21 @@ process.on('unhandledRejection', (reason) => {
       errorDetails = `Unserializable reason: ${String(reason)}, error during serialization: ${jsonErr}`;
     }
   }
+
   dailyLogger.log({
     level: LogLevel.ERROR,
     message: 'Unhandled Promise Rejection',
-    component: 'Main.ts',
+    component: 'main.ts',
     error: errorDetails
   });
+
   app.quit();
+});
+
+process.on('exit', (code) => {
+  dailyLogger.log({
+    level: LogLevel.INFO,
+    message: `Main process exiting with code ${code}`,
+    component: 'main.ts'
+  });
 });
