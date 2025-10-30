@@ -35,5 +35,5 @@ jobs:
 
       - name: Publish to GitHub Releases
         env:
-          GH_TOKEN: ${{ secrets.pat_vs_studio }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: pnpm run release
