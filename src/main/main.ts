@@ -121,7 +121,11 @@ if (!gotTheLock) {
           data: JSON.stringify(info)
         });
       });
-
+      autoUpdater.setFeedURL({
+        provider: 'github',
+        owner: 'Filuet',
+        repo: 'Electron.Generic-UI'
+      });
       autoUpdater.on('update-not-available', (info) => {
         dailyLogger.log({
           level: LogLevel.INFO,
