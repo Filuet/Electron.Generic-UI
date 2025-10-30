@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*' # Runs only when you push a version tag like v1.0.0
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: windows-latest
@@ -30,10 +33,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build Electron app
-        run: pnpm run build:win
-
-      - name: Publish to GitHub Releases
+      - name: Build and Publish Electron app
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: pnpm run release
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pnpm run build
+          pnpm exec electron-builder --win --publish always
