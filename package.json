@@ -72,7 +72,8 @@
       "out",
       "dist-electron",
       "node_modules",
-      "package.json"
+      "package.json",
+      ".env"
     ],
     "win": {
       "target": "nsis",

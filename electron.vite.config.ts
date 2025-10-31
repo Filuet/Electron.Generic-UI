@@ -2,46 +2,67 @@
 import { resolve } from 'path';
 import eslint from 'vite-plugin-eslint';
 // Importing config and plugin helpers from electron-vite
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
-
+import { defineConfig, externalizeDepsPlugin, loadEnv } from 'electron-vite';
 // React plugin for Vite — adds support for JSX, Fast Refresh, etc.
 import react from '@vitejs/plugin-react';
 
 // Export the Electron-Vite configuration
-export default defineConfig({
-  // Main process (Electron's background process)
-  main: {
-    // This plugin tells Vite not to bundle external Node modules — improves build speed and avoids duplication
-    plugins: [externalizeDepsPlugin()]
-  },
+export default defineConfig(({ mode }) => {
+  // Load environment variables based on current mode
+  const env = loadEnv(mode, process.cwd(), '');
 
-  // Preload script configuration (executed before renderer in Electron context)
-  preload: {
-    // Same externalization plugin used here to keep node_modules out of the bundle
-    plugins: [externalizeDepsPlugin()]
-  },
-
-  // Renderer process (your React frontend)
-  renderer: {
-    resolve: {
-      alias: {
-        // Create an alias so you can import like: import X from '@renderer/...'
-        '@': resolve('src/renderer/src')
+  return {
+    // Main process (Electron's background process)
+    main: {
+      // This plugin tells Vite not to bundle external Node modules — improves build speed and avoids duplication
+      plugins: [externalizeDepsPlugin()],
+      define: {
+        'process.env.VITE_KIOSK_NAME': JSON.stringify(env.VITE_KIOSK_NAME),
+        'process.env.VITE_KIOSK_EMAIL': JSON.stringify(env.VITE_KIOSK_EMAIL),
+        'process.env.VITE_KIOSK_PASSWORD': JSON.stringify(env.VITE_KIOSK_PASSWORD),
+        'process.env.VITE_OGMENTO_BASE_URL': JSON.stringify(env.VITE_OGMENTO_BASE_URL)
       }
     },
-    // Use the React plugin to handle .jsx/.tsx files, Fast Refresh, etc.
-    plugins: [react(), eslint()],
-    server: {
-      // Port to serve the development server (used in dev mode only)
-      port: 5174,
 
-      // Use HTTPS with a local self-signed certificate (for development)
-      https: {
-        // Private key for the local HTTPS server
-        key: resolve('certificates/vendingMachine.key'),
-        // Certificate file for the local HTTPS server
-        cert: resolve('certificates/vendingMachine.crt')
+    // Preload script configuration (executed before renderer in Electron context)
+    preload: {
+      plugins: [externalizeDepsPlugin()],
+      define: {
+        'process.env.VITE_KIOSK_NAME': JSON.stringify(env.VITE_KIOSK_NAME),
+        'process.env.VITE_KIOSK_EMAIL': JSON.stringify(env.VITE_KIOSK_EMAIL),
+        'process.env.VITE_KIOSK_PASSWORD': JSON.stringify(env.VITE_KIOSK_PASSWORD),
+        'process.env.VITE_OGMENTO_BASE_URL': JSON.stringify(env.VITE_OGMENTO_BASE_URL)
+      }
+    },
+
+    // Renderer process (your React frontend)
+    renderer: {
+      resolve: {
+        alias: {
+          // Create an alias so you can import like: import X from '@renderer/...'
+          '@': resolve('src/renderer/src')
+        }
+      },
+      // Use the React plugin to handle .jsx/.tsx files, Fast Refresh, etc.
+      plugins: [react(), eslint()],
+      define: {
+        'process.env.VITE_KIOSK_NAME': JSON.stringify(env.VITE_KIOSK_NAME),
+        'process.env.VITE_KIOSK_EMAIL': JSON.stringify(env.VITE_KIOSK_EMAIL),
+        'process.env.VITE_KIOSK_PASSWORD': JSON.stringify(env.VITE_KIOSK_PASSWORD),
+        'process.env.VITE_OGMENTO_BASE_URL': JSON.stringify(env.VITE_OGMENTO_BASE_URL)
+      },
+      server: {
+        // Port to serve the development server (used in dev mode only)
+        port: 5174,
+
+        // Use HTTPS with a local self-signed certificate (for development)
+        https: {
+          // Private key for the local HTTPS server
+          key: resolve('certificates/vendingMachine.key'),
+          // Certificate file for the local HTTPS server
+          cert: resolve('certificates/vendingMachine.crt')
+        }
       }
     }
-  }
+  };
 });

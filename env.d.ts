@@ -9,6 +9,10 @@ interface ImportMetaEnv {
   readonly VITE_IS_PROD: string;
   readonly VITE_SUPPORT_USER_PHONENUMBERS: string;
   readonly VITE_SUPPORT_USER_PIN: string;
+  readonly KIOSK_NAME: string;
+  readonly KIOSK_EMAIL: string;
+  readonly KIOSK_PASSWORD: string;
+  readonly OGMENTO_BASE_URL: string;
 }
 
 interface ImportMeta {
