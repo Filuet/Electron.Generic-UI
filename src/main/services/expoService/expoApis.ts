@@ -29,7 +29,7 @@ import { is } from '@electron-toolkit/utils';
 import { sendEmailNotification } from '../../../utils/emailService';
 
 const EXPO_BASE_URL = config.expoBaseUrl;
-
+const COMPONENT_NAME = 'expoApis.ts';
 const CERTIFICATE_PATH = is.dev
   ? path.join(__dirname, '../../certificates/fullchain.pem')
   : path.join(process.resourcesPath, 'certificates', 'fullchain.pem');
@@ -42,6 +42,26 @@ const axiosInstance = axios.create({
   baseURL: EXPO_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
   httpsAgent: agent
+});
+
+axiosInstance.interceptors.response.use((response) => {
+  if (response.config.data && response.config.data.length > 0) {
+    const requestBody = JSON.parse(response.config.data);
+    expoDailyLogger.log({
+      level: LogLevel.INFO,
+      component: COMPONENT_NAME,
+      message: `API Response: ${response.status}`,
+      data: {
+        url: response.config.url,
+        method: response.config.method,
+        status: response.status,
+        requestBody,
+        responseData: response.data
+      }
+    });
+  }
+
+  return response;
 });
 
 const handleError = (error: unknown, customMessage = 'API error'): string => {
