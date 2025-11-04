@@ -44,6 +44,21 @@ const axiosInstance = axios.create({
   httpsAgent: agent
 });
 
+axiosInstance.interceptors.response.use((response) => {
+  expoDailyLogger.log({
+    level: LogLevel.INFO,
+    component: 'expoApis.ts',
+    message: `API Response: ${response.status}`,
+    data: {
+      url: response.config.url,
+      method: response.config.method,
+      status: response.status,
+      responseData: response.data
+    }
+  });
+  return response;
+});
+
 const handleError = (error: unknown, customMessage = 'API error'): string => {
   let message = 'Internal Server Error';
   if (error instanceof AxiosError) {
