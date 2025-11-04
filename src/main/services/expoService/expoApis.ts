@@ -29,7 +29,7 @@ import { is } from '@electron-toolkit/utils';
 import { sendEmailNotification } from '../../../utils/emailService';
 
 const EXPO_BASE_URL = config.expoBaseUrl;
-
+const COMPONENT_NAME = 'expoApis.ts';
 const CERTIFICATE_PATH = is.dev
   ? path.join(__dirname, '../../certificates/fullchain.pem')
   : path.join(process.resourcesPath, 'certificates', 'fullchain.pem');
@@ -47,12 +47,13 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use((response) => {
   expoDailyLogger.log({
     level: LogLevel.INFO,
-    component: 'expoApis.ts',
+    component: COMPONENT_NAME,
     message: `API Response: ${response.status}`,
     data: {
       url: response.config.url,
       method: response.config.method,
       status: response.status,
+      requestBody: JSON.parse(response.config.data || '{}'),
       responseData: response.data
     }
   });

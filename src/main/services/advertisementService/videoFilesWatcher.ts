@@ -6,14 +6,14 @@ import { dailyLogger } from '../loggingService/loggingService';
 import { LogLevel } from '../../../shared/sharedTypes';
 
 const setupVideoWatcher = (win: BrowserWindow): void => {
-  const COMPONENT = 'videoFilesWatcher.ts';
+  const COMPONENT_NAME = 'videoFilesWatcher.ts';
 
   // Validating config values
   if (!config.videoFilePath || typeof config.videoFilePath !== 'string') {
     dailyLogger.log({
       level: LogLevel.ERROR,
       message: 'Invalid or missing VIDEO_FILE_PATH in config',
-      component: COMPONENT,
+      component: COMPONENT_NAME,
       data: config.videoFilePath
     });
     return;
@@ -23,7 +23,7 @@ const setupVideoWatcher = (win: BrowserWindow): void => {
     dailyLogger.log({
       level: LogLevel.ERROR,
       message: 'Invalid or missing supportedVideoFormats in config',
-      component: COMPONENT,
+      component: COMPONENT_NAME,
       data: config.supportedVideoFormats
     });
     return;
@@ -38,7 +38,7 @@ const setupVideoWatcher = (win: BrowserWindow): void => {
       dailyLogger.log({
         level: LogLevel.WARN,
         message: `Video directory not found at "${VIDEO_FILE_PATH}". Attempting to create it...`,
-        component: COMPONENT
+        component: COMPONENT_NAME
       });
 
       try {
@@ -46,13 +46,13 @@ const setupVideoWatcher = (win: BrowserWindow): void => {
         dailyLogger.log({
           level: LogLevel.INFO,
           message: `Successfully created missing video directory: ${VIDEO_FILE_PATH}`,
-          component: COMPONENT
+          component: COMPONENT_NAME
         });
       } catch (createErr) {
         dailyLogger.log({
           level: LogLevel.ERROR,
           message: `Failed to create video directory: ${VIDEO_FILE_PATH}`,
-          component: COMPONENT,
+          component: COMPONENT_NAME,
           data: createErr
         });
       }
@@ -66,7 +66,7 @@ const setupVideoWatcher = (win: BrowserWindow): void => {
         dailyLogger.log({
           level: LogLevel.INFO,
           message: `Detected change in video folder (${eventType}): ${fileName}`,
-          component: COMPONENT
+          component: COMPONENT_NAME
         });
 
         if (win && !win.isDestroyed()) {
@@ -80,7 +80,7 @@ const setupVideoWatcher = (win: BrowserWindow): void => {
       dailyLogger.log({
         level: LogLevel.ERROR,
         message: 'File watcher encountered an error',
-        component: COMPONENT,
+        component: COMPONENT_NAME,
         data: err
       });
     });
@@ -91,20 +91,20 @@ const setupVideoWatcher = (win: BrowserWindow): void => {
       dailyLogger.log({
         level: LogLevel.INFO,
         message: 'Video file watcher closed on app quit',
-        component: COMPONENT
+        component: COMPONENT_NAME
       });
     });
 
     dailyLogger.log({
       level: LogLevel.INFO,
       message: `Video file watcher successfully initialized at: ${VIDEO_FILE_PATH}`,
-      component: COMPONENT
+      component: COMPONENT_NAME
     });
   } catch (err) {
     dailyLogger.log({
       level: LogLevel.ERROR,
       message: 'Unexpected error setting up video file watcher',
-      component: COMPONENT,
+      component: COMPONENT_NAME,
       data: err
     });
   }
