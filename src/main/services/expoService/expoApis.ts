@@ -45,18 +45,22 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.response.use((response) => {
-  expoDailyLogger.log({
-    level: LogLevel.INFO,
-    component: COMPONENT_NAME,
-    message: `API Response: ${response.status}`,
-    data: {
-      url: response.config.url,
-      method: response.config.method,
-      status: response.status,
-      requestBody: JSON.parse(response.config.data || '{}'),
-      responseData: response.data
-    }
-  });
+  if (response.config.data && response.config.data.length > 0) {
+    const requestBody = JSON.parse(response.config.data);
+    expoDailyLogger.log({
+      level: LogLevel.INFO,
+      component: COMPONENT_NAME,
+      message: `API Response: ${response.status}`,
+      data: {
+        url: response.config.url,
+        method: response.config.method,
+        status: response.status,
+        requestBody,
+        responseData: response.data
+      }
+    });
+  }
+
   return response;
 });
 
