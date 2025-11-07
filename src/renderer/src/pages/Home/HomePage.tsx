@@ -73,6 +73,13 @@ function HomePage(): JSX.Element {
     const kioskName = import.meta.env.VITE_KIOSK_NAME;
     getData<PogRoute[]>(`${planogramJsonEndpoint}/${kioskName}`)
       .then((response) => {
+        loggingService.log({
+          level: LogLevel.INFO,
+          message: 'Fetched planogram json from ogmentoAPI',
+          component: 'HomePage.tsx',
+          data: { kioskName, response }
+        });
+
         if (response.length !== 0) {
           updatePlanogramJson(response).then((response) => {
             loggingService.log({

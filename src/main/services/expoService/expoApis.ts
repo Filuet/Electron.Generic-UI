@@ -65,6 +65,24 @@ axiosInstance.interceptors.response.use((response) => {
   return response;
 });
 
+axiosInstance.interceptors.request.use((request) => {
+  let requestBody = '';
+  if (request.data && request.data.length > 0) {
+    requestBody = JSON.parse(request.data);
+  }
+  expoDailyLogger.log({
+    level: LogLevel.INFO,
+    component: COMPONENT_NAME,
+    message: `EXPO API: ${request.url}`,
+    data: {
+      url: request.url,
+      method: request.method,
+      requestBody
+    }
+  });
+  return request;
+});
+
 const handleError = (error: unknown, customMessage = 'API error'): string => {
   let message = 'Internal Server Error';
   if (error instanceof AxiosError) {
