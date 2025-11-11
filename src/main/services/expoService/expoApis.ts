@@ -45,10 +45,10 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.response.use((response) => {
-  let requestBody = '';
-  if (response.config.data && response.config.data.length > 0) {
-    requestBody = JSON.parse(response.config.data);
-  }
+  //let requestBody = '';
+  // if (response.config.data && response.config.data.length > 0) {
+  //   requestBody = JSON.parse(response.config.data);
+  // }
   expoDailyLogger.log({
     level: LogLevel.INFO,
     component: COMPONENT_NAME,
@@ -57,7 +57,7 @@ axiosInstance.interceptors.response.use((response) => {
       url: response.config.url,
       method: response.config.method,
       status: response.status,
-      requestBody,
+      // requestBody,
       responseData: response.data
     }
   });
@@ -66,9 +66,19 @@ axiosInstance.interceptors.response.use((response) => {
 });
 
 axiosInstance.interceptors.request.use((request) => {
-  let requestBody = '';
-  if (request.data && request.data.length > 0) {
-    requestBody = JSON.parse(request.data);
+  let requestBody: unknown = null;
+  if (request.data) {
+    // request.data is already an object/array, no need to parse
+    // Only parse if it's a string
+    if (typeof request.data === 'string') {
+      try {
+        requestBody = JSON.parse(request.data);
+      } catch {
+        requestBody = request.data;
+      }
+    } else {
+      requestBody = request.data;
+    }
   }
   expoDailyLogger.log({
     level: LogLevel.INFO,

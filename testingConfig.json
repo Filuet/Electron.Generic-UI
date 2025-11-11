@@ -1,0 +1,5 @@
+{
+  "skipAddToCartValidation": true,
+  "skipPaymentProcess": true,
+  "expoEmailShouldSend": true
+}

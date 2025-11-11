@@ -20,7 +20,10 @@ export default defineConfig(({ mode }) => {
         'process.env.VITE_KIOSK_NAME': JSON.stringify(env.VITE_KIOSK_NAME),
         'process.env.VITE_KIOSK_EMAIL': JSON.stringify(env.VITE_KIOSK_EMAIL),
         'process.env.VITE_KIOSK_PASSWORD': JSON.stringify(env.VITE_KIOSK_PASSWORD),
-        'process.env.VITE_OGMENTO_BASE_URL': JSON.stringify(env.VITE_OGMENTO_BASE_URL)
+        'process.env.VITE_OGMENTO_BASE_URL': JSON.stringify(env.VITE_OGMENTO_BASE_URL),
+        'process.env.SKIP_ADD_TO_CART_CONDITION': JSON.stringify(env.SKIP_ADD_TO_CART_CONDITION),
+        'process.env.SKIP_PAYMENT': JSON.stringify(env.SKIP_PAYMENT),
+        'process.env.EXPO_EMAIL_SHOULD_SEND': JSON.stringify(env.EXPO_EMAIL_SHOULD_SEND)
       }
     },
 
@@ -40,7 +43,7 @@ export default defineConfig(({ mode }) => {
       resolve: {
         alias: {
           // Create an alias so you can import like: import X from '@renderer/...'
-          '@': resolve('src/renderer/src')
+          '@': resolve('src/renderer')
         }
       },
       // Use the React plugin to handle .jsx/.tsx files, Fast Refresh, etc.
