@@ -45,7 +45,7 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.response.use((response) => {
-  let requestBody = '';
+  let requestBody: any = '';
   if (response.config.data && response.config.data.length > 0) {
     requestBody = JSON.parse(response.config.data);
   }
