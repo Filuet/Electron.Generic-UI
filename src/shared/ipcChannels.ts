@@ -19,5 +19,7 @@ export const enum IPC_CHANNELS {
   PAYMENT_OPEN = 'payment:open',
   PAYMENT_CLOSE = 'payment:close',
   PAYMENT_IS_OPEN = 'payment:is-open',
-  PAYMENT_WINDOW_HTML_CONTENT = 'payment:window-html-content'
+  PAYMENT_WINDOW_HTML_CONTENT = 'payment:window-html-content',
+
+  TESTING_CONFIG = 'test-config:get-test-config'
 }

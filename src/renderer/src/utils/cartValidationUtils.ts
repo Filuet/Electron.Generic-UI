@@ -1,6 +1,7 @@
 import { ClientType, ProductDataModal } from '@/interfaces/modal';
 import { CartProduct } from '@/redux/features/cart/cartTypes';
 import { CustomerOrderDetails } from '@/redux/features/customerDetails/types';
+import { testingConfig } from './electronApi/getTestingConfig';
 
 export const validateAddToCart = (
   product: ProductDataModal | CartProduct,
@@ -12,6 +13,7 @@ export const validateAddToCart = (
   const PRODUCT_PURCHASE_LIMIT = 5;
   const TOTAL_CART_LIMIT = 42000;
   let sellingPrice = product.sellingPriceVIP;
+  const SKIP_ADD_TO_CART_CONDITION: boolean = testingConfig.skipAddToCartCondition;
 
   if (ClientType.BrandPartner === currentClient) {
     sellingPrice = product.sellingPriceBRP;
@@ -21,12 +23,14 @@ export const validateAddToCart = (
     return 'You have reached the maximum order amount per invoice';
   }
 
-  if (productInCart && productInCart?.productCount >= PRODUCT_PURCHASE_LIMIT) {
-    return 'You have added maximum quantity of this product';
-  }
-
   if (productInCart && product.quantity <= productInCart.productCount) {
     return 'Sorry, currently we do not have enough stock of this product';
+  }
+  if (SKIP_ADD_TO_CART_CONDITION) {
+    return null;
+  }
+  if (productInCart && productInCart?.productCount >= PRODUCT_PURCHASE_LIMIT) {
+    return 'You have added maximum quantity of this product';
   }
 
   if (productInCart) {

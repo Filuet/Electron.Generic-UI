@@ -25,6 +25,7 @@ import { getData } from './services/axiosWrapper/apiService';
 import { expoFailEndpoint } from './utils/endpoints';
 import SupportContact from './pages/UnderMaintenance/SupportContact';
 import loggingService from './utils/loggingService';
+import { testingConfig } from './utils/electronApi/getTestingConfig';
 
 function KioskPortal(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -57,6 +58,7 @@ function KioskPortal(): JSX.Element {
   }, [workingHours]);
   useEffect(() => {
     const dispenserCheck = async (kioskMachines: number[]): Promise<void> => {
+      const SEND_EXPO_FAIL_NOTIFICATION: boolean = testingConfig.expoEmailShouldSend;
       try {
         const machineCheckResult = await checkMachinesStatus(kioskMachines);
 
@@ -72,7 +74,7 @@ function KioskPortal(): JSX.Element {
         if (
           error instanceof Error &&
           error.message === 'ECONNREFUSED' &&
-          import.meta.env.VITE_IS_PROD === 'true'
+          SEND_EXPO_FAIL_NOTIFICATION
         ) {
           getData(`${expoFailEndpoint}/${import.meta.env.VITE_KIOSK_NAME}`);
           loggingService.log({

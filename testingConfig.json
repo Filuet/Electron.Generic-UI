@@ -1,0 +1,5 @@
+{
+  "SKIP_ADD_TO_CART_CONDITION": true,
+  "SKIP_PAYMENT": true,
+  "EXPO_EMAIL_SHOULD_SEND": true
+}

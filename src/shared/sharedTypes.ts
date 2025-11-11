@@ -32,6 +32,7 @@ export interface ElectronBridgeAPI extends ElectronAPI {
   logs: LoggingServiceBridge;
   expo: ExpoBridge;
   payment: PaymentWindowBridge;
+  testingConfig: Promise<TestingConfigJsonObject>;
 }
 
 export enum LogLevel {
@@ -115,3 +116,9 @@ export interface MachineInoperableModal {
   kioskName: string;
   machineIds: number[];
 }
+
+export type TestingConfigJsonObject = {
+  skipAddToCartCondition: boolean;
+  skipPayment: boolean;
+  expoEmailShouldSend: boolean;
+};
