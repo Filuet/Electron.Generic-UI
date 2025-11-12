@@ -471,7 +471,7 @@ function ProductCollection(): JSX.Element {
           loggingService.log({
             level: LogLevel.INFO,
             component: 'ProductCollection',
-            message: 'API call to fetch dispenser status was successful',
+            message: 'Current Status:',
             data: status
           });
           // Check for dispensing failure

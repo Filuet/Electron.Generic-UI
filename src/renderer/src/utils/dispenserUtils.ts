@@ -126,6 +126,7 @@ export const checkMachinesStatus = async (
       const machineTest = testResults.find((result) => result.machine === machineId);
       return !machineTest || machineTest.status !== 'connected';
     });
+    // todo log only if inoperable machines found
     loggingService.log({
       level: LogLevel.INFO,
       message: 'Inoperable machines identified',
