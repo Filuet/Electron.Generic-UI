@@ -20,6 +20,7 @@ import NavigationButtonUtils from '@/utils/navigationButtonUtils/NavigationButto
 import { updateData } from '@/services/axiosWrapper/apiService';
 import { updateDispenseStatusEndpoint } from '@/utils/endpoints';
 import loggingService from '@/utils/loggingService';
+import { testingConfig } from '@/utils/electronApi/getTestingConfig';
 import {
   initiatePayment,
   createSignalRConnection,
@@ -205,7 +206,9 @@ function PaymentProcessing(): JSX.Element {
   };
 
   const onPaymentProcessing = async (): Promise<void> => {
-    await loggingService.log({
+    const TESTING_ENVIRONMENT = testingConfig.skipPayment;
+
+    loggingService.log({
       level: LogLevel.INFO,
       component: 'PaymentProcessing',
       message: 'Starting payment processing'
@@ -226,14 +229,15 @@ function PaymentProcessing(): JSX.Element {
       if (existingOrderCode !== paymentData.orderCode) {
         dispatch(updateOrderCode(paymentData.orderCode));
       }
-      if (import.meta.env.VITE_IS_PROD === 'true') {
+
+      if (TESTING_ENVIRONMENT) {
+        dispatch(setPaymentStatus(PaymentStatus.Approved));
+        onNextPage(paymentData.orderCode);
+      } else {
         openPaymentWindowInNewTab(paymentData.link);
         const newConnection = createSignalRConnection(paymentData.transactionId);
         addEventHandlersForSignalR(newConnection, paymentData.transactionId, paymentData.orderCode);
         connectionRef.current = newConnection;
-      } else {
-        dispatch(setPaymentStatus(PaymentStatus.Approved));
-        onNextPage(paymentData.orderCode);
       }
     } else {
       setIsPaymentProcessing(false);
