@@ -12,7 +12,7 @@ import SignUpPage from './pages/SignUp/SignUpPage';
 import KioskWelcomePage from './pages/WelcomePage/KioskWelcome';
 import UserWelcomePage from './pages/WelcomePage/UserWelcome';
 import PaymentProcessing from './pages/PaymentPage/PaymentProcessing';
-import ProductCollection from './pages/Product_Collection/ProductCollection';
+import ProductCollection from './pages/ProductCollection/ProductCollection';
 import ThankyouPage from './pages/ThankYouPage/ThankyouPage';
 import ValidateOtp from './pages/Login/ValidateOTP/ValidateOtp';
 import { setInoperableMachines } from './redux/features/expoSettings/expoSlice';
@@ -20,7 +20,7 @@ import {
   checkDispenserStatus,
   checkMachinesStatus,
   getActiveMachines
-} from './utils/dispenserUtils';
+} from './pages/ProductCollection/productCollectionUtils/dispenserUtils';
 import { getData } from './services/axiosWrapper/apiService';
 import { expoFailEndpoint } from './utils/endpoints';
 import SupportContact from './pages/UnderMaintenance/SupportContact';

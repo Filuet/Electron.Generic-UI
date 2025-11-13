@@ -29,7 +29,7 @@ import {
   checkDispenserStatus,
   checkMachinesStatus,
   getActiveMachines
-} from './utils/dispenserUtils';
+} from './pages/ProductCollection/productCollectionUtils/dispenserUtils';
 import { setInoperableMachines } from './redux/features/expoSettings/expoSlice';
 
 function App(): JSX.Element {

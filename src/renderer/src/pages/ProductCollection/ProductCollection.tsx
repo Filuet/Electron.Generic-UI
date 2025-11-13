@@ -29,7 +29,7 @@ import {
 import { dispenseProduct, getAllStatuses, getDispenseStatus } from '@/utils/expoApiUtils';
 import { CartProduct } from '@/redux/features/cart/cartTypes';
 import { setActivePage } from '@/redux/features/pageNavigation/navigationSlice';
-import { DispensingErrorTracker } from '@/utils/DispensingFailedErrorTracker';
+import { DispensingErrorTracker } from '@/pages/ProductCollection/productCollectionUtils/DispensingFailedErrorTracker';
 import { postData, updateData } from '@/services/axiosWrapper/apiService';
 import {
   notTakenProductsEndpoint,
@@ -39,7 +39,10 @@ import {
   updateDispensedProductQuantityEndpoint,
   updateDispenseStatusEndpoint
 } from '@/utils/endpoints';
-import { checkMachinesStatus, getActiveMachines } from '@/utils/dispenserUtils';
+import {
+  checkMachinesStatus,
+  getActiveMachines
+} from '@/pages/ProductCollection/productCollectionUtils/dispenserUtils';
 import { ProductCollectionStyles } from './productCollectionStyles';
 import loggingService from '@/utils/loggingService';
 import ProductCollectionBanner from '../../assets/images/Banners/Kiosk_Welcome_Page_Banner.jpg';

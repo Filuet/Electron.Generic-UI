@@ -5,9 +5,12 @@ import {
   MachineInoperableModal
 } from '@/interfaces/modal';
 import { getData, postData } from '@/services/axiosWrapper/apiService';
-import { getDispenseStatus, resetStatus, testMachine } from './expoApiUtils';
-import { machineInoperableEndpoint, machineStatusFailNotificationEndpoint } from './endpoints';
-import loggingService from './loggingService';
+import { getDispenseStatus, resetStatus, testMachine } from '../../../utils/expoApiUtils';
+import {
+  machineInoperableEndpoint,
+  machineStatusFailNotificationEndpoint
+} from '../../../utils/endpoints';
+import loggingService from '../../../utils/loggingService';
 
 export const parseDispenserAddress = (message: string): DispenserAddress | null => {
   const addressMatch = message.match(/(\d+)\/(\d+)\/(\d+)/);
