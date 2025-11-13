@@ -12,7 +12,7 @@ import {
   ProductAddress,
   PlanogramUpdateRequest,
   PageRoute,
-  UndispenseProductDetailsDto,
+  UndispenseProductDetailsDto as UnDispenseProductDetailsDto,
   SkuAddress,
   UndispenseErrorProductsDto,
   DispenseStatus,
@@ -30,7 +30,7 @@ import { postData, updateData } from '@/services/axiosWrapper/apiService';
 import {
   notTakenProductsEndpoint,
   planogramUpdateClientPortalEndpoint,
-  undispensedProductsEndpoint,
+  undispensedProductsEndpoint as unDispensedProductsEndpoint,
   updateDispensedErrorProductEndpoint,
   updateDispensedProductQuantityEndpoint,
   updateDispenseStatusEndpoint
@@ -184,8 +184,8 @@ function ProductCollection(): JSX.Element {
   const getTotalDispensedCount = (): number => {
     return Object.values(dispenseFinishedKeys).reduce((total, { count }) => total + count, 0);
   };
-  const getUndispensedProducts = (): UndispenseProductDetailsDto => {
-    const undispensedSkus = Object.entries(expectedQuantities).reduce<UndispenseProductDetailsDto>(
+  const getUnDispensedProducts = (): UnDispenseProductDetailsDto => {
+    const unDispensedSkus = Object.entries(expectedQuantities).reduce<UnDispenseProductDetailsDto>(
       (acc, [sku, expectedCount]) => {
         const startedCount = Object.values(dispensingStartedKeys).reduce(
           (sum, item) => (item.sku === sku ? sum + item.count : sum),
@@ -211,7 +211,7 @@ function ProductCollection(): JSX.Element {
       }
     );
 
-    return undispensedSkus;
+    return unDispensedSkus;
   };
 
   // handle dispensed/undispensed products
@@ -237,30 +237,30 @@ function ProductCollection(): JSX.Element {
         planogramUpdateClientPortalEndpoint,
         productsDispensed
       );
-      const undispensedProducts: UndispenseProductDetailsDto = getUndispensedProducts();
+      const unDispensedProducts: UnDispenseProductDetailsDto = getUnDispensedProducts();
 
-      if (undispensedProducts.products.length > 0) {
-        postData<UndispenseProductDetailsDto, boolean>(
-          undispensedProductsEndpoint,
-          undispensedProducts
+      if (unDispensedProducts.products.length > 0) {
+        postData<UnDispenseProductDetailsDto, boolean>(
+          unDispensedProductsEndpoint,
+          unDispensedProducts
         ).catch((error) => {
           loggingService.log({
             level: LogLevel.ERROR,
             component: 'ProductCollection',
-            message: 'Failed to send undispensed products email',
+            message: 'Failed to send unDispensed products email',
             data: {
               error: JSON.stringify(error),
-              undispensedProducts
+              unDispensedProducts: unDispensedProducts
             }
           });
-          console.error('Failed to send undispensed products email:', error);
+          console.error('Failed to send unDispensed products email:', error);
         });
       }
 
       const dispenseErrorProducts = dispenseErrorTrackerRef.current?.getAllErrors();
 
       if (dispenseErrorProducts && dispenseErrorProducts.length > 0) {
-        const unDispensedRequestModal: UndispenseProductDetailsDto = {
+        const unDispensedRequestModal: UnDispenseProductDetailsDto = {
           kioskName: import.meta.env.VITE_KIOSK_NAME,
           orderNumber: String(orderNumber),
           customerId: customerDetails.customerId,
@@ -272,8 +272,8 @@ function ProductCollection(): JSX.Element {
           reason: allStatuses
         };
 
-        postData<UndispenseProductDetailsDto, boolean>(
-          undispensedProductsEndpoint,
+        postData<UnDispenseProductDetailsDto, boolean>(
+          unDispensedProductsEndpoint,
           unDispensedRequestModal
         ).catch((error) => {
           loggingService.log({
@@ -292,7 +292,7 @@ function ProductCollection(): JSX.Element {
       const abandonedProducts = dispenseErrorTrackerRef.current?.getAllAbandonedProducts();
 
       if (abandonedProducts && abandonedProducts?.length > 0) {
-        const abandonedProductRequestModel: UndispenseProductDetailsDto = {
+        const abandonedProductRequestModel: UnDispenseProductDetailsDto = {
           kioskName: import.meta.env.VITE_KIOSK_NAME,
           orderNumber: String(orderNumber),
           customerId: customerDetails.customerId,
@@ -304,7 +304,7 @@ function ProductCollection(): JSX.Element {
           reason: []
         };
 
-        postData<UndispenseProductDetailsDto, boolean>(
+        postData<UnDispenseProductDetailsDto, boolean>(
           notTakenProductsEndpoint,
           abandonedProductRequestModel
         ).catch((error) => {
@@ -433,10 +433,15 @@ function ProductCollection(): JSX.Element {
       if (isFinalCheckCompleted) {
         const machineStatuses: MachineStatus[] = await getAllStatuses();
         const filteredStatuses = machineStatuses.filter(
-          (reason) => !(reason.status === 'success' && reason.action === 'pending')
+          (reason) =>
+            !(
+              reason.status === 'success' &&
+              reason.action === 'pending' &&
+              reason.message.includes('Waiting for command')
+            )
         );
         setAllStatuses(filteredStatuses);
-        machineStatuses.forEach((machineStatus) => {
+        filteredStatuses.forEach((machineStatus) => {
           checkDispenseErrors(machineStatus);
         });
         setIsDispensedProcessFinished(true);
@@ -705,7 +710,7 @@ function ProductCollection(): JSX.Element {
         message: 'Dispensing process summary',
         data: {
           totalDispensed: getTotalDispensedCount(),
-          undispensedProducts: getUndispensedProducts(),
+          undispensedProducts: getUnDispensedProducts(),
           dispenseErrors: dispenseErrorTrackerRef.current?.getAllErrors(),
           abandonedProducts: dispenseErrorTrackerRef.current?.getAllAbandonedProducts(),
           allStatuses
@@ -747,7 +752,7 @@ function ProductCollection(): JSX.Element {
 
       // Check for any type of error or incomplete dispensing
       const hasDispenseIssues = Boolean(
-        getUndispensedProducts().products.length ||
+        getUnDispensedProducts().products.length ||
           dispenseErrorTrackerRef.current?.getAllErrors().length ||
           dispenseErrorTrackerRef.current?.getAllAbandonedProducts().length ||
           unTrackedDispenseErrors.length
@@ -765,7 +770,7 @@ function ProductCollection(): JSX.Element {
       return {
         mainMessage: 'Dispensing partially completed!',
         undispensedProducts: [
-          ...getUndispensedProducts().products,
+          ...getUnDispensedProducts().products,
           ...(dispenseErrorTrackerRef.current?.getAllErrors() || []).map((p) => ({
             skuName: p.sku,
             quantity: p.count
