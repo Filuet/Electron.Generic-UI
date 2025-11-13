@@ -8,5 +8,12 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "cSpell.words": ["fullscreenable", "minimizable", "Planogram"]
+  "cSpell.words": [
+    "fullscreenable",
+    "minimizable",
+    "nottaken",
+    "Planogram",
+    "takeproducts",
+    "undispensed"
+  ]
 }
