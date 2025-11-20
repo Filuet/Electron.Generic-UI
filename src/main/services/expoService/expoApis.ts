@@ -45,23 +45,52 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.response.use((response) => {
-  if (response.config.data && response.config.data.length > 0) {
-    const requestBody = JSON.parse(response.config.data);
-    expoDailyLogger.log({
-      level: LogLevel.INFO,
-      component: COMPONENT_NAME,
-      message: `API Response: ${response.status}`,
-      data: {
-        url: response.config.url,
-        method: response.config.method,
-        status: response.status,
-        requestBody,
-        responseData: response.data
-      }
-    });
-  }
+  //let requestBody = '';
+  // if (response.config.data && response.config.data.length > 0) {
+  //   requestBody = JSON.parse(response.config.data);
+  // }
+  expoDailyLogger.log({
+    level: LogLevel.INFO,
+    component: COMPONENT_NAME,
+    message: `API Response: ${response.status}`,
+    data: {
+      url: response.config.url,
+      method: response.config.method,
+      status: response.status,
+      // requestBody,
+      responseData: response.data
+    }
+  });
 
   return response;
+});
+
+axiosInstance.interceptors.request.use((request) => {
+  let requestBody: unknown = null;
+  if (request.data) {
+    // request.data is already an object/array, no need to parse
+    // Only parse if it's a string
+    if (typeof request.data === 'string') {
+      try {
+        requestBody = JSON.parse(request.data);
+      } catch {
+        requestBody = request.data;
+      }
+    } else {
+      requestBody = request.data;
+    }
+  }
+  expoDailyLogger.log({
+    level: LogLevel.INFO,
+    component: COMPONENT_NAME,
+    message: `EXPO API: ${request.url}`,
+    data: {
+      url: request.url,
+      method: request.method,
+      requestBody
+    }
+  });
+  return request;
 });
 
 const handleError = (error: unknown, customMessage = 'API error'): string => {
