@@ -35,7 +35,7 @@ import { setInoperableMachines } from './redux/features/expoSettings/expoSlice';
 function App(): JSX.Element {
   const theme = useTheme();
   const PERFORMANCE_LOGGING_INTERVAL = 30 * 60 * 1000; // 30 minutes
-  const MACHINE_STATUS_CHECK_INTERVAL = 30 * 60 * 1000; // 30 minutes;
+  const MACHINE_STATUS_CHECK_INTERVAL = 5 * 60 * 1000; // 5 minutes;
   const dispatch = useAppDispatch();
 
   const videoFilenames = useAppSelector((state) => state.welcomeScreen);
