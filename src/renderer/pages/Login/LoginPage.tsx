@@ -92,17 +92,7 @@ function LoginPage(): JSX.Element {
       onNextPage(PageRoute.ValidateOtpPage);
       return;
     }
-    if (contactNumber === '1234567890') {
-      dispatch(setPhoneNumber(contactNumber));
-      loggingService.log({
-        level: LogLevel.INFO,
-        component: 'LoginPage',
-        message: `Test customer session started`,
-        data: { customerSessionId: 'TEST_SESSION_ID' }
-      });
-      onNextPage(PageRoute.ValidateOtpPage);
-      return;
-    }
+
     if (!checkValidPhoneNumber()) {
       return;
     }
@@ -114,9 +104,11 @@ function LoginPage(): JSX.Element {
       message: `customer session started`,
       data: { customerSessionId }
     });
+
     setValidationError('');
     dispatch(setPhoneNumber(contactNumber));
     if (contactNumber === '8870784905') {
+      onNextPage(PageRoute.ValidateOtpPage);
       return;
     }
     dispatch(requestOtp(contactNumber))

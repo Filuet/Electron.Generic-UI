@@ -3,7 +3,7 @@ name: Build and Publish Electron App
 on:
   push:
     branches:
-      - test-app
+      - release
 
     # tags:
     #   - 'v*' # Runs only when you push a version tag like v1.0.0
