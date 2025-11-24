@@ -92,7 +92,7 @@ function LoginPage(): JSX.Element {
       onNextPage(PageRoute.ValidateOtpPage);
       return;
     }
-    if (contactNumber === '1234567890' || contactNumber === '8870784905') {
+    if (contactNumber === '1234567890') {
       dispatch(setPhoneNumber(contactNumber));
       loggingService.log({
         level: LogLevel.INFO,
@@ -116,6 +116,9 @@ function LoginPage(): JSX.Element {
     });
     setValidationError('');
     dispatch(setPhoneNumber(contactNumber));
+    if (contactNumber === '8870784905') {
+      return;
+    }
     dispatch(requestOtp(contactNumber))
       .unwrap()
       .then(() => {
