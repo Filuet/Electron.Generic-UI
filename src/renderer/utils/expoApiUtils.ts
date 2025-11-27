@@ -10,7 +10,7 @@ import {
   PogRoute
   // ProductStock
   // RouteUpdateRequest
-} from '../../../shared/sharedTypes';
+} from '../../shared/sharedTypes';
 import { MachineInoperableModal } from '@/interfaces/modal';
 
 // random array to simulate inoperable machines for cert error email payload

@@ -1,13 +1,19 @@
 import { app, BrowserWindow } from 'electron';
-import { autoUpdater } from 'electron-updater';
 import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { setupVideoWatcher } from './services/advertisementService/videoFilesWatcher';
 import registerAllIpcHandlers from './ipcHandlers/registerAllIpcHandlers';
 import { mainWindowObject } from './windows/mainWindow/mainWindowObject';
 import { dailyLogger } from './services/loggingService/loggingService';
 import { LogLevel } from '../shared/sharedTypes';
+import { setupAutoUpdater } from './services/UpdateService';
+import { setupGlobalErrorHandling } from './services/ErrorHandler';
 
 let mainWindow: BrowserWindow | null = null;
+
+// ----------------------------
+// SETUP GLOBAL ERROR HANDLING
+// ----------------------------
+setupGlobalErrorHandling();
 
 // ----------------------------
 // SINGLE INSTANCE ENFORCEMENT
@@ -76,91 +82,9 @@ if (!gotTheLock) {
       }
 
       // ----------------------------
-      // AUTO-UPDATER CONFIGURATION
+      // AUTO-UPDATER INITIALIZATION
       // ----------------------------
-      autoUpdater.autoDownload = true;
-      autoUpdater.autoInstallOnAppQuit = true;
-
-      dailyLogger.log({
-        level: LogLevel.INFO,
-        message: 'Starting update check...',
-        component: 'autoUpdater'
-      });
-
-      await autoUpdater.checkForUpdatesAndNotify().catch((err) => {
-        dailyLogger.log({
-          level: LogLevel.ERROR,
-          message: 'Failed to check for updates',
-          component: 'autoUpdater',
-          data: JSON.stringify(err)
-        });
-      });
-
-      dailyLogger.log({
-        level: LogLevel.INFO,
-        message: 'Update check complete.',
-        component: 'autoUpdater'
-      });
-
-      // ----------------------------
-      // AUTO-UPDATER EVENT HANDLERS
-      // ----------------------------
-      autoUpdater.on('checking-for-update', () => {
-        dailyLogger.log({
-          level: LogLevel.INFO,
-          message: 'Checking for update...',
-          component: 'autoUpdater'
-        });
-      });
-
-      autoUpdater.on('update-available', (info) => {
-        dailyLogger.log({
-          level: LogLevel.INFO,
-          message: 'Update available.',
-          component: 'autoUpdater',
-          data: JSON.stringify(info)
-        });
-      });
-      autoUpdater.setFeedURL({
-        provider: 'github',
-        owner: 'Filuet',
-        repo: 'Electron.Generic-UI'
-      });
-      autoUpdater.on('update-not-available', (info) => {
-        dailyLogger.log({
-          level: LogLevel.INFO,
-          message: 'No updates available.',
-          component: 'autoUpdater',
-          data: JSON.stringify(info)
-        });
-      });
-
-      autoUpdater.on('download-progress', (progressObj) => {
-        dailyLogger.log({
-          level: LogLevel.INFO,
-          message: 'Download progress.',
-          component: 'autoUpdater',
-          data: JSON.stringify(progressObj)
-        });
-      });
-
-      autoUpdater.on('update-downloaded', () => {
-        dailyLogger.log({
-          level: LogLevel.INFO,
-          message: 'Update downloaded successfully. Installing...',
-          component: 'autoUpdater'
-        });
-        autoUpdater.quitAndInstall(false, true);
-      });
-
-      autoUpdater.on('error', (error) => {
-        dailyLogger.log({
-          level: LogLevel.ERROR,
-          message: 'Error in auto-updater',
-          component: 'autoUpdater',
-          data: JSON.stringify(error)
-        });
-      });
+      setupAutoUpdater();
 
       // ----------------------------
       // MACOS ACTIVATE EVENT
@@ -237,43 +161,6 @@ app.on('before-quit', () => {
     mainWindow.removeAllListeners();
     mainWindow = null;
   }
-});
-
-// ----------------------------
-// GLOBAL ERROR HANDLING
-// ----------------------------
-process.on('uncaughtException', (err) => {
-  dailyLogger.log({
-    level: LogLevel.ERROR,
-    message: 'Uncaught Exception in main process',
-    component: 'main.ts',
-    error: err
-  });
-
-  app.quit();
-});
-
-process.on('unhandledRejection', (reason) => {
-  let errorDetails = '';
-
-  if (reason instanceof Error) {
-    errorDetails = `${reason.name}: ${reason.message}\n${reason.stack}`;
-  } else {
-    try {
-      errorDetails = JSON.stringify(reason, null, 2);
-    } catch (jsonErr) {
-      errorDetails = `Unserializable reason: ${String(reason)}, error during serialization: ${jsonErr}`;
-    }
-  }
-
-  dailyLogger.log({
-    level: LogLevel.ERROR,
-    message: 'Unhandled Promise Rejection',
-    component: 'main.ts',
-    error: errorDetails
-  });
-
-  app.quit();
 });
 
 process.on('exit', (code) => {

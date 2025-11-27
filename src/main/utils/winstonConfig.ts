@@ -3,29 +3,28 @@ import DailyRotateFile from 'winston-daily-rotate-file';
 import moment from 'moment-timezone';
 import path from 'path';
 
-const logFormat = winston.format.printf(({ timestamp, level, message, component, data }) => {
-  const logLevel = level.toUpperCase().slice(0, 3);
-  const componentInfo = component ? `Component: ${component} |` : '';
-  const dataInfo = data ? `| Data: ${JSON.stringify(data)}` : '';
-  return `${timestamp} [${logLevel}] : ${componentInfo} Message: ${message} ${dataInfo}`;
-});
-
-export const createLogger = (filename: string, logFilePath: string): winston.Logger =>
-  winston.createLogger({
+export const createLogger = (
+  filename: string,
+  logFilePath: string,
+  logFormat: winston.Logform.Format
+): winston.Logger => {
+  const baseFormat = winston.format.combine(
+    winston.format.timestamp({
+      format: () => moment().tz('Asia/Kolkata').format('YYYY-MM-DD hh:mm:ss A')
+    }),
+    logFormat
+  );
+  return winston.createLogger({
     level: 'info',
-    format: winston.format.combine(
-      winston.format.timestamp({
-        format: () => moment().tz('Asia/Kolkata').format('YYYY-MM-DD hh:mm:ss A')
-      }),
-      logFormat
-    ),
+    format: baseFormat,
     transports: [
       new DailyRotateFile({
         filename: path.join(logFilePath, filename),
         datePattern: 'YYYY-MM-DD'
       }),
       new winston.transports.Console({
-        format: winston.format.combine(winston.format.colorize(), winston.format.simple())
+        format: winston.format.combine(winston.format.colorize(), baseFormat)
       })
     ]
   });
+};

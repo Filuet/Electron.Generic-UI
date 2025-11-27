@@ -12,6 +12,15 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     const myConfig = config;
+    loggingService.log({
+      level: LogLevel.INFO,
+      message: 'Axios request',
+      component: 'axiosInstance',
+      data: {
+        url: config.url,
+        method: config.method
+      }
+    });
     const token: string | null = LocalStorageWrapper.getAuthToken();
     if (token) {
       myConfig.headers.Authorization = `Bearer ${token}`;

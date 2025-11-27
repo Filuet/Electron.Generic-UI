@@ -1,4 +1,4 @@
-import { ElectronBridgeAPI } from './../shared/sharedTypes';
+import { ElectronBridgeAPI } from '../shared/sharedTypes';
 // types/index.d.ts
 
 declare global {

@@ -249,7 +249,7 @@ export interface ExpoDispenseModal {
   sku: string;
   qty: number;
 }
-export interface ProductAddress {
+export interface DispensedProductInformation {
   sku: string;
   trayId: string;
   beltId: string;
@@ -258,7 +258,7 @@ export interface ProductAddress {
 }
 export interface PlanogramUpdateClientPortalModal {
   kioskName: string;
-  productInfo: ProductAddress[];
+  productInfo: DispensedProductInformation[];
 }
 // Add new types for all possible actions and statuses
 export type DispenserAction =
@@ -369,7 +369,7 @@ export type ApiError = {
   description: string;
 };
 
-export interface UndispenseProductDetailsDto {
+export interface UnDispenseProductDetailsDto {
   kioskName: string;
   orderNumber: string;
   customerId: string;
@@ -385,7 +385,7 @@ export interface SkuAddress {
   trayId: number;
   beltId: number;
 }
-export interface UndispenseErrorProductsDto {
+export interface UnDispensedErrorProductsDto {
   kioskName: string;
   clientName: string;
   routes: SkuAddress[];
@@ -399,6 +399,16 @@ export interface UpdateDispenseStatusModal {
   orderCode: string;
 }
 
+export type ProductInventoryModal = {
+  sku: string;
+  count: number;
+};
+export type DispensingStatusModalForUi = {
+  mainMessage: string;
+  unDispensedProducts?: Array<{ skuName: string; quantity: number }>;
+};
+
+export type DispenseError = { isError: boolean; isTracked: boolean };
 export interface ExtendedPerformance extends Performance {
   memory?: {
     usedJSHeapSize: number;

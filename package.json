@@ -1,6 +1,6 @@
 {
   "name": "generic-ui",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "packageManager": "pnpm@10.0.0",
   "description": "Kiosk E-Commerce App",
   "main": "./out/main/main.js",
