@@ -206,7 +206,7 @@ function PaymentProcessing(): JSX.Element {
   };
 
   const onPaymentProcessing = async (): Promise<void> => {
-    const TESTING_ENVIRONMENT = testingConfig.skipPayment;
+    const TESTING_ENVIRONMENT = testingConfig.skipPaymentProcess;
 
     loggingService.log({
       level: LogLevel.INFO,

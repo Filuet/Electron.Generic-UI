@@ -12,13 +12,13 @@ dotenv.config({
     : path.resolve(process.cwd(), '.env')
 });
 
-export function getTestConfig(): TestingConfigJsonObject {
-  const COMPONENT_NAME = 'ExternalConfigService';
+export function getTestingConfig(): TestingConfigJsonObject {
+  const COMPONENT_NAME = 'getTestingConfigService';
 
   const defaultConfig: TestingConfigJsonObject = {
-    skipAddToCartCondition:
-      process.env.SKIP_ADD_TO_CART_CONDITION?.toLowerCase() === 'true' ? true : false,
-    skipPayment: process.env.SKIP_PAYMENT?.toLowerCase() === 'true' ? true : false,
+    skipAddToCartValidation:
+      process.env.SKIP_ADD_TO_CART_VALIDATION?.toLowerCase() === 'true' ? true : false,
+    skipPaymentProcess: process.env.SKIP_PAYMENT_PROCESS?.toLowerCase() === 'true' ? true : false,
     expoEmailShouldSend: process.env.EXPO_EMAIL_SHOULD_SEND?.toLowerCase() === 'true' ? true : false
   };
 
@@ -54,8 +54,8 @@ export function getTestConfig(): TestingConfigJsonObject {
       data: parsed
     });
     return {
-      skipAddToCartCondition: Boolean(parsed.skipAddToCartCondition ?? false),
-      skipPayment: Boolean(parsed.skipPayment ?? false),
+      skipAddToCartValidation: Boolean(parsed.skipAddToCartValidation ?? false),
+      skipPaymentProcess: Boolean(parsed.skipPaymentProcess ?? false),
       expoEmailShouldSend: Boolean(parsed.expoEmailShouldSend ?? false)
     };
   } catch (error) {

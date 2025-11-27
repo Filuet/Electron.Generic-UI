@@ -118,7 +118,7 @@ export interface MachineInoperableModal {
 }
 
 export type TestingConfigJsonObject = {
-  skipAddToCartCondition: boolean;
-  skipPayment: boolean;
+  skipAddToCartValidation: boolean;
+  skipPaymentProcess: boolean;
   expoEmailShouldSend: boolean;
 };

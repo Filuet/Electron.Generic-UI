@@ -13,7 +13,7 @@ export const validateAddToCart = (
   const PRODUCT_PURCHASE_LIMIT = 5;
   const TOTAL_CART_LIMIT = 42000;
   let sellingPrice = product.sellingPriceVIP;
-  const SKIP_ADD_TO_CART_CONDITION: boolean = testingConfig.skipAddToCartCondition;
+  const SKIP_ADD_TO_CART_VALIDATION: boolean = testingConfig.skipAddToCartValidation;
 
   if (ClientType.BrandPartner === currentClient) {
     sellingPrice = product.sellingPriceBRP;
@@ -26,7 +26,7 @@ export const validateAddToCart = (
   if (productInCart && product.quantity <= productInCart.productCount) {
     return 'Sorry, currently we do not have enough stock of this product';
   }
-  if (SKIP_ADD_TO_CART_CONDITION) {
+  if (SKIP_ADD_TO_CART_VALIDATION) {
     return null;
   }
   if (productInCart && productInCart?.productCount >= PRODUCT_PURCHASE_LIMIT) {
