@@ -83,7 +83,7 @@ axiosInstance.interceptors.request.use((request) => {
 });
 
 const handleError = (error: unknown): string => {
-  const expoApi = (error as AxiosError)?.config?.url || 'Unknown API';
+  const apiURL = (error as AxiosError)?.config?.url || 'Unknown API';
   let message = 'Internal Server Error';
   if (error instanceof AxiosError) {
     message =
@@ -91,7 +91,7 @@ const handleError = (error: unknown): string => {
 
     expoDailyLogger.log({
       level: LogLevel.ERROR,
-      message: expoApi,
+      message: apiURL,
       data: {
         method: error.config?.method,
         status: error.response?.status,
@@ -117,13 +117,13 @@ const handleError = (error: unknown): string => {
     message = error.message;
     expoDailyLogger.log({
       level: LogLevel.ERROR,
-      message: expoApi,
+      message: apiURL,
       data: { message }
     });
   } else {
     expoDailyLogger.error('Unknown error occurred', {
       level: LogLevel.ERROR,
-      message: expoApi,
+      message: apiURL,
       data: { error }
     });
   }
