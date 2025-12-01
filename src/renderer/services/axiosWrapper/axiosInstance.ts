@@ -94,7 +94,16 @@ axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config;
-
+    loggingService.log({
+      level: LogLevel.ERROR,
+      message: 'Axios response error',
+      component: 'axiosInstance',
+      data: {
+        url: originalRequest?.url,
+        method: originalRequest?.method,
+        status: error.response?.status
+      }
+    });
     // Check if error is 401 and we haven't tried refreshing yet
     if (error.response?.status === 401 && originalRequest && !originalRequest.headers['X-Retry']) {
       loggingService.log({
