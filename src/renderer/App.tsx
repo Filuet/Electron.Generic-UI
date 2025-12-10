@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback, JSX } from 'react';
 import { AxiosError } from 'axios';
 import { debounce } from 'lodash';
 import { Modal, Box, Button, Typography, useTheme } from '@mui/material';
-import KioskPortal from './KioskPortal';
+// import KioskPortal from './KioskPortal';
 import { LocalStorageWrapper } from './utils/localStorageWrapper';
 import {
   ExtendedPerformance,
@@ -31,6 +31,7 @@ import {
   getActiveMachines
 } from './pages/ProductCollection/productCollectionUtils/dispenserUtils';
 import { setInoperableMachines } from './redux/features/expoSettings/expoSlice';
+import LoginPage from './pages/Login/LoginPage';
 
 function App(): JSX.Element {
   const theme = useTheme();
@@ -454,7 +455,7 @@ function App(): JSX.Element {
           }}
         />
       )}
-      {!loading && !isVideoPlaying && <KioskPortal />}
+      {!loading && !isVideoPlaying && <LoginPage />}
       <Modal open={isModalOpen} onClose={onCloseModal}>
         <Box
           sx={{
