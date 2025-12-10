@@ -12,6 +12,15 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     const myConfig = config;
+    loggingService.log({
+      level: LogLevel.INFO,
+      message: 'Axios request',
+      component: 'axiosInstance',
+      data: {
+        url: config.url,
+        method: config.method
+      }
+    });
     const token: string | null = LocalStorageWrapper.getAuthToken();
     if (token) {
       myConfig.headers.Authorization = `Bearer ${token}`;
@@ -85,7 +94,16 @@ axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config;
-
+    loggingService.log({
+      level: LogLevel.ERROR,
+      message: 'Axios response error',
+      component: 'axiosInstance',
+      data: {
+        url: originalRequest?.url,
+        method: originalRequest?.method,
+        status: error.response?.status
+      }
+    });
     // Check if error is 401 and we haven't tried refreshing yet
     if (error.response?.status === 401 && originalRequest && !originalRequest.headers['X-Retry']) {
       loggingService.log({

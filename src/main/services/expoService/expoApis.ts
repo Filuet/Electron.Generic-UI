@@ -1,4 +1,3 @@
-// expoApi.ts
 import axios, { AxiosError } from 'axios';
 import https from 'https';
 import fs from 'fs';
@@ -29,7 +28,6 @@ import { is } from '@electron-toolkit/utils';
 import { sendEmailNotification } from '../../../utils/emailService';
 
 const EXPO_BASE_URL = config.expoBaseUrl;
-const COMPONENT_NAME = 'expoApis.ts';
 const CERTIFICATE_PATH = is.dev
   ? path.join(__dirname, '../../certificates/fullchain.pem')
   : path.join(process.resourcesPath, 'certificates', 'fullchain.pem');
@@ -45,26 +43,47 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.response.use((response) => {
-  if (response.config.data && response.config.data.length > 0) {
-    const requestBody = JSON.parse(response.config.data);
-    expoDailyLogger.log({
-      level: LogLevel.INFO,
-      component: COMPONENT_NAME,
-      message: `API Response: ${response.status}`,
-      data: {
-        url: response.config.url,
-        method: response.config.method,
-        status: response.status,
-        requestBody,
-        responseData: response.data
-      }
-    });
-  }
+  expoDailyLogger.log({
+    level: LogLevel.INFO,
+    message: `${response.config.url} | Response API`,
+    data: {
+      method: response.config.method,
+      status: response.status,
+      responseData: response.data
+    }
+  });
 
   return response;
 });
 
-const handleError = (error: unknown, customMessage = 'API error'): string => {
+axiosInstance.interceptors.request.use((request) => {
+  let requestBody: unknown = null;
+  if (request.data) {
+    // request.data is already an object/array, no need to parse
+    // Only parse if it's a string
+    if (typeof request.data === 'string') {
+      try {
+        requestBody = JSON.parse(request.data);
+      } catch {
+        requestBody = request.data;
+      }
+    } else {
+      requestBody = request.data;
+    }
+  }
+  expoDailyLogger.log({
+    level: LogLevel.INFO,
+    message: `${request.url} | Request API`,
+    data: {
+      method: request.method,
+      requestBody
+    }
+  });
+  return request;
+});
+
+const handleError = (error: unknown): string => {
+  const apiURL = (error as AxiosError)?.config?.url || 'Unknown API';
   let message = 'Internal Server Error';
   if (error instanceof AxiosError) {
     message =
@@ -72,9 +91,8 @@ const handleError = (error: unknown, customMessage = 'API error'): string => {
 
     expoDailyLogger.log({
       level: LogLevel.ERROR,
-      message: customMessage,
+      message: apiURL,
       data: {
-        url: error.config?.url,
         method: error.config?.method,
         status: error.response?.status,
         code: error.code,
@@ -97,11 +115,15 @@ const handleError = (error: unknown, customMessage = 'API error'): string => {
     }
   } else if (error instanceof Error) {
     message = error.message;
-    expoDailyLogger.log({ level: LogLevel.ERROR, message: customMessage, data: { message } });
+    expoDailyLogger.log({
+      level: LogLevel.ERROR,
+      message: apiURL,
+      data: { message }
+    });
   } else {
     expoDailyLogger.error('Unknown error occurred', {
       level: LogLevel.ERROR,
-      message: customMessage,
+      message: apiURL,
       data: { error }
     });
   }
@@ -119,7 +141,7 @@ export const dispenseProduct = async (
     );
     return response.data;
   } catch (error) {
-    handleError(error, 'Dispense Product Failed');
+    handleError(error);
     throw error;
   }
 };
@@ -129,7 +151,7 @@ export const getDispenseStatus = async (): Promise<MachineStatus> => {
     const response = await axiosInstance.get<MachineStatus>(dispensingStatusEndpoint);
     return response.data;
   } catch (error) {
-    handleError(error, 'Get Dispense Status');
+    handleError(error);
     throw error;
   }
 };
@@ -142,7 +164,7 @@ export const updatePlanogramJson = async (pogRoutesRequest: PogRoute[]): Promise
     );
     return response.data;
   } catch (error) {
-    handleError(error, 'Update Planogram JSON');
+    handleError(error);
     throw error;
   }
 };
@@ -162,7 +184,7 @@ export const testMachine = async (): Promise<MachineTestResult[]> => {
     const response = await axiosInstance.get<MachineTestResult[]>(testMachineEndpoint);
     return response.data;
   } catch (error) {
-    handleError(error, 'Test Machine');
+    handleError(error);
     throw error;
   }
 };
@@ -172,7 +194,7 @@ export const unlockMachine = async (machineId: number): Promise<void> => {
     const response = await axiosInstance.get<void>(`${unlockMachineEndpoint}/${machineId}`);
     return response.data;
   } catch (error) {
-    handleError(error, 'Unlock Machine');
+    handleError(error);
     throw error;
   }
 };
@@ -192,7 +214,7 @@ export const resetStatus = async (): Promise<string> => {
     const response = await axiosInstance.post<string>(resetStatusEndpoint);
     return response.data;
   } catch (error) {
-    handleError(error, 'Reset Status');
+    handleError(error);
     throw error;
   }
 };
@@ -202,7 +224,7 @@ export const getAllStatuses = async (): Promise<MachineStatus[]> => {
     const response = await axiosInstance.get<MachineStatus[]>(getAllStatusEndpoint);
     return response.data;
   } catch (error) {
-    handleError(error, 'Get All Statuses');
+    handleError(error);
     throw error;
   }
 };

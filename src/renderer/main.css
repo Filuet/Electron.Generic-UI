@@ -1,27 +1,27 @@
 @font-face {
   font-family: 'SansOri';
-  src: url('./assets/fonts/Oriflame_Fonts/OriflameSans3.0-Regular.otf') format('opentype');
+  src: url('./assets/fonts/OriflameFonts/OriflameSans3.0-Regular.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'SansOri';
-  src: url('./assets/fonts/Oriflame_Fonts/OriflameSans3.0-Bold.otf') format('opentype');
+  src: url('./assets/fonts/OriflameFonts/OriflameSans3.0-Bold.otf') format('opentype');
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'SansOri';
-  src: url('./assets/fonts/Oriflame_Fonts/OriflameSans3.0-Oblique.otf') format('opentype');
+  src: url('./assets/fonts/OriflameFonts/OriflameSans3.0-Oblique.otf') format('opentype');
   font-weight: normal;
   font-style: oblique;
 }
 
 @font-face {
   font-family: 'SansOri';
-  src: url('./assets/fonts/Oriflame_Fonts/OriflameSans3.0-BoldOblique.otf') format('opentype');
+  src: url('./assets/fonts/OriflameFonts/OriflameSans3.0-BoldOblique.otf') format('opentype');
   font-weight: bold;
   font-style: oblique;
 }

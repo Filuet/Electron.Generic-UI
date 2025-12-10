@@ -6,13 +6,15 @@ import { createExpoBridge } from './bridge/expoBridge';
 import { ElectronBridgeAPI, LogLevel } from '../shared/sharedTypes';
 import createPaymentWindowBridge from './bridge/paymentWindowBridge';
 import { dailyLogger } from '../main/services/loggingService/loggingService';
+import { createTestConfigBridge } from './bridge/testConfigBridge';
 
 const electronAPI: ElectronBridgeAPI = {
   ...toolkitAPI,
   videoFilesUtil: createVideoFilesBridge(ipcRenderer),
   logs: createLoggerBridge(ipcRenderer),
   expo: createExpoBridge(ipcRenderer),
-  payment: createPaymentWindowBridge(ipcRenderer)
+  payment: createPaymentWindowBridge(ipcRenderer),
+  testingConfig: createTestConfigBridge(ipcRenderer)
 };
 
 if (process.contextIsolated) {
