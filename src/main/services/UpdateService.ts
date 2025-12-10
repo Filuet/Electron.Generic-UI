@@ -9,29 +9,14 @@ export function setupAutoUpdater(): void {
   autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = true;
 
-  dailyLogger.log({
-    level: LogLevel.INFO,
-    message: 'Starting update check...',
-    component: 'autoUpdater'
-  });
-
-  autoUpdater.checkForUpdatesAndNotify().catch((err) => {
-    dailyLogger.log({
-      level: LogLevel.ERROR,
-      message: 'Failed to check for updates',
-      component: 'autoUpdater',
-      data: JSON.stringify(err)
-    });
-  });
-
-  dailyLogger.log({
-    level: LogLevel.INFO,
-    message: 'Update check complete.',
-    component: 'autoUpdater'
+  autoUpdater.setFeedURL({
+    provider: 'github',
+    owner: 'Filuet',
+    repo: 'Electron.Generic-UI'
   });
 
   // ----------------------------
-  // AUTO-UPDATER EVENT HANDLERS
+  // AUTO-UPDATER EVENT HANDLERS (Register BEFORE checking)
   // ----------------------------
   autoUpdater.on('checking-for-update', () => {
     dailyLogger.log({
@@ -49,11 +34,7 @@ export function setupAutoUpdater(): void {
       data: JSON.stringify(info)
     });
   });
-  autoUpdater.setFeedURL({
-    provider: 'github',
-    owner: 'Filuet',
-    repo: 'Electron.Generic-UI'
-  });
+
   autoUpdater.on('update-not-available', (info) => {
     dailyLogger.log({
       level: LogLevel.INFO,
@@ -75,10 +56,10 @@ export function setupAutoUpdater(): void {
   autoUpdater.on('update-downloaded', () => {
     dailyLogger.log({
       level: LogLevel.INFO,
-      message: 'Update downloaded successfully. Installing...',
+      message: 'Update downloaded successfully. Will install on app quit.',
       component: 'autoUpdater'
     });
-    autoUpdater.quitAndInstall(false, true);
+    // Removed quitAndInstall() - let autoInstallOnAppQuit handle it
   });
 
   autoUpdater.on('error', (error) => {
@@ -87,6 +68,24 @@ export function setupAutoUpdater(): void {
       message: 'Error in auto-updater',
       component: 'autoUpdater',
       data: JSON.stringify(error)
+    });
+  });
+
+  // ----------------------------
+  // START UPDATE CHECK
+  // ----------------------------
+  dailyLogger.log({
+    level: LogLevel.INFO,
+    message: 'Starting update check...',
+    component: 'autoUpdater'
+  });
+
+  autoUpdater.checkForUpdatesAndNotify().catch((err) => {
+    dailyLogger.log({
+      level: LogLevel.ERROR,
+      message: 'Failed to check for updates',
+      component: 'autoUpdater',
+      data: JSON.stringify(err)
     });
   });
 }
