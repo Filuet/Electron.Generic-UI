@@ -14,6 +14,7 @@ export const windowProdSettings: BrowserWindowConstructorOptions = {
   center: true, // Center the window on the screen
   autoHideMenuBar: true, // Hide menu bar unless Alt key is pressed
   title: 'Generic-UI', // Window title
+  enableLargerThanScreen: true, // Allow window to be larger than the screen
   webPreferences: {
     preload: resolve(__dirname, '../../out/preload/preload.js'), // Preload script path
     sandbox: false, // Disable sandbox for better compatibility (enable with caution)

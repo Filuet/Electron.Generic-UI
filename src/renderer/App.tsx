@@ -3,6 +3,7 @@ import { AxiosError } from 'axios';
 import { debounce } from 'lodash';
 import { Modal, Box, Button, Typography, useTheme } from '@mui/material';
 import KioskPortal from './KioskPortal';
+import AppInitializingUI from './components/AppInitializingUI/AppInitializingUI';
 import { LocalStorageWrapper } from './utils/localStorageWrapper';
 import {
   ExtendedPerformance,
@@ -31,6 +32,7 @@ import {
   getActiveMachines
 } from './pages/ProductCollection/productCollectionUtils/dispenserUtils';
 import { setInoperableMachines } from './redux/features/expoSettings/expoSlice';
+import { ExpoStatuses } from 'src/shared/sharedTypes';
 
 function App(): JSX.Element {
   const theme = useTheme();
@@ -427,10 +429,25 @@ function App(): JSX.Element {
     const intervalId = setInterval(checkStatus, MACHINE_STATUS_CHECK_INTERVAL);
     return () => clearInterval(intervalId);
   }, []);
+  const [status, setStatus] = useState<ExpoStatuses>('loading');
 
+  useEffect(() => {
+    // 1. Get current status immediately (SYNC)
+    window.electron.expoStatus.getExpoRunningStatus().then(setStatus);
+
+    // 2. Listen for future changes (ASYNC)
+    const unsubscribe = window.electron.expoStatus.onExpoRunningStatusChange((newStatus) => {
+      setStatus(newStatus);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  if (status === 'loading') {
+    return <AppInitializingUI />;
+  }
   return (
     <>
-      <OriflameLoader isLoading={loading} />
+      <OriflameLoader isLoading={loading || status !== 'ready'} />
       {isVideoPlaying && videoFilenames.length !== 0 && currentVideoUrl && (
         <video
           ref={videoRef}
