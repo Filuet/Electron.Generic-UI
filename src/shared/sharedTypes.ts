@@ -33,6 +33,14 @@ export interface ElectronBridgeAPI extends ElectronAPI {
   expo: ExpoBridge;
   payment: PaymentWindowBridge;
   testingConfig: Promise<TestingConfigJsonObject>;
+  expoStatus: ExpoStatusBridge;
+}
+
+export type ExpoStatuses = 'loading' | 'ready' | 'error';
+
+export interface ExpoStatusBridge {
+  onExpoRunningStatusChange: (callback: (status: ExpoStatuses) => void) => () => void;
+  getExpoRunningStatus: () => Promise<ExpoStatuses>;
 }
 
 export enum LogLevel {

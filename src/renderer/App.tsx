@@ -3,6 +3,7 @@ import { AxiosError } from 'axios';
 import { debounce } from 'lodash';
 import { Modal, Box, Button, Typography, useTheme } from '@mui/material';
 import KioskPortal from './KioskPortal';
+import AppInitializingUI from './components/AppInitializingUI/AppInitializingUI';
 import { LocalStorageWrapper } from './utils/localStorageWrapper';
 import {
   ExtendedPerformance,
@@ -31,6 +32,7 @@ import {
   getActiveMachines
 } from './pages/ProductCollection/productCollectionUtils/dispenserUtils';
 import { setInoperableMachines } from './redux/features/expoSettings/expoSlice';
+import { ExpoStatuses } from 'src/shared/sharedTypes';
 
 function App(): JSX.Element {
   const theme = useTheme();
@@ -50,6 +52,8 @@ function App(): JSX.Element {
   const [currentVideoUrl, setCurrentVideoUrl] = useState<string>('');
   const customerName = useAppSelector((state) => state.customerDetails.customerName);
   const customerId = useAppSelector((state) => state.customerDetails.customerId);
+  const [expoStatus, setExpoStatus] = useState<ExpoStatuses>('loading');
+
   const resetOnIdleTimerMs =
     useAppSelector((state) => state.kioskSettings.kioskSettings.resetOnIdleTimerMs) ?? 3000;
 
@@ -59,6 +63,18 @@ function App(): JSX.Element {
   const machineStatusRef = useRef(machineStatus);
   const customerIdRef = useRef(customerId);
   const customerNameRef = useRef(customerName);
+
+  useEffect(() => {
+    // 1. Get current status immediately (SYNC)
+    window.electron.expoStatus.getExpoRunningStatus().then(setExpoStatus);
+
+    // 2. Listen for future changes (ASYNC)
+    const unsubscribe = window.electron.expoStatus.onExpoRunningStatusChange((newStatus) => {
+      setExpoStatus(newStatus);
+    });
+    return () => unsubscribe();
+  }, []);
+
   useEffect(() => {
     machineStatusRef.current = machineStatus;
     customerIdRef.current = customerId;
@@ -428,9 +444,12 @@ function App(): JSX.Element {
     return () => clearInterval(intervalId);
   }, []);
 
+  if (expoStatus === 'loading') {
+    return <AppInitializingUI />;
+  }
   return (
     <>
-      <OriflameLoader isLoading={loading} />
+      <OriflameLoader isLoading={loading || expoStatus !== 'ready'} />
       {isVideoPlaying && videoFilenames.length !== 0 && currentVideoUrl && (
         <video
           ref={videoRef}
