@@ -7,6 +7,13 @@ import { LogLevel } from '../../../shared/sharedTypes';
 
 const setupVideoWatcher = (win: BrowserWindow): void => {
   const COMPONENT_NAME = 'videoFilesWatcher.ts';
+  const MAIN_COMPONENT_NAME = 'main.ts';
+
+  dailyLogger.log({
+    level: LogLevel.INFO,
+    message: 'Initializing video file watcher...',
+    component: MAIN_COMPONENT_NAME
+  });
 
   // Validating config values
   if (!config.videoFilePath || typeof config.videoFilePath !== 'string') {

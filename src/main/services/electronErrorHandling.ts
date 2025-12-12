@@ -1,8 +1,8 @@
 import { app } from 'electron';
-import { dailyLogger } from '../services/loggingService/loggingService';
+import { dailyLogger } from './loggingService/loggingService';
 import { LogLevel } from '../../shared/sharedTypes';
 
-export function setupGlobalErrorHandling(): void {
+export function electronErrorHandling(): void {
   // ----------------------------
   // GLOBAL ERROR HANDLING
   // ----------------------------
