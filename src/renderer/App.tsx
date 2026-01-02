@@ -52,6 +52,8 @@ function App(): JSX.Element {
   const [currentVideoUrl, setCurrentVideoUrl] = useState<string>('');
   const customerName = useAppSelector((state) => state.customerDetails.customerName);
   const customerId = useAppSelector((state) => state.customerDetails.customerId);
+  const [expoStatus, setExpoStatus] = useState<ExpoStatuses>('loading');
+
   const resetOnIdleTimerMs =
     useAppSelector((state) => state.kioskSettings.kioskSettings.resetOnIdleTimerMs) ?? 3000;
 
@@ -61,6 +63,18 @@ function App(): JSX.Element {
   const machineStatusRef = useRef(machineStatus);
   const customerIdRef = useRef(customerId);
   const customerNameRef = useRef(customerName);
+
+  useEffect(() => {
+    // 1. Get current status immediately (SYNC)
+    window.electron.expoStatus.getExpoRunningStatus().then(setExpoStatus);
+
+    // 2. Listen for future changes (ASYNC)
+    const unsubscribe = window.electron.expoStatus.onExpoRunningStatusChange((newStatus) => {
+      setExpoStatus(newStatus);
+    });
+    return () => unsubscribe();
+  }, []);
+
   useEffect(() => {
     machineStatusRef.current = machineStatus;
     customerIdRef.current = customerId;
@@ -429,25 +443,13 @@ function App(): JSX.Element {
     const intervalId = setInterval(checkStatus, MACHINE_STATUS_CHECK_INTERVAL);
     return () => clearInterval(intervalId);
   }, []);
-  const [status, setStatus] = useState<ExpoStatuses>('loading');
 
-  useEffect(() => {
-    // 1. Get current status immediately (SYNC)
-    window.electron.expoStatus.getExpoRunningStatus().then(setStatus);
-
-    // 2. Listen for future changes (ASYNC)
-    const unsubscribe = window.electron.expoStatus.onExpoRunningStatusChange((newStatus) => {
-      setStatus(newStatus);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  if (status === 'loading') {
+  if (expoStatus === 'loading') {
     return <AppInitializingUI />;
   }
   return (
     <>
-      <OriflameLoader isLoading={loading || status !== 'ready'} />
+      <OriflameLoader isLoading={loading || expoStatus !== 'ready'} />
       {isVideoPlaying && videoFilenames.length !== 0 && currentVideoUrl && (
         <video
           ref={videoRef}
