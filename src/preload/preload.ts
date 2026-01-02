@@ -7,6 +7,7 @@ import { ElectronBridgeAPI, LogLevel } from '../shared/sharedTypes';
 import createPaymentWindowBridge from './bridge/paymentWindowBridge';
 import { dailyLogger } from '../main/services/loggingService/loggingService';
 import { createTestConfigBridge } from './bridge/testConfigBridge';
+import { createAppStatusBridge } from './bridge/appStatusBridge';
 
 const electronAPI: ElectronBridgeAPI = {
   ...toolkitAPI,
@@ -14,7 +15,8 @@ const electronAPI: ElectronBridgeAPI = {
   logs: createLoggerBridge(ipcRenderer),
   expo: createExpoBridge(ipcRenderer),
   payment: createPaymentWindowBridge(ipcRenderer),
-  testingConfig: createTestConfigBridge(ipcRenderer)
+  testingConfig: createTestConfigBridge(ipcRenderer),
+  expoStatus: createAppStatusBridge(ipcRenderer)
 };
 
 if (process.contextIsolated) {

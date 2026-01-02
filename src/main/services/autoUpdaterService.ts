@@ -1,8 +1,15 @@
 import { autoUpdater } from 'electron-updater';
-import { dailyLogger } from '../services/loggingService/loggingService';
+import { dailyLogger } from './loggingService/loggingService';
 import { LogLevel } from '../../shared/sharedTypes';
 
 export function setupAutoUpdater(): void {
+  const COMPONENT_NAME = 'updateService.ts';
+  const MAIN_COMPONENT_NAME = 'main.ts';
+  dailyLogger.log({
+    level: LogLevel.INFO,
+    message: 'Initializing auto-updater...',
+    component: MAIN_COMPONENT_NAME
+  });
   // ----------------------------
   // AUTO-UPDATER CONFIGURATION
   // ----------------------------
@@ -22,7 +29,7 @@ export function setupAutoUpdater(): void {
     dailyLogger.log({
       level: LogLevel.INFO,
       message: 'Checking for update...',
-      component: 'autoUpdater'
+      component: COMPONENT_NAME
     });
   });
 
@@ -30,7 +37,7 @@ export function setupAutoUpdater(): void {
     dailyLogger.log({
       level: LogLevel.INFO,
       message: 'Update available.',
-      component: 'autoUpdater',
+      component: COMPONENT_NAME,
       data: JSON.stringify(info)
     });
   });
@@ -39,17 +46,16 @@ export function setupAutoUpdater(): void {
     dailyLogger.log({
       level: LogLevel.INFO,
       message: 'No updates available.',
-      component: 'autoUpdater',
+      component: COMPONENT_NAME,
       data: JSON.stringify(info)
     });
   });
 
-  autoUpdater.on('download-progress', (progressObj) => {
+  autoUpdater.on('download-progress', () => {
     dailyLogger.log({
       level: LogLevel.INFO,
-      message: 'Download progress.',
-      component: 'autoUpdater',
-      data: JSON.stringify(progressObj)
+      message: 'Downloading updates...',
+      component: COMPONENT_NAME
     });
   });
 
@@ -57,16 +63,15 @@ export function setupAutoUpdater(): void {
     dailyLogger.log({
       level: LogLevel.INFO,
       message: 'Update downloaded successfully. Will install on app quit.',
-      component: 'autoUpdater'
+      component: COMPONENT_NAME
     });
-    // Removed quitAndInstall() - let autoInstallOnAppQuit handle it
   });
 
   autoUpdater.on('error', (error) => {
     dailyLogger.log({
       level: LogLevel.ERROR,
       message: 'Error in auto-updater',
-      component: 'autoUpdater',
+      component: COMPONENT_NAME,
       data: JSON.stringify(error)
     });
   });
@@ -77,14 +82,14 @@ export function setupAutoUpdater(): void {
   dailyLogger.log({
     level: LogLevel.INFO,
     message: 'Starting update check...',
-    component: 'autoUpdater'
+    component: COMPONENT_NAME
   });
 
   autoUpdater.checkForUpdatesAndNotify().catch((err) => {
     dailyLogger.log({
       level: LogLevel.ERROR,
       message: 'Failed to check for updates',
-      component: 'autoUpdater',
+      component: COMPONENT_NAME,
       data: JSON.stringify(err)
     });
   });
