@@ -96,6 +96,26 @@ class ExpoProcessManager extends EventEmitter {
         return;
       }
 
+      if (this.child.stdout) {
+        this.child.stdout.on('data', (data) => {
+          dailyLogger.log({
+            level: LogLevel.INFO,
+            message: `Expo Process Output: ${data.toString()}`,
+            component: COMPONENT_NAME
+          });
+        });
+      }
+
+      if (this.child.stderr) {
+        this.child.stderr.on('data', (data) => {
+          dailyLogger.log({
+            level: LogLevel.ERROR,
+            message: `Expo Process Error: ${data.toString()}`,
+            component: COMPONENT_NAME
+          });
+        });
+      }
+
       this.child.on('spawn', async () => {
         dailyLogger.log({
           level: LogLevel.INFO,
