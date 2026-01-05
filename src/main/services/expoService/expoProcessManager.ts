@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { EventEmitter } from 'events';
 import { ChildProcess, spawn, exec } from 'child_process';
-import { setConnectionErrorHandler, testMachine } from './expoApis';
+import { testMachine } from './expoApis';
 import { dailyLogger } from '../loggingService/loggingService';
 import { LogLevel, ExpoStatuses } from '../../../shared/sharedTypes';
 import config from '../../../../config.json';
@@ -19,9 +19,9 @@ class ExpoProcessManager extends EventEmitter {
 
   constructor() {
     super();
-    setConnectionErrorHandler(() => {
-      this.handleConnectionError();
-    });
+    // setConnectionErrorHandler(() => {
+    //   this.handleConnectionError();
+    // });
   }
 
   private setStatus(status: ExpoStatuses): void {

@@ -32,18 +32,18 @@ const CERTIFICATE_PATH = is.dev
   ? path.join(__dirname, '../../certificates/fullchain.pem')
   : path.join(process.resourcesPath, 'certificates', 'fullchain.pem');
 
-let onConnectionError: (() => void) | null = null;
+// let onConnectionError: (() => void) | null = null;
 
-export const setConnectionErrorHandler = (handler: () => void): void => {
-  onConnectionError = handler;
-};
+// export const setConnectionErrorHandler = (handler: () => void): void => {
+//   onConnectionError = handler;
+// };
 
-// Internal helper to trigger the error handler
-const triggerConnectionError = (): void => {
-  if (onConnectionError) {
-    onConnectionError();
-  }
-};
+// // Internal helper to trigger the error handler
+// const triggerConnectionError = (): void => {
+//   if (onConnectionError) {
+//     onConnectionError();
+//   }
+// };
 
 const agent = new https.Agent({
   ca: fs.readFileSync(CERTIFICATE_PATH),
@@ -124,7 +124,7 @@ const handleError = (error: unknown): string => {
     }
     if (error.code === 'ECONNREFUSED') {
       sendEmailNotification([333, 333]);
-      triggerConnectionError();
+      // triggerConnectionError();
       return 'Connection refused by server';
     }
   } else if (error instanceof Error) {
