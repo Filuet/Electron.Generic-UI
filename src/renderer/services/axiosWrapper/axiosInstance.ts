@@ -74,14 +74,6 @@ const refreshAuthToken = async (): Promise<string | null> => {
       }
     });
 
-    loggingService.log({
-      level: LogLevel.ERROR,
-      message: 'Token refresh failed',
-      component: 'axiosInstance',
-      data: {
-        error
-      }
-    });
     // Clear token and redirect to maintenance page
     LocalStorageWrapper.removeItem(AUTH_TOKEN_KEY);
     window.dispatchEvent(new CustomEvent('auth-error'));
@@ -91,19 +83,22 @@ const refreshAuthToken = async (): Promise<string | null> => {
 
 // Response interceptor
 axiosInstance.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  async (error: AxiosError) => {
-    const originalRequest = error.config;
+  (response: AxiosResponse) => {
     loggingService.log({
-      level: LogLevel.ERROR,
-      message: 'Axios response error',
+      level: LogLevel.INFO,
+      message: 'Axios response success',
       component: 'axiosInstance',
       data: {
-        url: originalRequest?.url,
-        method: originalRequest?.method,
-        status: error.response?.status
+        url: response.config.url,
+        method: response.config.method,
+        status: response.status
       }
     });
+    return response;
+  },
+  async (error: AxiosError) => {
+    const originalRequest = error.config;
+
     // Check if error is 401 and we haven't tried refreshing yet
     if (error.response?.status === 401 && originalRequest && !originalRequest.headers['X-Retry']) {
       loggingService.log({
