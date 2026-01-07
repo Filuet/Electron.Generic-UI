@@ -97,7 +97,7 @@ if (!gotTheLock) {
         });
 
         // Initialize with current status
-        updateStatus(expoProcessManager.getStatus());
+        updateStatus(expoProcessManager.getCurrentStatus());
 
         // VIDEO WATCHER INITIALIZATION
         setupVideoWatcher(mainWindow);
