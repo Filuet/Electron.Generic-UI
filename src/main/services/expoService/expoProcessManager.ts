@@ -15,7 +15,7 @@ class ExpoProcessManager extends EventEmitter {
   private child: ChildProcess | null = null;
   private isRestarting = false;
   private currentStatus: ExpoStatuses = 'loading';
-  private isAppQuittingInProgress = false;
+  private isAppQuitting = false;
 
   constructor() {
     super();
@@ -34,8 +34,21 @@ class ExpoProcessManager extends EventEmitter {
     }
   }
 
-  public getStatus(): ExpoStatuses {
+  public getCurrentStatus(): ExpoStatuses {
     return this.currentStatus;
+  }
+  // this function is used to handle process termination and called on exit and error events
+  private handleProcessTermination(level: LogLevel, message: string, data?: unknown): void {
+    if (this.isAppQuitting) return;
+
+    dailyLogger.log({
+      level,
+      message,
+      component: COMPONENT_NAME,
+      data
+    });
+    this.setStatus('error');
+    this.handleConnectionError();
   }
 
   /*
@@ -47,7 +60,7 @@ class ExpoProcessManager extends EventEmitter {
 
     dailyLogger.log({
       level: LogLevel.INFO,
-      message: 'Initializing Expo Server Manager...',
+      message: 'Initializing Expo Process Manager',
       component: COMPONENT_NAME,
       data: { expoExePath: EXPO_EXE_PATH }
     });
@@ -87,7 +100,7 @@ class ExpoProcessManager extends EventEmitter {
    * Returns a promise that resolves when the API is confirmed READY.
    */
   private spawnExpoProcess(): Promise<void> {
-    if (this.isAppQuittingInProgress) return Promise.resolve();
+    if (this.isAppQuitting) return Promise.resolve();
 
     dailyLogger.log({
       level: LogLevel.INFO,
@@ -124,35 +137,22 @@ class ExpoProcessManager extends EventEmitter {
     }
 
     this.child.on('error', (err) => {
-      dailyLogger.log({
-        level: LogLevel.ERROR,
-        message: 'Expo process returned an error event',
-        component: COMPONENT_NAME,
-        data: err
-      });
-      this.setStatus('error');
-      this.handleConnectionError();
+      this.handleProcessTermination(LogLevel.ERROR, 'Expo process returned an error event', err);
     });
 
     this.child.on('exit', (code, signal) => {
       this.child = null;
-      if (this.isAppQuittingInProgress) return;
-
-      dailyLogger.log({
-        level: LogLevel.WARN,
-        message: `Expo process exited (Code: ${code}, Signal: ${signal}).`,
-        component: COMPONENT_NAME
-      });
-      this.setStatus('error');
-      this.handleConnectionError();
+      this.handleProcessTermination(
+        LogLevel.WARN,
+        `Expo process exited (Code: ${code}, Signal: ${signal}).`
+      );
     });
 
     return new Promise<void>((resolve, reject) => {
       if (!this.child) {
-        reject(new Error('Child process was null immediately after spawn'));
-        return;
+        return reject(new Error('Child process was null immediately after spawn'));
       }
-
+      // this event is emitted when the child process has been successfully spawned
       this.child.on('spawn', async () => {
         dailyLogger.log({
           level: LogLevel.INFO,
@@ -165,7 +165,7 @@ class ExpoProcessManager extends EventEmitter {
         try {
           await this.waitForApiReady();
           this.setStatus('ready');
-          resolve();
+          return resolve();
         } catch (error) {
           dailyLogger.log({
             level: LogLevel.ERROR,
@@ -175,7 +175,7 @@ class ExpoProcessManager extends EventEmitter {
           });
           // Note: waitForApiReady calls handleConnectionError on failure,
           // so we just reject this promise to finish this function execution.
-          reject(error);
+          return reject(error);
         }
       });
     });
@@ -191,9 +191,8 @@ class ExpoProcessManager extends EventEmitter {
 
     return new Promise<void>((resolve, reject) => {
       const check = async (): Promise<void> => {
-        if (this.isAppQuittingInProgress) {
-          resolve();
-          return;
+        if (this.isAppQuitting) {
+          return resolve();
         }
 
         attempts++;
@@ -218,7 +217,14 @@ class ExpoProcessManager extends EventEmitter {
             this.handleConnectionError();
             reject(new Error(msg));
           } else {
-            setTimeout(check, intervalMs);
+            setTimeout(() => {
+              dailyLogger.log({
+                level: LogLevel.INFO,
+                message: `Waiting for Expo API to be ready... (Attempt ${attempts}/${maxAttempts})`,
+                component: COMPONENT_NAME
+              });
+              check();
+            }, intervalMs);
           }
         }
       };
@@ -229,7 +235,7 @@ class ExpoProcessManager extends EventEmitter {
   // Handles restarts cleanly.
 
   public async handleConnectionError(): Promise<void> {
-    if (this.isAppQuittingInProgress) return;
+    if (this.isAppQuitting) return;
     if (this.isRestarting) {
       dailyLogger.log({
         level: LogLevel.WARN,
@@ -252,7 +258,7 @@ class ExpoProcessManager extends EventEmitter {
       this.killChild();
       await this.killExistingProcess();
 
-      // Wait a bit before respawning to ensure cleanup
+      // Wait a bit before re-spawning to ensure cleanup
       setTimeout(async () => {
         try {
           await this.spawnExpoProcess();
@@ -312,7 +318,7 @@ class ExpoProcessManager extends EventEmitter {
   }
 
   public stop(): void {
-    this.isAppQuittingInProgress = true;
+    this.isAppQuitting = true;
     this.isRestarting = false;
     this.killChild();
     this.killExistingProcess();
