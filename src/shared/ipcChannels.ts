@@ -15,7 +15,8 @@ export const enum IPC_CHANNELS {
   EXPO_PLANOGRAM_UPDATE = 'expo:update-planogram',
   EXPO_RESET_STATUS = 'expo:reset-status',
   EXPO_ALL_STATUSES = 'expo:get-all-statuses',
-
+  EXPO_PROCESS_STATUS = 'expo:running-process-status',
+  EXPO_PROCESS_GET_STATUS = 'start-expo:get-status',
   PAYMENT_OPEN = 'payment:open',
   PAYMENT_CLOSE = 'payment:close',
   PAYMENT_IS_OPEN = 'payment:is-open',
