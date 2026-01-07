@@ -85,7 +85,7 @@ function KioskPortal(): JSX.Element {
               message: error.message
             }
           });
-          dispatch(setActivePage(PageRoute.SupportContactPage));
+          dispatch(setActivePage(PageRoute.SupportContactPage)); // show this page only if expo restart keeps failing
         } else {
           loggingService.log({
             level: LogLevel.ERROR,

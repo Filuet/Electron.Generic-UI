@@ -198,9 +198,8 @@ app.on('before-quit', () => {
   if (mainWindow) {
     mainWindow.removeAllListeners();
     mainWindow = null;
+    expoProcessManager.stop();
   }
-
-  expoProcessManager.stop();
 });
 
 app.on('will-quit', () => {

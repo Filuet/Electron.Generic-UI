@@ -32,19 +32,6 @@ const CERTIFICATE_PATH = is.dev
   ? path.join(__dirname, '../../certificates/fullchain.pem')
   : path.join(process.resourcesPath, 'certificates', 'fullchain.pem');
 
-// let onConnectionError: (() => void) | null = null;
-
-// export const setConnectionErrorHandler = (handler: () => void): void => {
-//   onConnectionError = handler;
-// };
-
-// // Internal helper to trigger the error handler
-// const triggerConnectionError = (): void => {
-//   if (onConnectionError) {
-//     onConnectionError();
-//   }
-// };
-
 const agent = new https.Agent({
   ca: fs.readFileSync(CERTIFICATE_PATH),
   rejectUnauthorized: true
@@ -68,6 +55,12 @@ axiosInstance.interceptors.response.use((response) => {
 
   return response;
 });
+
+export const getExpoRunningStatus = async (): Promise<void> => {
+  await axiosInstance.get('/swagger/index.html', {
+    timeout: 5000
+  });
+};
 
 axiosInstance.interceptors.request.use((request) => {
   let requestBody: unknown = null;
@@ -124,7 +117,6 @@ const handleError = (error: unknown): string => {
     }
     if (error.code === 'ECONNREFUSED') {
       sendEmailNotification([333, 333]);
-      // triggerConnectionError();
       return 'Connection refused by server';
     }
   } else if (error instanceof Error) {
