@@ -126,15 +126,17 @@ class ExpoProcessManager extends EventEmitter {
     }
 
     // logging child process error output
-    if (this.child.stderr) {
-      this.child.stderr.on('data', (data) => {
-        dailyLogger.log({
-          level: LogLevel.ERROR,
-          message: `Expo Error Output: ${data.toString()}`,
-          component: COMPONENT_NAME
-        });
-      });
-    }
+    // if (this.child.stderr) {
+    //   this.child.stderr.on('data', (data) => {
+    //     if (this.currentStatus !== 'ready') {
+    //       dailyLogger.log({
+    //         level: LogLevel.ERROR,
+    //         message: `Expo Error Output: ${data.toString()}`,
+    //         component: COMPONENT_NAME
+    //       });
+    //     }
+    //   });
+    // }
 
     this.child.on('error', (err) => {
       this.handleProcessTermination(LogLevel.ERROR, 'Expo process returned an error event', err);
@@ -152,6 +154,7 @@ class ExpoProcessManager extends EventEmitter {
       if (!this.child) {
         return reject(new Error('Child process was null immediately after spawn'));
       }
+
       // this event is emitted when the child process has been successfully spawned
       this.child.on('spawn', async () => {
         dailyLogger.log({
@@ -317,11 +320,11 @@ class ExpoProcessManager extends EventEmitter {
     });
   }
 
-  public stop(): void {
+  public async stop(): Promise<void> {
     this.isAppQuitting = true;
     this.isRestarting = false;
     this.killChild();
-    this.killExistingProcess();
+    await this.killExistingProcess();
     dailyLogger.log({
       level: LogLevel.INFO,
       message: 'Expo Service stopped (App Quit).',

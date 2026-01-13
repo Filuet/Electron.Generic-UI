@@ -7,7 +7,7 @@ import {
 import { getData, postData } from '@/services/axiosWrapper/apiService';
 import { getDispenseStatus, resetStatus, testMachine } from '../../../utils/expoApiUtils';
 import {
-  machineInoperableEndpoint,
+  machineInoperableEmailEndpoint,
   machineStatusFailNotificationEndpoint
 } from '../../../utils/endpoints';
 import loggingService from '../../../utils/loggingService';
@@ -36,7 +36,7 @@ export const sendInoperableMachineNotification = async (
       machineIds: inoperableMachines
     };
     await postData<MachineInoperableModal, void>(
-      machineInoperableEndpoint,
+      machineInoperableEmailEndpoint,
       inoperableMachineRequest
     );
     loggingService.log({

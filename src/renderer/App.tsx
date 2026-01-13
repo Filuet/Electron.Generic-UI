@@ -65,10 +65,10 @@ function App(): JSX.Element {
   const customerNameRef = useRef(customerName);
   // expo status handling
   useEffect(() => {
-    // 1. Get current status immediately (SYNC)
+    // 1. Get current status immediately (ASYNC)
     window.electron.expoStatus.getExpoRunningStatus().then(setExpoStatus);
 
-    // 2. Listen for future changes (ASYNC)
+    // 2. Listen for future changes (event listener)
     const unsubscribe = window.electron.expoStatus.onExpoRunningStatusChange((newStatus) => {
       setExpoStatus(newStatus);
     });
@@ -129,7 +129,8 @@ function App(): JSX.Element {
     }
   }, [dispatch, expoStatus]);
   useEffect(() => {
-    if (currentPage === PageRoute.KioskWelcomePage && expoStatus === 'ready') {
+    const token = LocalStorageWrapper.getItem(AUTH_TOKEN_KEY);
+    if (currentPage === PageRoute.KioskWelcomePage && expoStatus === 'ready' && token) {
       dispatch(fetchKioskSettings());
     }
   }, [currentPage, dispatch, expoStatus]);
@@ -439,8 +440,8 @@ function App(): JSX.Element {
         const checkMachineResult = await checkMachinesStatus(activeMachines, 1);
         const machines = !checkMachineResult.success
           ? checkMachineResult.inoperableMachines.map((id) => ({
-              machineId: id
-            }))
+            machineId: id
+          }))
           : [];
 
         dispatch(setInoperableMachines(machines));
@@ -455,7 +456,7 @@ function App(): JSX.Element {
     return () => clearInterval(intervalId);
   }, []);
 
-  if (expoStatus === 'loading' || expoStatus === 'error') {
+  if (expoStatus !== 'ready') {
     return <AppInitializingUI />;
   }
   return (

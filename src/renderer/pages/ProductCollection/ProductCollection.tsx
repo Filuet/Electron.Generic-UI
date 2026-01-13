@@ -32,9 +32,9 @@ import { setActivePage } from '@/redux/features/pageNavigation/navigationSlice';
 import { DispensingErrorTracker } from '@/pages/ProductCollection/productCollectionUtils/DispensingFailedErrorTracker';
 import { postData, updateData } from '@/services/axiosWrapper/apiService';
 import {
-  notTakenProductsEndpoint,
+  notTakenProductsEmailEndpoint,
   planogramUpdateClientPortalEndpoint,
-  unDispensedProductsEndpoint,
+  unDispensedProductsEmailEndpoint,
   updateDispensedErrorProductEndpoint,
   updateDispensedProductQuantityEndpoint,
   updateDispenseStatusEndpoint
@@ -373,7 +373,7 @@ function ProductCollection(): JSX.Element {
 
       if (unDispensedProducts.products.length > 0) {
         postData<UnDispenseProductDetailsDto, boolean>(
-          unDispensedProductsEndpoint,
+          unDispensedProductsEmailEndpoint,
           unDispensedProducts
         ).catch((error) => {
           loggingService.log({
@@ -405,7 +405,7 @@ function ProductCollection(): JSX.Element {
         };
 
         postData<UnDispenseProductDetailsDto, boolean>(
-          unDispensedProductsEndpoint,
+          unDispensedProductsEmailEndpoint,
           unDispensedRequestModal
         ).catch((error) => {
           loggingService.log({
@@ -437,7 +437,7 @@ function ProductCollection(): JSX.Element {
         };
 
         postData<UnDispenseProductDetailsDto, boolean>(
-          notTakenProductsEndpoint,
+          notTakenProductsEmailEndpoint,
           abandonedProductRequestModel
         ).catch((error) => {
           loggingService.log({

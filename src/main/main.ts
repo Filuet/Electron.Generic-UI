@@ -125,7 +125,7 @@ if (!gotTheLock) {
             component: COMPONENT_NAME,
             error: err
           });
-          // Status update is handled by expoProcessManager emitting 'error'
+          // Status update is handled by expoProcessManager emitting 'status-change' with 'error'
         }
 
         // AUTO-UPDATER INITIALIZATION
