@@ -110,33 +110,20 @@ class ExpoProcessManager extends EventEmitter {
 
     this.child = spawn(EXPO_EXE_PATH, [], {
       cwd: path.dirname(EXPO_EXE_PATH),
-      stdio: ['ignore', 'pipe', 'pipe'],
+      stdio: ['ignore', 'ignore', 'pipe'],
       detached: false
     });
 
-    // logging child process output
-    if (this.child.stdout) {
-      this.child.stdout.on('data', (data) => {
+    // logging child process error output
+    if (this.child.stderr) {
+      this.child.stderr.on('data', (data) => {
         dailyLogger.log({
-          level: LogLevel.INFO,
-          message: `Expo Output: ${data.toString()}`,
+          level: LogLevel.ERROR,
+          message: `Expo Error Output: ${data.toString()}`,
           component: COMPONENT_NAME
         });
       });
     }
-
-    // logging child process error output
-    // if (this.child.stderr) {
-    //   this.child.stderr.on('data', (data) => {
-    //     if (this.currentStatus !== 'ready') {
-    //       dailyLogger.log({
-    //         level: LogLevel.ERROR,
-    //         message: `Expo Error Output: ${data.toString()}`,
-    //         component: COMPONENT_NAME
-    //       });
-    //     }
-    //   });
-    // }
 
     this.child.on('error', (err) => {
       this.handleProcessTermination(LogLevel.ERROR, 'Expo process returned an error event', err);

@@ -74,14 +74,7 @@ function App(): JSX.Element {
     });
     return () => unsubscribe();
   }, []);
-  useEffect(() => {
-    console.log('Expo status changed:', expoStatus);
-    loggingService.log({
-      level: LogLevel.INFO,
-      component: 'App.tsx',
-      message: `Expo status changed to ${expoStatus} from UI`
-    });
-  }, [expoStatus]);
+
   useEffect(() => {
     machineStatusRef.current = machineStatus;
     customerIdRef.current = customerId;
