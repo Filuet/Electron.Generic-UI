@@ -17,7 +17,7 @@ export const KioskWelcomeStyle = (theme: Theme): CSSPropertiesType => ({
     width: '535px',
     height: '509px',
     backgroundColor: theme.palette.secondary.main,
-    marginTop: '78px',
+    marginTop: '11.5vh',
     borderRadius: '10px'
   }
 });

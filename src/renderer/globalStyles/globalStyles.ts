@@ -14,7 +14,7 @@ export const GlobalStyles = (theme: Theme): CSSPropertiesType => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    marginTop: '78px',
+    marginTop: '11.5vh',
     borderRadius: '10px',
     backgroundColor: theme.palette.secondary.main
   }

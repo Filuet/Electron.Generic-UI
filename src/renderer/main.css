@@ -34,10 +34,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 #root {
-  /* width: 768px; */
-  height: 1279px;
-  /* width: 1080px;
-  height: 1920px; */
+  width: 100vw;
+ height: 100vh;
   margin: auto;
   overflow-y: auto;
   text-align: center;

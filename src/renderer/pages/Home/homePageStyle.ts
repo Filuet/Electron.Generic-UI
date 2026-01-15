@@ -13,7 +13,7 @@ export const HomePageStyles = (): CSSPropertiesType => ({
   },
 
   bannerImage: {
-    width: '683px',
+    width: '95%',
     margin: 'auto',
     marginTop: '33px',
     borderRadius: '10px'

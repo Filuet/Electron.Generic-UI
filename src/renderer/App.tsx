@@ -20,7 +20,7 @@ import { fetchKioskSettings } from './redux/features/kioskSettings/kioskSettingT
 import { AUTH_TOKEN_KEY, SESSION_ID } from './utils/constants';
 import { kioskLoginEndpoint } from './utils/endpoints';
 import OriflameLogo from './assets/images/Logo/oriflameLogo.svg';
-import StartScreenBanner from './assets/images/Defaults/DefaultBackgroundImage.png';
+import StartScreenBanner from './assets/images/Defaults/background.jpg';
 import { setVideoFileNames } from './redux/features/welcomeScreen/welcomeScreenSlice';
 import OriflameLoader from './components/oriflameLoader/OriflameLoader';
 import { resetReduxStore } from './redux/core/utils/resetReduxStore';
@@ -472,9 +472,10 @@ function App(): JSX.Element {
           src={StartScreenBanner}
           onClick={onUserActivity}
           sx={{
+            width: '100%',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            height: '1272px'
+
           }}
         />
       )}

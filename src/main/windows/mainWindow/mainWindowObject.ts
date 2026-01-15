@@ -5,7 +5,7 @@ import { windowProdSettings } from '../windowConfig/windowProdSettings';
 import { resolve } from 'path';
 
 export const mainWindowObject = (): BrowserWindow => {
-  const windowConfig: BrowserWindowConstructorOptions = is.dev
+  const windowConfig: BrowserWindowConstructorOptions = !is.dev
     ? windowDevSettings
     : windowProdSettings;
 

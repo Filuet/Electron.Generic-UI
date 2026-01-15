@@ -21,7 +21,7 @@ export const windowProdSettings: BrowserWindowConstructorOptions = {
     webSecurity: true, // Enable same-origin policy for security (using custom protocol for local files)
     contextIsolation: true, // Isolate preload script from renderer for security
     zoomFactor: 1.0, // Lock zoom level to 100%
-    devTools: false,
+    devTools: true,
     disableHtmlFullscreenWindowResize: true, // Prevent auto-resizing on HTML5 fullscreen
     safeDialogs: true // Prevent unexpected dialogs
   }
