@@ -39,7 +39,7 @@ export class PaymentConnectionManager {
       await this.cleanup();
     }
 
-    await loggingService.log({
+    loggingService.log({
       level: LogLevel.INFO,
       component: 'PaymentConnectionManager',
       message: `Initializing connection for transaction ${transactionId}`
@@ -68,14 +68,14 @@ export class PaymentConnectionManager {
       this.connection = null;
       try {
         await conn.stop();
-        await loggingService.log({
+        loggingService.log({
           level: LogLevel.INFO,
           component: 'PaymentConnectionManager',
           message: 'Connection closed and cleaned up'
         });
       } catch (error) {
         const connError = error as PaymentConnectionError;
-        await loggingService.log({
+        loggingService.log({
           level: LogLevel.ERROR,
           component: 'PaymentConnectionManager',
           message: 'Error stopping connection',
@@ -111,14 +111,14 @@ export class PaymentConnectionManager {
 
     try {
       await this.connection.start();
-      await loggingService.log({
+      loggingService.log({
         level: LogLevel.INFO,
         component: 'PaymentConnectionManager',
         message: 'SignalR connection established'
       });
     } catch (error) {
       const connectionError = error as PaymentConnectionError;
-      await loggingService.log({
+      loggingService.log({
         level: LogLevel.ERROR,
         component: 'PaymentConnectionManager',
         message: 'Connection failed',

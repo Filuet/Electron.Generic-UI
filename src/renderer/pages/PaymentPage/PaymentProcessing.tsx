@@ -46,7 +46,7 @@ function PaymentProcessing(): JSX.Element {
   const connectionRef = useRef<signalR.HubConnection | null>(null);
   const cleanupConnection = async (reason: string): Promise<void> => {
     if (connectionRef.current) {
-      await loggingService.log({
+      loggingService.log({
         level: LogLevel.INFO,
         component: 'PaymentProcessing',
         message: `Cleaning up SignalR connection: ${reason}`
@@ -61,7 +61,7 @@ function PaymentProcessing(): JSX.Element {
       orderCode: orderCodeToUse,
       status: DispenseStatus.Started
     };
-    await loggingService.log({
+    loggingService.log({
       level: LogLevel.INFO,
       component: 'PaymentProcessing',
       message: `Updating dispense status to Started for order code: ${orderCodeToUse}`
