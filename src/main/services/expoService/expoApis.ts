@@ -56,6 +56,12 @@ axiosInstance.interceptors.response.use((response) => {
   return response;
 });
 
+export const getExpoRunningStatus = async (): Promise<void> => {
+  await axiosInstance.get('/swagger/index.html', {
+    timeout: 5000
+  });
+};
+
 axiosInstance.interceptors.request.use((request) => {
   let requestBody: unknown = null;
   if (request.data) {
@@ -111,7 +117,7 @@ const handleError = (error: unknown): string => {
     }
     if (error.code === 'ECONNREFUSED') {
       sendEmailNotification([333, 333]);
-      return 'Connection refused by server'; //send a mail
+      return 'Connection refused by server';
     }
   } else if (error instanceof Error) {
     message = error.message;

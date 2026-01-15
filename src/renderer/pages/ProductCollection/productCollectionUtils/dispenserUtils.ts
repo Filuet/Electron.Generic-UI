@@ -7,7 +7,7 @@ import {
 import { getData, postData } from '@/services/axiosWrapper/apiService';
 import { getDispenseStatus, resetStatus, testMachine } from '../../../utils/expoApiUtils';
 import {
-  machineInoperableEndpoint,
+  machineInoperableEmailEndpoint,
   machineStatusFailNotificationEndpoint
 } from '../../../utils/endpoints';
 import loggingService from '../../../utils/loggingService';
@@ -36,7 +36,7 @@ export const sendInoperableMachineNotification = async (
       machineIds: inoperableMachines
     };
     await postData<MachineInoperableModal, void>(
-      machineInoperableEndpoint,
+      machineInoperableEmailEndpoint,
       inoperableMachineRequest
     );
     loggingService.log({
@@ -115,8 +115,12 @@ export const checkMachinesStatus = async (
   attempts: number = 5
 ): Promise<{ success: boolean; inoperableMachines: number[] }> => {
   try {
-    console.group(`Machine Status Check - Attempt ${4 - attempts + 1}/5`);
-
+    loggingService.log({
+      level: LogLevel.INFO,
+      message: `Starting machine status check with ${4 - attempts + 1}/5 remaining.`,
+      component: 'dispenserUtils.ts',
+      data: { kioskMachines, attempts }
+    });
     const testResults = await testMachine();
     loggingService.log({
       level: LogLevel.INFO,

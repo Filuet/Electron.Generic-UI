@@ -1,5 +1,5 @@
 import { CartProduct } from '@/redux/features/cart/cartTypes';
-import { machineInoperableEndpoint } from './endpoints';
+import { machineInoperableEmailEndpoint } from './endpoints';
 import { postData } from '@/services/axiosWrapper/apiService';
 import loggingService from './loggingService';
 import {
@@ -24,7 +24,10 @@ const sendCertificatesErrorNotification = async (inoperableMachines: number[]): 
     machineIds: inoperableMachines
   };
 
-  await postData<MachineInoperableModal, void>(machineInoperableEndpoint, inoperableMachineRequest)
+  await postData<MachineInoperableModal, void>(
+    machineInoperableEmailEndpoint,
+    inoperableMachineRequest
+  )
     .then(() => {
       loggingService.log({
         level: LogLevel.INFO,
