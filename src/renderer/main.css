@@ -26,27 +26,52 @@
   font-style: oblique;
 }
 
-html,
+html {
+  /* 
+   * ROOT FONT SCALING
+   * 1rem = 1vw (1% of viewport width)
+   * This ensures that all elements sized with 'rem' scale perfectly 
+   * with the screen width, regardless of resolution (1080p vs 4K).
+   */
+  font-size: 1vw;
+  
+  /* Kiosk Best Practices */
+  user-select: none; /* Prevent text selection */
+  touch-action: pan-x pan-y; /* Allow scrolling but prevent zooming triggers if needed */
+  -webkit-user-select: none;
+  overscroll-behavior: none; /* Prevent bounce effects */
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: 'SansOri,sans-serif';
+  font-family: 'SansOri', sans-serif; /* Fixed typo: 'SansOri,sans-serif' -> 'SansOri', sans-serif */
   -webkit-font-smoothing: antialiased;
-}
-#root {
   width: 100vw;
- height: 100vh;
-  margin: auto;
-  overflow-y: auto;
-  text-align: center;
-  box-sizing: border-box;
+  height: 100vh;
+  overflow: hidden; /* Main app container handles scrolling */
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
   padding: 0;
   background-color: white;
+  overflow-y: auto; /* Internal scrolling */
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* Global Image Reset for Kiosk */
+img {
+  display: block;
+  max-width: 100%;
 }
 
 .video-player {
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  object-fit: cover; /* Changed from fill to cover for better aspect ratio preservation */
   vertical-align: middle;
 }

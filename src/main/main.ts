@@ -1,5 +1,9 @@
 import { app, BrowserWindow, globalShortcut, ipcMain } from 'electron';
 import { electronApp, optimizer } from '@electron-toolkit/utils';
+
+// Force high-DPI support and disable scaling to prevent blurriness on 4K screens
+app.commandLine.appendSwitch('high-dpi-support', '1');
+app.commandLine.appendSwitch('force-device-scale-factor', '1');
 import { setupVideoWatcher } from './services/advertisementService/videoFilesWatcher';
 import registerAllIpcHandlers from './ipcHandlers/registerAllIpcHandlers';
 import { mainWindowObject } from './windows/mainWindow/mainWindowObject';
