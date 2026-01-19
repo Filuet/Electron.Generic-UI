@@ -1,54 +1,65 @@
 @font-face {
   font-family: 'SansOri';
   src: url('./assets/fonts/OriflameFonts/OriflameSans3.0-Regular.otf') format('opentype');
-  font-weight: normal;
+  font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'SansOri';
   src: url('./assets/fonts/OriflameFonts/OriflameSans3.0-Bold.otf') format('opentype');
-  font-weight: bold;
+  font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'SansOri';
   src: url('./assets/fonts/OriflameFonts/OriflameSans3.0-Oblique.otf') format('opentype');
-  font-weight: normal;
+  font-weight: 400;
   font-style: oblique;
 }
 
 @font-face {
   font-family: 'SansOri';
   src: url('./assets/fonts/OriflameFonts/OriflameSans3.0-BoldOblique.otf') format('opentype');
-  font-weight: bold;
+  font-weight: 700;
   font-style: oblique;
+}
+
+:root {
+  --design-width: 1080;
+  --design-height: 1920;
+
+  --scale: min(
+    calc(100vw / var(--design-width)),
+    calc(100vh / var(--design-height))
+  );
 }
 
 html,
 body {
+  width: 100%;
+  height: 100%;
   margin: 0;
   padding: 0;
-  font-family: 'SansOri,sans-serif';
+
+  font-family: 'SansOri', sans-serif;
+  font-size: calc(16px * var(--scale));
+
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
+
 #root {
-  /* width: 768px; */
-  height: 1279px;
-  /* width: 1080px;
-  height: 1920px; */
-  margin: auto;
-  overflow-y: auto;
-  text-align: center;
+  width: 100%;
+  height: 100%;
   box-sizing: border-box;
-  padding: 0;
+  overflow: hidden;
   background-color: white;
 }
 
 .video-player {
   width: 100%;
   height: 100%;
-  object-fit: fill;
-  vertical-align: middle;
+  object-fit: cover;
 }
