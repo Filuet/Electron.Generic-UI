@@ -36,7 +36,7 @@ export const supportStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
   closeButton: {
     marginTop: '3rem',
     width: '5rem',
-    fontWeight: 'bold',
+    fontWeight: 700,
     color: theme.palette.primary.main,
     backgroundColor: theme.palette.secondary.main
   },

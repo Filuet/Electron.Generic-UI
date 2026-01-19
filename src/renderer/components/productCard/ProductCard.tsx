@@ -233,7 +233,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
                 <Typography
                   variant="body1"
                   sx={{
-                    fontWeight: 'normal',
+                    fontWeight: 400,
                     fontSize: '15px',
                     lineHeight: '9px'
                   }}
@@ -243,7 +243,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
                 <Typography
                   variant="body1"
                   sx={{
-                    fontWeight: 'normal',
+                    fontWeight: 400,
                     fontSize: '15px',
                     lineHeight: '9px'
                   }}
@@ -254,7 +254,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
                   <Typography
                     variant="body1"
                     sx={{
-                      fontWeight: 'normal',
+                      fontWeight: 400,
                       fontSize: '15px',
                       lineHeight: '9px'
                     }}
@@ -335,7 +335,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
                       alignItems: 'center',
                       flexDirection: 'column',
                       justifyContent: 'center',
-                      fontWeight: 'normal',
+                      fontWeight: 400,
                       fontSize: '20px',
                       fontFamily: 'SansOri,sans-serif'
                     }}
@@ -361,7 +361,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
                     width: '6.7rem',
                     height: '2rem',
                     borderRadius: '4rem',
-                    fontWeight: 'normal',
+                    fontWeight: 400,
                     letterSpacing: '0.5px',
                     fontSize: '12px',
                     lineHeight: '8.4px',

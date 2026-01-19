@@ -5,14 +5,14 @@ const Typography = (theme: Theme, fontFamily: string): TypographyOptions => ({
   fontFamily,
   h1: {
     fontSize: '2.125rem',
-    fontWeight: 'bold',
+    fontWeight: 700,
     lineHeight: 1.2,
     letterSpacing: '-0.05em',
     color: theme.palette.text.primary
   },
   h2: {
     fontSize: '1.5rem',
-    fontWeight: 'bold',
+    fontWeight: 700,
     lineHeight: 1.3,
     letterSpacing: '-0.04em',
     color: theme.palette.text.primary
@@ -47,31 +47,31 @@ const Typography = (theme: Theme, fontFamily: string): TypographyOptions => ({
   },
   subtitle1: {
     fontSize: '0.875rem',
-    fontWeight: 'normal',
+    fontWeight: 400,
     lineHeight: 1.75,
     color: theme.palette.text.secondary
   },
   subtitle2: {
     fontSize: '0.75rem',
-    fontWeight: 'normal',
+    fontWeight: 400,
     lineHeight: 1.6,
     color: theme.palette.text.secondary
   },
   body1: {
     fontSize: '1rem',
-    fontWeight: 'normal',
+    fontWeight: 400,
     lineHeight: 1.5,
     color: theme.palette.text.primary
   },
   body2: {
     fontSize: '0.75rem',
-    fontWeight: 'normal',
+    fontWeight: 400,
     lineHeight: 1.43,
     color: theme.palette.text.primary
   },
   caption: {
     fontSize: '0.75rem',
-    fontWeight: 'normal',
+    fontWeight: 400,
     lineHeight: 1.25,
     color: theme.palette.text.secondary
   },
@@ -83,7 +83,7 @@ const Typography = (theme: Theme, fontFamily: string): TypographyOptions => ({
   },
   overline: {
     fontSize: '0.75rem',
-    fontWeight: 'normal',
+    fontWeight: 400,
     textTransform: 'uppercase',
     lineHeight: 2,
     color: theme.palette.text.secondary

@@ -2,7 +2,7 @@ import { CSSPropertiesType } from '@/interfaces/modal';
 
 export const CancelPaymentStyles = (): CSSPropertiesType => ({
   cancelPaymentHeader: {
-    fontWeight: 'normal',
+    fontWeight: 400,
     lineHeight: '38.4px',
     fontSize: '32px',
     width: '329px'
@@ -16,7 +16,7 @@ export const CancelPaymentStyles = (): CSSPropertiesType => ({
   },
   informationText: {
     fontSize: '20px',
-    fontWeight: 'normal',
+    fontWeight: 400,
     marginBottom: '6px'
   }
 });

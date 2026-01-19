@@ -283,7 +283,7 @@ function HomePage(): JSX.Element {
                     <ListItemText
                       sx={{
                         textTransform: 'uppercase',
-                        fontWeight: 'bold',
+                        fontWeight: 700,
                         lineHeight: '16px',
                         fontSize: '14px'
                       }}

@@ -299,7 +299,7 @@ function PaymentProcessing(): JSX.Element {
         <PaymentOutlinedIcon sx={{ fontSize: '102px', height: '102px' }} />
         <Typography
           variant="body1"
-          sx={{ fontWeight: 'normal', fontSize: '24px', marginTop: '20px' }}
+          sx={{ fontWeight: 400, fontSize: '24px', marginTop: '20px' }}
         >
           {isPaymentLinkGenerationFailed
             ? translate('FailedToGenerateLink')

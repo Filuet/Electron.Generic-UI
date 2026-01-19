@@ -6,7 +6,7 @@ export const ValidateOtpStyles = (): CSS_MUI_PropertiesType => ({
     width: '379px',
     fontSize: '24px',
     lineHeight: '28.8px',
-    fontWeight: 'normal',
+    fontWeight: 400,
     marginTop: '29px'
   },
   tryAgainText: { fontSize: '16px', fontWeight: 'normal' },

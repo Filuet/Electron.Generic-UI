@@ -49,8 +49,8 @@ function ProductCart(props: ProductCartPageProps): JSX.Element {
       const isAtRightEnd =
         Math.abs(
           containerRef.current.scrollLeft +
-            containerRef.current.clientWidth -
-            containerRef.current.scrollWidth
+          containerRef.current.clientWidth -
+          containerRef.current.scrollWidth
         ) < 1;
 
       setShowLeftIcon(!isAtLeftEnd);
@@ -209,7 +209,7 @@ function ProductCart(props: ProductCartPageProps): JSX.Element {
                   <Typography
                     style={{
                       color: theme.palette.error.main,
-                      fontWeight: 'bold',
+                      fontWeight: 700,
                       fontSize: '14px'
                     }}
                     component="span"
@@ -323,7 +323,7 @@ function ProductCart(props: ProductCartPageProps): JSX.Element {
               textAlign: 'left',
               marginLeft: '100px',
               fontSize: '18px',
-              fontWeight: 'normal',
+              fontWeight: 400,
               marginTop: '40px'
               // marginBottom: '15px',
             }}
@@ -385,7 +385,7 @@ function ProductCart(props: ProductCartPageProps): JSX.Element {
                 <ArrowForwardRoundedIcon
                   sx={{
                     fontSize: '42px',
-                    fontWeight: 'normal',
+                    fontWeight: 400,
                     border: `1px solid ${theme.palette.primary.light}`,
                     borderRadius: '50%'
                   }}

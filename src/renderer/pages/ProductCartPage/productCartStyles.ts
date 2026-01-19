@@ -23,7 +23,7 @@ export const ProductCartStyles = (theme: Theme): CSSPropertiesType => ({
     marginLeft: '12px'
   },
   cartProductName: {
-    fontWeight: 'normal',
+    fontWeight: 400,
     fontSize: '15px',
     lineHeight: '18.3px',
     // letterSpacing: '1px',
@@ -40,7 +40,7 @@ export const ProductCartStyles = (theme: Theme): CSSPropertiesType => ({
     fontWeight: 'normal'
   },
   priceHelperText: {
-    fontWeight: 'normal',
+    fontWeight: 400,
     lineHeight: '8.4px',
     fontSize: '9.5px'
   },
@@ -87,7 +87,7 @@ export const ProductCartStyles = (theme: Theme): CSSPropertiesType => ({
   },
   priceDetailsText: {
     fontSize: '18px',
-    fontWeight: 'bold',
+    fontWeight: 700,
     textDecoration: 'underline'
   },
   loadingContainer: {

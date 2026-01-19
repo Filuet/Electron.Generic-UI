@@ -27,7 +27,7 @@ function SupportContact(): JSX.Element {
         <Box component="img" src={OriflameLogo} sx={{ width: '262px' }} />
         <Typography
           variant="body1"
-          sx={{ fontWeight: 'normal', fontSize: '26px', lineHeight: '28.8px' }}
+          sx={{ fontWeight: 400, fontSize: '26px', lineHeight: '28.8px' }}
         >
           We&apos;ve encountered an issue. Please reach out to our support team for assistance.
         </Typography>

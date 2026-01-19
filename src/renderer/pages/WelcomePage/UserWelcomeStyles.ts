@@ -6,6 +6,6 @@ export const UserWelcomeStyles = (): CSSPropertiesType => ({
     lineHeight: '28.8px',
     fontWeight: 'normal'
   },
-  userName: { fontWeight: 'normal', fontSize: '24px', marginTop: '34px' },
-  userID: { fontWeight: 'normal', fontSize: '24px' }
+  userName: { fontWeight: 400, fontSize: '24px', marginTop: '34px' },
+  userID: { fontWeight: 400, fontSize: '24px' }
 });

@@ -5,7 +5,7 @@ export const LoginPageStyles = (): CSS_MUI_PropertiesType => ({
   loginSubHeader: {
     fontSize: '26px',
     lineHeight: '30px',
-    fontWeight: 'normal',
+    fontWeight: 400,
     marginTop: '29px',
     width: '420px'
   },

@@ -44,7 +44,7 @@ function OriflameModal(oriflameModalProps: OriflameModalProps): JSX.Element {
             variant="contained"
             sx={{
               width: '5rem',
-              fontWeight: 'bold',
+              fontWeight: 700,
               color: theme.palette.primary.main,
               backgroundColor: theme.palette.secondary.main
             }}

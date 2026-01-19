@@ -82,7 +82,7 @@ export const ProductCardStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
     alignItems: 'center',
     flexDirection: 'column',
     justifyContent: 'center',
-    fontWeight: 'normal',
+    fontWeight: 400,
     fontSize: '16px',
     fontFamily: 'SansOri,sans-serif'
   },
@@ -97,7 +97,7 @@ export const ProductCardStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
     width: '5.1rem',
     height: '1.5rem',
     borderRadius: '4rem',
-    fontWeight: 'normal',
+    fontWeight: 400,
     letterSpacing: '0.5px',
     fontSize: '9px',
     lineHeight: '8.4px',
@@ -168,7 +168,7 @@ export const ProductCardStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
   },
 
   DescriptionProductName: {
-    fontWeight: 'normal',
+    fontWeight: 400,
     fontSize: '12px',
     lineHeight: '14.4px',
     paddingRight: '15px'
@@ -181,7 +181,7 @@ export const ProductCardStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
   },
 
   descriptionText: {
-    fontWeight: 'bold',
+    fontWeight: 700,
     fontSize: '18px',
     position: 'relative',
     display: 'inline-block',
