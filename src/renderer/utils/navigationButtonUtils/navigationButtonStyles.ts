@@ -9,11 +9,11 @@ export const NavigationButtonStyles = (theme: Theme): CSS_MUI_PropertiesType => 
     }
   },
   arrowBackIcon: {
-    fontSize: '26px',
+    fontSize: '1.625rem',
     color: theme.palette.common.white,
     backgroundColor: theme.palette.common.black,
     borderRadius: '50%',
     padding: '2px'
   },
-  textStyle: { fontSize: '20px', fontWeight: 'normal' }
+  textStyle: { fontSize: '1.25rem', fontWeight: 400 }
 });

@@ -149,7 +149,7 @@ function UserWelcomePage(): JSX.Element {
             <>
               <Typography
                 variant="body1"
-                sx={{ fontSize: '30px', width: '400px', marginTop: '10px' }}
+                sx={{ fontSize: '1.875rem', width: '400px', marginTop: '10px' }}
               >
                 Phone number {phoneNumber} not registered with Oriflame
               </Typography>
@@ -171,7 +171,7 @@ function UserWelcomePage(): JSX.Element {
               <Typography
                 variant="body1"
                 sx={{
-                  fontSize: '30px',
+                  fontSize: '1.875rem',
                   width: '400px',
                   marginTop: '10px',
                   marginBottom: '20px'
@@ -187,7 +187,7 @@ function UserWelcomePage(): JSX.Element {
 
           {isApiFailed && !customerDetails?.customerId && (
             <>
-              <Typography variant="body1" sx={{ fontSize: '35px', width: '400px' }}>
+              <Typography variant="body1" sx={{ fontSize: '2.1875rem', width: '400px' }}>
                 Unable to fetch your details from Oriflame. Please try again!
               </Typography>
               <Button

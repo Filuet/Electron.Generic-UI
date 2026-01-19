@@ -27,7 +27,7 @@ export const ProductCardStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
     backgroundColor: theme.palette.common.white
   },
   productName: {
-    fontSize: '15px',
+    fontSize: '0.94rem',
     lineHeight: '18px',
     textAlign: 'left',
     padding: 0,
@@ -52,25 +52,25 @@ export const ProductCardStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
   },
   cardSku: {
     fontWeight: '500',
-    fontSize: '9px',
+    fontSize: '0.56rem',
     lineHeight: '8.4px',
     width: '32px'
   },
   bonusPoint: {
     fontWeight: '500',
-    fontSize: '10px',
+    fontSize: '0.63rem',
     lineHeight: '8.4px',
     width: '74px'
   },
   fillSize: {
     fontWeight: '500',
-    fontSize: '10px',
+    fontSize: '0.63rem',
     lineHeight: '8.4px',
     width: '40px'
   },
   productPrice: {
     textDecoration: 'line-through',
-    fontSize: '11px'
+    fontSize: '0.688rem'
   },
   quantityContainer: {
     width: '25.32px',
@@ -83,7 +83,7 @@ export const ProductCardStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
     flexDirection: 'column',
     justifyContent: 'center',
     fontWeight: 400,
-    fontSize: '16px',
+    fontSize: '1rem',
     fontFamily: 'SansOri,sans-serif'
   },
   quantityControllerIcon: {
@@ -99,14 +99,14 @@ export const ProductCardStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
     borderRadius: '4rem',
     fontWeight: 400,
     letterSpacing: '0.5px',
-    fontSize: '9px',
+    fontSize: '0.56rem',
     lineHeight: '8.4px',
     padding: 0,
     boxShadow: 'none',
     marginTop: '5px'
   },
   originalPrice: {
-    fontSize: '13px',
+    fontSize: '0.81rem',
     lineHeight: '13.2px',
     fontWeight: 'bold'
   },
@@ -169,20 +169,20 @@ export const ProductCardStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
 
   DescriptionProductName: {
     fontWeight: 400,
-    fontSize: '12px',
+    fontSize: '0.75rem',
     lineHeight: '14.4px',
     paddingRight: '15px'
   },
   inClusiveTax: {
     lineHeight: '10px',
-    fontSize: '8px',
+    fontSize: '0.5rem',
     marginTop: '11px',
     marginBottom: '13px'
   },
 
   descriptionText: {
     fontWeight: 700,
-    fontSize: '18px',
+    fontSize: '1.125rem',
     position: 'relative',
     display: 'inline-block',
     marginTop: '2.9rem',

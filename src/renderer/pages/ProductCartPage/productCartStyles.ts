@@ -10,8 +10,8 @@ export const ProductCartStyles = (theme: Theme): CSSPropertiesType => ({
     padding: '0px 40px 0px 40px'
   },
   myBagText: {
-    fontSize: '20px',
-    fontWeight: 'normal'
+    fontSize: '1.25rem',
+    fontWeight: 400
   },
 
   cartProductContentContainer: {
@@ -24,7 +24,7 @@ export const ProductCartStyles = (theme: Theme): CSSPropertiesType => ({
   },
   cartProductName: {
     fontWeight: 400,
-    fontSize: '15px',
+    fontSize: '0.9375rem',
     lineHeight: '18.3px',
     // letterSpacing: '1px',
     whiteSpace: 'normal',
@@ -34,15 +34,15 @@ export const ProductCartStyles = (theme: Theme): CSSPropertiesType => ({
     WebkitLineClamp: 2,
     WebkitBoxOrient: 'vertical'
   },
-  productStackInformation: { fontSize: '11px', fontWeight: 'normal' },
+  productStackInformation: { fontSize: '0.6875rem', fontWeight: 400 },
   MRPStyles: {
-    fontSize: '10px',
-    fontWeight: 'normal'
+    fontSize: '0.625rem',
+    fontWeight: 400
   },
   priceHelperText: {
     fontWeight: 400,
     lineHeight: '8.4px',
-    fontSize: '9.5px'
+    fontSize: '0.59375rem'
   },
   quantityControllerContainer: {
     display: 'flex',
@@ -62,7 +62,7 @@ export const ProductCartStyles = (theme: Theme): CSSPropertiesType => ({
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
     borderRadius: '50%',
-    fontSize: '20px',
+    fontSize: '1.25rem',
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'column',
@@ -86,7 +86,7 @@ export const ProductCartStyles = (theme: Theme): CSSPropertiesType => ({
     textAlign: 'left'
   },
   priceDetailsText: {
-    fontSize: '18px',
+    fontSize: '1.125rem',
     fontWeight: 700,
     textDecoration: 'underline'
   },

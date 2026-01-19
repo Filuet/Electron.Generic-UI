@@ -140,7 +140,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
               <Typography variant="body1" sx={productCardStyle.originalPrice} color="error">
                 Rs {sellingPrice}
               </Typography>
-              <Typography variant="body1" sx={{ fontSize: '8px', marginTop: '4px' }}>
+              <Typography variant="body1" sx={{ fontSize: '0.5rem', marginTop: '4px' }}>
                 MRP{' '}
                 <span
                   style={{
@@ -153,7 +153,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
               <Typography
                 variant="body1"
                 sx={{
-                  fontSize: '10px',
+                  fontSize: '0.63rem',
                   marginTop: '2px'
                 }}
               >
@@ -195,7 +195,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
               sx={{
                 backgroundColor: theme.palette.common.white,
                 color: theme.palette.common.black,
-                fontSize: '30px'
+                fontSize: '1.88rem'
               }}
             />
           </IconButton>
@@ -234,7 +234,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
                   variant="body1"
                   sx={{
                     fontWeight: 400,
-                    fontSize: '15px',
+                    fontSize: '0.94rem',
                     lineHeight: '9px'
                   }}
                 >
@@ -244,7 +244,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
                   variant="body1"
                   sx={{
                     fontWeight: 400,
-                    fontSize: '15px',
+                    fontSize: '0.94rem',
                     lineHeight: '9px'
                   }}
                 >
@@ -255,7 +255,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
                     variant="body1"
                     sx={{
                       fontWeight: 400,
-                      fontSize: '15px',
+                      fontSize: '0.94rem',
                       lineHeight: '9px'
                     }}
                   >
@@ -267,7 +267,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
                 <Typography
                   variant="body1"
                   sx={{
-                    fontSize: '17px',
+                    fontSize: '1.06rem',
                     lineHeight: '13.2px',
                     fontWeight: 'bold'
                   }}
@@ -278,7 +278,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
                 <Typography
                   variant="body1"
                   sx={{
-                    fontSize: '10px'
+                    fontSize: '0.63rem'
                   }}
                 >
                   MRP{' '}
@@ -296,7 +296,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
                 component="div"
                 sx={{
                   lineHeight: '10px',
-                  fontSize: '13px',
+                  fontSize: '0.81rem',
                   marginTop: '14px',
                   marginBottom: '13px'
                 }}
@@ -336,7 +336,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
                       flexDirection: 'column',
                       justifyContent: 'center',
                       fontWeight: 400,
-                      fontSize: '20px',
+                      fontSize: '1.25rem',
                       fontFamily: 'SansOri,sans-serif'
                     }}
                   >
@@ -363,7 +363,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
                     borderRadius: '4rem',
                     fontWeight: 400,
                     letterSpacing: '0.5px',
-                    fontSize: '12px',
+                    fontSize: '0.75rem',
                     lineHeight: '8.4px',
                     padding: 0,
                     boxShadow: 'none',

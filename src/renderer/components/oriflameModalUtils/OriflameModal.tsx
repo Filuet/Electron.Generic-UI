@@ -27,7 +27,7 @@ function OriflameModal(oriflameModalProps: OriflameModalProps): JSX.Element {
         <Typography
           variant="body1"
           sx={{
-            fontSize: '22px',
+            fontSize: '1.375rem',
             width: '320px'
           }}
         >

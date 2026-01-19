@@ -64,7 +64,7 @@ function NonWorkingHours(): JSX.Element {
         <Box component="img" src={OriflameLogo} sx={{ width: '262px' }} />
         <Typography
           variant="body1"
-          sx={{ fontWeight: 400, fontSize: '26px', lineHeight: '28.8px' }}
+          sx={{ fontWeight: 400, fontSize: '1.625rem', lineHeight: '28.8px' }}
         >
           Currently, we are out of working hours
         </Typography>
@@ -72,7 +72,7 @@ function NonWorkingHours(): JSX.Element {
         <Typography
           variant="body1"
           sx={{
-            fontSize: '24px',
+            fontSize: '1.5rem',
             marginTop: '20px'
           }}
         >

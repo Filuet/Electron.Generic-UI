@@ -500,7 +500,7 @@ function App(): JSX.Element {
             variant="body1"
             sx={{
               width: '300px',
-              fontSize: '22px',
+              fontSize: '1.375rem',
               marginTop: '30px'
             }}
           >

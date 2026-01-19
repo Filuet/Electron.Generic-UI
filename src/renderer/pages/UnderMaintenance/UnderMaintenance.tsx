@@ -31,7 +31,7 @@ function UnderMaintenance(): JSX.Element {
         <Box component="img" src={OriflameLogo} sx={{ width: '262px' }} />
         <Typography
           variant="body1"
-          sx={{ fontWeight: 400, fontSize: '26px', lineHeight: '28.8px' }}
+          sx={{ fontWeight: 400, fontSize: '1.625rem', lineHeight: '28.8px' }}
         >
           Currently, We are under Maintenance
         </Typography>

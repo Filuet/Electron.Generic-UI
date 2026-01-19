@@ -254,9 +254,9 @@ function ProductCollection(): JSX.Element {
       // Check for any type of error or incomplete dispensing
       const hasDispenseIssues = Boolean(
         getUnDispensedProducts().products.length ||
-          dispenseErrorTrackerRef.current?.getAllErrors().length ||
-          dispenseErrorTrackerRef.current?.getAllAbandonedProducts().length ||
-          unTrackedDispenseErrors.length
+        dispenseErrorTrackerRef.current?.getAllErrors().length ||
+        dispenseErrorTrackerRef.current?.getAllAbandonedProducts().length ||
+        unTrackedDispenseErrors.length
       );
 
       if (!hasDispenseIssues) {
@@ -853,13 +853,13 @@ function ProductCollection(): JSX.Element {
             <>
               <Box sx={{ width: '93px' }}>
                 {currentMachine === ProductCollectionMachine.left && (
-                  <ArrowDownwardIcon sx={{ fontSize: '93px', marginTop: '10px' }} />
+                  <ArrowDownwardIcon sx={{ fontSize: '5.8125rem', marginTop: '10px' }} />
                 )}
               </Box>
 
               <Box sx={{ width: '93px' }}>
                 {currentMachine === ProductCollectionMachine.right && (
-                  <ArrowDownwardIcon sx={{ fontSize: '93px', marginTop: '10px' }} />
+                  <ArrowDownwardIcon sx={{ fontSize: '5.8125rem', marginTop: '10px' }} />
                 )}
               </Box>
             </>

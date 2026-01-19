@@ -16,10 +16,10 @@ export default function componentStyleOverrides(theme: Theme): Record<string, un
     MuiTextField: {
       styleOverrides: {
         root: {
-          fontSize: '14px',
+          fontSize: '0.875rem',
           '& .MuiInputBase-root': {
             color: theme.palette.text.primary,
-            fontSize: '14px',
+            fontSize: '0.875rem',
             padding: 0,
             height: '2.5rem',
             backgroundColor: theme.palette.common.white,
@@ -53,7 +53,7 @@ export default function componentStyleOverrides(theme: Theme): Record<string, un
         outlined: {
           '& .MuiOutlinedInput-root': {
             borderRadius: '24px',
-            fontSize: '18px',
+            fontSize: '1.125rem',
             overflow: 'hidden',
             '& fieldset': {
               borderColor: theme.palette.secondary.main,
@@ -100,7 +100,7 @@ export default function componentStyleOverrides(theme: Theme): Record<string, un
     MuiButton: {
       styleOverrides: {
         root: {
-          fontSize: '17px'
+          fontSize: '1.0625rem'
         },
         contained: {
           boxShadow: 'none',

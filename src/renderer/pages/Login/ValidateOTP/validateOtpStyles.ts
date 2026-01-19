@@ -1,15 +1,15 @@
 import { CSS_MUI_PropertiesType } from '@/interfaces/modal';
 
 export const ValidateOtpStyles = (): CSS_MUI_PropertiesType => ({
-  header: { fontSize: '40px', lineHeight: '48px', marginTop: '32px' },
+  header: { fontSize: '2.5rem', lineHeight: '48px', marginTop: '32px' },
   helperText: {
     width: '379px',
-    fontSize: '24px',
+    fontSize: '1.5rem',
     lineHeight: '28.8px',
     fontWeight: 400,
     marginTop: '29px'
   },
-  tryAgainText: { fontSize: '16px', fontWeight: 'normal' },
+  tryAgainText: { fontSize: '1rem', fontWeight: 400 },
   inputField: {
     marginTop: '40px',
     width: '358px',

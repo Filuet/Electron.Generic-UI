@@ -1,9 +1,9 @@
 import { CSS_MUI_PropertiesType } from '@/interfaces/modal';
 
 export const LoginPageStyles = (): CSS_MUI_PropertiesType => ({
-  header: { fontSize: '40px', lineHeight: '48px', marginTop: '32px' },
+  header: { fontSize: '2.5rem', lineHeight: '48px', marginTop: '32px' },
   loginSubHeader: {
-    fontSize: '26px',
+    fontSize: '2.5rem',
     lineHeight: '30px',
     fontWeight: 400,
     marginTop: '29px',

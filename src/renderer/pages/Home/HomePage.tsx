@@ -220,7 +220,7 @@ function HomePage(): JSX.Element {
               disabled={productCount <= 0}
             >
               <Badge badgeContent={productCount} color="secondary">
-                <LocalMallOutlinedIcon sx={{ fontSize: '30px' }} />
+                <LocalMallOutlinedIcon sx={{ fontSize: '1.875rem' }} />
               </Badge>
             </IconButton>
             <Typography variant="body2" sx={{ fontSize: '1.2rem' }}>
@@ -285,7 +285,7 @@ function HomePage(): JSX.Element {
                         textTransform: 'uppercase',
                         fontWeight: 700,
                         lineHeight: '16px',
-                        fontSize: '14px'
+                        fontSize: '0.875rem'
                       }}
                     >
                       {category}

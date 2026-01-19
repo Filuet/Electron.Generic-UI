@@ -6,7 +6,7 @@ export const KioskWelcomeStyle = (theme: Theme): CSSPropertiesType => ({
   greetingsText: {
     margin: 'auto',
     width: '301px',
-    fontSize: '24px',
+    fontSize: '1.5rem',
     lineHeight: '28.8px',
     fontWeight: 'normal'
   },

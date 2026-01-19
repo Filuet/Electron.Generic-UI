@@ -131,7 +131,7 @@ function ProductCart(props: ProductCartPageProps): JSX.Element {
     <>
       <Box sx={cartStyles.cartHeaderContainer}>
         <Stack flexDirection="row" gap={1}>
-          <LocalMallOutlinedIcon sx={{ fontSize: '30px' }} />
+          <LocalMallOutlinedIcon sx={{ fontSize: '1.875rem' }} />
           <Typography variant="body1" sx={cartStyles.myBagText}>
             My Bag
           </Typography>
@@ -141,7 +141,7 @@ function ProductCart(props: ProductCartPageProps): JSX.Element {
             sx={{
               backgroundColor: theme.palette.common.white,
               color: theme.palette.common.black,
-              fontSize: '30px'
+              fontSize: '1.875rem'
             }}
           />
         </IconButton>
@@ -210,7 +210,7 @@ function ProductCart(props: ProductCartPageProps): JSX.Element {
                     style={{
                       color: theme.palette.error.main,
                       fontWeight: 700,
-                      fontSize: '14px'
+                      fontSize: '0.875rem'
                     }}
                     component="span"
                   >
@@ -282,7 +282,7 @@ function ProductCart(props: ProductCartPageProps): JSX.Element {
             <Typography variant="body1" sx={cartStyles.priceDetailsText}>
               Price Details
             </Typography>
-            <Typography variant="body1" sx={{ fontSize: '18px', marginTop: '8px' }}>
+            <Typography variant="body1" sx={{ fontSize: '1.125rem', marginTop: '8px' }}>
               Your Total is: Rs {totalPrice}
             </Typography>
 
@@ -293,7 +293,7 @@ function ProductCart(props: ProductCartPageProps): JSX.Element {
               Total MRP: Rs {totalPrice + totalBonusPoints}
             </Typography> */}
             {currentClient === ClientType.BrandPartner && (
-              <Typography variant="body1" sx={{ fontSize: '18px', marginTop: '8px' }}>
+              <Typography variant="body1" sx={{ fontSize: '1.125rem', marginTop: '8px' }}>
                 Total BP points: {totalBonusPoints}
               </Typography>
             )}
@@ -306,7 +306,7 @@ function ProductCart(props: ProductCartPageProps): JSX.Element {
               height: '2.6rem',
               marginTop: '20px',
               marginLeft: '100px',
-              fontSize: '21px',
+              fontSize: '1.3125rem',
               textTransform: 'none'
             }}
           >
@@ -322,7 +322,7 @@ function ProductCart(props: ProductCartPageProps): JSX.Element {
             sx={{
               textAlign: 'left',
               marginLeft: '100px',
-              fontSize: '18px',
+              fontSize: '1.125rem',
               fontWeight: 400,
               marginTop: '40px'
               // marginBottom: '15px',
@@ -346,7 +346,7 @@ function ProductCart(props: ProductCartPageProps): JSX.Element {
               <IconButton onClick={() => onProductCardScroll('left')} sx={{}}>
                 <ArrowBackOutlinedIcon
                   sx={{
-                    fontSize: '42px',
+                    fontSize: '2.625rem',
                     border: `1px solid ${theme.palette.primary.light}`,
                     borderRadius: '50%'
                   }}
@@ -384,7 +384,7 @@ function ProductCart(props: ProductCartPageProps): JSX.Element {
               <IconButton onClick={() => onProductCardScroll('right')} sx={{}}>
                 <ArrowForwardRoundedIcon
                   sx={{
-                    fontSize: '42px',
+                    fontSize: '2.625rem',
                     fontWeight: 400,
                     border: `1px solid ${theme.palette.primary.light}`,
                     borderRadius: '50%'

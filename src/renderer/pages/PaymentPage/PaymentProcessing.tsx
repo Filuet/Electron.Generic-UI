@@ -296,10 +296,10 @@ function PaymentProcessing(): JSX.Element {
         }}
       >
         <Box component="img" src={OriflameLogo} sx={{ width: '262px' }} />
-        <PaymentOutlinedIcon sx={{ fontSize: '102px', height: '102px' }} />
+        <PaymentOutlinedIcon sx={{ fontSize: '6.375rem', height: '102px' }} />
         <Typography
           variant="body1"
-          sx={{ fontWeight: 400, fontSize: '24px', marginTop: '20px' }}
+          sx={{ fontWeight: 400, fontSize: '1.5rem', marginTop: '20px' }}
         >
           {isPaymentLinkGenerationFailed
             ? translate('FailedToGenerateLink')

@@ -46,7 +46,7 @@ function Navbar(): JSX.Element {
         <Toolbar sx={{ padding: '8px 10px 8px 10px' }}>
           <Box component="img" alt="Oriflame" src={OriflameLogo} sx={navbarStyle.navbarLogo} />
           <Box sx={navbarStyle.textContainerStyle}>
-            <Typography variant="body1" sx={{ fontSize: '20px' }}>
+            <Typography variant="body1" sx={{ fontSize: '1.25rem' }}>
               {translate('greetings')} {customerName}
             </Typography>
           </Box>
@@ -102,7 +102,7 @@ function Navbar(): JSX.Element {
           <Typography
             variant="body1"
             sx={{
-              fontSize: '22px'
+              fontSize: '1.375rem'
             }}
           >
             Are you sure, you want to logout?
@@ -124,7 +124,7 @@ function Navbar(): JSX.Element {
                 width: '6.2rem',
                 color: theme.palette.primary.main,
                 backgroundColor: theme.palette.secondary.main,
-                fontSize: '17px'
+                fontSize: '1.06rem'
               }}
               onClick={onLogout}
             >
@@ -136,7 +136,7 @@ function Navbar(): JSX.Element {
               onClick={() => setShowLogoutModal(false)}
               sx={{
                 width: '6.2rem',
-                fontSize: '17px'
+                fontSize: '1.06rem'
               }}
             >
               Cancel

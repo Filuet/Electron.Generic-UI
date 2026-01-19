@@ -192,7 +192,7 @@ function MultipleImageUtil(props: ImageUtilsProps): JSX.Element {
           sx={{
             textDecoration: 'underline',
             textAlign: 'center',
-            fontSize: '18px',
+            fontSize: '1.125rem',
             marginTop: '0.4rem',
             cursor: 'pointer'
           }}

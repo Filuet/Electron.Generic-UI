@@ -4,7 +4,7 @@ export const CancelPaymentStyles = (): CSSPropertiesType => ({
   cancelPaymentHeader: {
     fontWeight: 400,
     lineHeight: '38.4px',
-    fontSize: '32px',
+    fontSize: '2rem',
     width: '329px'
   },
   paymentInformationContainer: {
@@ -15,7 +15,7 @@ export const CancelPaymentStyles = (): CSSPropertiesType => ({
     justifyContent: 'space-between'
   },
   informationText: {
-    fontSize: '20px',
+    fontSize: '1.25rem',
     fontWeight: 400,
     marginBottom: '6px'
   }
