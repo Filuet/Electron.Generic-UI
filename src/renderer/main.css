@@ -27,8 +27,8 @@
 }
 
 :root {
-  --design-width: 768;
-  --design-height: 1366;
+  --design-width: 1080;
+  --design-height: 1920;
 
   --scale: min(
     calc(100vw / var(--design-width)),
@@ -44,7 +44,7 @@ body {
   padding: 0;
 
   font-family: 'SansOri', sans-serif;
-  font-size: calc(16px * var(--scale));
+  font-size: calc(16 * var(--scale));
 
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
