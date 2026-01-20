@@ -8,7 +8,7 @@ export const ProductPageStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
     marginTop: '45px'
   },
   categoryContainer: {
-    width: '150px',
+    width: '15vw',
     height: '960px',
     borderRight: `1px solid ${theme.palette.primary.main}`,
     paddingRight: '10px'
@@ -22,10 +22,9 @@ export const ProductPageStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
   },
   productContainer: {
     margin: 'auto',
-    width: '610px',
-    height: '950px',
     overflowY: 'auto',
-    // paddingTop: '10px',
+    width: '85vw',
+    height: '83.5vh',
     paddingBottom: '1rem',
     '::-webkit-scrollbar': {
       width: '12px',
@@ -50,9 +49,9 @@ export const ProductPageStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
   productCardContainer: {
     display: 'grid',
     gridTemplateColumns: 'repeat(3,1fr)',
-    columnGap: 1,
-    rowGap: 2,
-    paddingLeft: '10px',
+    columnGap: '1.5rem',
+    rowGap: '1.5rem',
+    padding: '0px 0.3rem 0.7rem 0.9rem',
     marginTop: '5px'
   }
 });

@@ -3,12 +3,11 @@ import { Theme } from '@mui/material';
 
 export const ProductCardStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
   cardStyle: {
-    width: '10.9rem',
-    height: '21.3rem',
     padding: 0,
     display: 'flex',
     flexDirection: 'column',
-    boxShadow: 2
+    boxShadow: 2,
+    height: '20vh'
   },
   productTagImageStyle: {
     position: 'absolute',
@@ -17,18 +16,19 @@ export const ProductCardStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
     borderRadius: '3px'
   },
   cardContent: {
+    // border: '1px solid red',
     display: 'flex',
     flexDirection: 'column',
     padding: '0.5rem',
     paddingTop: '0.3rem',
-    height: '100%',
+    height: '50%',
     boxSizing: 'border-box',
     alignItems: 'center',
     backgroundColor: theme.palette.common.white
   },
   productName: {
-    fontSize: '0.94rem',
-    lineHeight: '18px',
+    fontSize: '1.3rem',
+    lineHeight: '1.3rem',
     textAlign: 'left',
     padding: 0,
     whiteSpace: 'normal',
@@ -52,29 +52,26 @@ export const ProductCardStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
   },
   cardSku: {
     fontWeight: '500',
-    fontSize: '0.56rem',
-    lineHeight: '8.4px',
-    width: '32px'
+    fontSize: '1rem',
+    lineHeight: '8.4px'
+    // width: 'px'
   },
   bonusPoint: {
     fontWeight: '500',
-    fontSize: '0.63rem',
-    lineHeight: '8.4px',
-    width: '74px'
+    fontSize: '1rem',
+    lineHeight: '8.4px'
+    // width: '74px'
   },
   fillSize: {
     fontWeight: '500',
-    fontSize: '0.63rem',
-    lineHeight: '8.4px',
-    width: '40px'
+    fontSize: '1rem',
+    lineHeight: '8.4px'
+    // width: '40px'
   },
-  productPrice: {
-    textDecoration: 'line-through',
-    fontSize: '0.688rem'
-  },
+
   quantityContainer: {
-    width: '25.32px',
-    height: '25.32px',
+    width: '2.3rem',
+    height: '2.3rem',
     color: theme.palette.common.white,
     backgroundColor: theme.palette.common.black,
     borderRadius: '2rem',
@@ -83,38 +80,39 @@ export const ProductCardStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
     flexDirection: 'column',
     justifyContent: 'center',
     fontWeight: 400,
-    fontSize: '1rem',
+    fontSize: '1.3rem',
     fontFamily: 'SansOri,sans-serif'
   },
   quantityControllerIcon: {
-    width: '1.1rem',
-    height: '1.1rem',
+    width: '1.7rem',
+    height: '1.7rem',
     color: theme.palette.common.white,
     backgroundColor: theme.palette.common.black,
     borderRadius: '50%'
   },
   addToCartButton: {
-    width: '5.1rem',
-    height: '1.5rem',
+    width: '7rem',
+    height: '2rem',
     borderRadius: '4rem',
     fontWeight: 400,
     letterSpacing: '0.5px',
-    fontSize: '0.56rem',
+    fontSize: '0.8rem',
     lineHeight: '8.4px',
     padding: 0,
     boxShadow: 'none',
-    marginTop: '5px'
+    marginTop: '0.9rem'
   },
   originalPrice: {
-    fontSize: '0.81rem',
+    fontSize: '1rem',
     lineHeight: '13.2px',
     fontWeight: 'bold'
   },
   iconContainer: {
-    width: '110px',
+    width: '60%',
     display: 'flex',
     justifyContent: 'space-evenly',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: '1.5rem'
   },
   descriptionTextContainer: {
     display: 'flex',
@@ -182,7 +180,7 @@ export const ProductCardStyles = (theme: Theme): CSS_MUI_PropertiesType => ({
 
   descriptionText: {
     fontWeight: 700,
-    fontSize: '1.125rem',
+    fontSize: '1.7rem',
     position: 'relative',
     display: 'inline-block',
     marginTop: '2.9rem',

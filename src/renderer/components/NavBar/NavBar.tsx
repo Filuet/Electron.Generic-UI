@@ -43,10 +43,10 @@ function Navbar(): JSX.Element {
   return (
     <>
       <AppBar sx={navbarStyle.appBarStyle} position="static">
-        <Toolbar sx={{ padding: '8px 10px 8px 10px' }}>
+        <Toolbar >
           <Box component="img" alt="Oriflame" src={OriflameLogo} sx={navbarStyle.navbarLogo} />
           <Box sx={navbarStyle.textContainerStyle}>
-            <Typography variant="body1" sx={{ fontSize: '1.25rem' }}>
+            <Typography variant="body1" sx={{ fontSize: '1.9rem' }}>
               {translate('greetings')} {customerName}
             </Typography>
           </Box>
@@ -72,7 +72,7 @@ function Navbar(): JSX.Element {
               <IconButton>
                 <LogoutIcon sx={navbarStyle.navIcon} />
               </IconButton>
-              <Typography variant="body2" sx={{ fontSize: '0.83rem' }}>
+              <Typography variant="body2" sx={{ fontSize: '1.9rem' }}>
                 {translate('logout')}
               </Typography>
             </Stack>

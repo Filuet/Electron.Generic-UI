@@ -45,6 +45,8 @@ function ImageUtils(props: ImageUtilsProps): JSX.Element {
         src={image.pictureUrl}
         alt=""
         style={{
+          display: 'block',
+          margin: 'auto',
           height: imgHeight
         }}
       />

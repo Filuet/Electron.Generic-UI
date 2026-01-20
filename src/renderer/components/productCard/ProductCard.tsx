@@ -77,7 +77,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
   };
 
   let currentProductTag: string = NewProductTag;
-  let tagImageSize = '3rem';
+  let tagImageSize = '4rem';
   if (product.productTag.toUpperCase() === 'ICON') {
     currentProductTag = IconicProduct;
     tagImageSize = '25px';
@@ -90,7 +90,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
   return (
     <>
       <Card sx={productCardStyle.cardStyle}>
-        <Box sx={{ position: 'relative' }}>
+        <Box sx={{ position: 'relative', height: '50%' }}>
           {product.productTag && (
             <Box
               component="img"
@@ -103,15 +103,15 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
           )}
           <Box
             sx={{
-              height: '175px'
+              height: '100%'
             }}
             onClick={() => setIsDescriptionDialogOpen(true)}
           >
             <ImageUtils
               skuCode={product.skuCode}
-              imgHeight="175px"
-              containerHeight="175px"
-              containerWidth="175px"
+              imgHeight="100%"
+              containerHeight="100%"
+              containerWidth="100%"
             />
           </Box>
         </Box>
@@ -140,7 +140,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
               <Typography variant="body1" sx={productCardStyle.originalPrice} color="error">
                 Rs {sellingPrice}
               </Typography>
-              <Typography variant="body1" sx={{ fontSize: '0.5rem', marginTop: '4px' }}>
+              <Typography variant="body1" sx={{ fontSize: '1rem', marginTop: '4px' }}>
                 MRP{' '}
                 <span
                   style={{
@@ -153,7 +153,7 @@ function ProductCard({ product }: { product: ProductDataModal }): JSX.Element {
               <Typography
                 variant="body1"
                 sx={{
-                  fontSize: '0.63rem',
+                  fontSize: '1rem',
                   marginTop: '2px'
                 }}
               >

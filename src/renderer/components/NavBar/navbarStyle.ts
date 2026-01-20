@@ -3,9 +3,8 @@ import { Theme } from '@mui/material';
 
 export const NavBarStyles = (theme: Theme): CSSPropertiesType => ({
   navbarLogo: {
-    width: '8.625rem',
-    // height: '2.188rem',
-    marginLeft: '-0.6rem'
+    marginLeft: '-0.6rem',
+    width: '18%'
   },
   appBarStyle: {
     width: '100%',
@@ -18,12 +17,14 @@ export const NavBarStyles = (theme: Theme): CSSPropertiesType => ({
     backgroundColor: theme.palette.common.white
   },
   textContainerStyle: {
-    width: '450px',
+    width: '52%',
+    // border: '1px solid red',
     textAlign: 'left',
     marginLeft: '15px'
   },
   iconContainer: {
-    width: '22%',
+    width: '30%',
+    // border: '1px solid red',
     display: 'flex',
     justifyContent: 'end'
   }
