@@ -27,8 +27,8 @@
 }
 
 :root {
-  --design-width: 1080;
-  --design-height: 1920;
+  --design-width: 768;
+  --design-height: 1366;
 
   --scale: min(
     calc(100vw / var(--design-width)),
